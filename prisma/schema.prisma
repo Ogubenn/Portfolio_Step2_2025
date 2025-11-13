@@ -1,0 +1,179 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Admin User Model
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // Hashed password
+  name      String?
+  role      String   @default("admin") // admin, editor, viewer
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Projects Model
+model Project {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  category    String   // web, game, mobile, tool
+  description String
+  shortDesc   String
+  
+  // Media
+  thumbnail   String?
+  images      ProjectImage[]
+  videoUrl    String?
+  demoUrl     String?
+  githubUrl   String?
+  
+  // Details
+  technologies String   // JSON array
+  tags         String   // JSON array
+  year         Int
+  duration     String?  // "3 months", "2 weeks"
+  
+  // Content sections
+  problem      String?
+  solution     String?
+  process      String?
+  learnings    String?
+  
+  // Status
+  featured     Boolean  @default(false)
+  published    Boolean  @default(true)
+  publishedAt  DateTime?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([category])
+  @@index([featured])
+  @@index([published])
+}
+
+// Project Images (Multiple images per project)
+model ProjectImage {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  
+  @@index([projectId])
+}
+
+// Skills Model
+model Skill {
+  id          String   @id @default(uuid())
+  category    String   // "Languages", "Frameworks", "Tools", "Other"
+  name        String
+  level       Int      @default(80) // 0-100
+  icon        String?  // Icon name or URL
+  order       Int      @default(0)
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([category])
+  @@index([visible])
+}
+
+// Work Experience Model
+model WorkExperience {
+  id          String   @id @default(uuid())
+  company     String
+  position    String
+  startDate   DateTime
+  endDate     DateTime?
+  current     Boolean  @default(false)
+  description String
+  location    String?
+  type        String?  // "Full-time", "Part-time", "Freelance", "Contract"
+  order       Int      @default(0)
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([visible])
+}
+
+// Services/Capabilities Model
+model Service {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  icon        String   // Icon name (lucide-react)
+  features    String   // JSON array of features
+  order       Int      @default(0)
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([visible])
+}
+
+// Site Settings Model (Singleton - only one row)
+model SiteSettings {
+  id                Int      @id @default(1)
+  
+  // Hero Section
+  heroTitle         String
+  heroSubtitle      String
+  heroCTA           String?
+  
+  // About Section
+  aboutTitle        String?
+  aboutDescription  String
+  aboutImage        String?
+  cvFileUrl         String?
+  testFileUrl       String?
+  
+  // Contact Section
+  contactEmail      String?
+  contactPhone      String?
+  contactLocation   String?
+  
+  // Social Links (JSON)
+  socialLinks       String   // {github, linkedin, twitter, etc}
+  
+  // SEO
+  siteTitle         String?
+  siteDescription   String?
+  siteKeywords      String?
+  ogImage           String?
+  
+  updatedAt         DateTime @updatedAt
+}
+
+// Activity Log (Audit trail)
+model ActivityLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  action      String   // "create", "update", "delete"
+  entity      String   // "project", "skill", "experience", etc.
+  entityId    String?
+  description String
+  metadata    String?  // JSON with additional info
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([entity])
+  @@index([createdAt])
+}
+
