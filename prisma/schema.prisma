@@ -136,10 +136,14 @@ model SiteSettings {
   heroTitle         String
   heroSubtitle      String
   heroCTA           String?
+  heroImage         String?
   
   // About Section
   aboutTitle        String?
   aboutDescription  String
+  aboutBio1         String?
+  aboutBio2         String?
+  aboutBio3         String?
   aboutImage        String?
   cvFileUrl         String?
   testFileUrl       String?
@@ -150,7 +154,7 @@ model SiteSettings {
   contactLocation   String?
   
   // Social Links (JSON)
-  socialLinks       String   // {github, linkedin, twitter, etc}
+  socialLinks       String   // {github, linkedin}
   
   // SEO
   siteTitle         String?

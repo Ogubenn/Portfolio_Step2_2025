@@ -1,8 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Send, CheckCircle, AlertCircle } from 'lucide-react'
+import { Send, CheckCircle, AlertCircle, Mail, Github, Linkedin, MapPin, Phone } from 'lucide-react'
+
+interface SiteSettings {
+  contactEmail: string | null
+  contactPhone: string | null
+  contactLocation: string | null
+  socialLinks: string
+}
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -13,6 +20,35 @@ export default function Contact() {
   })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [settings, setSettings] = useState<SiteSettings>({
+    contactEmail: null,
+    contactPhone: null,
+    contactLocation: null,
+    socialLinks: '{}'
+  })
+
+  useEffect(() => {
+    fetchSettings()
+  }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch('/api/public/settings')
+      if (response.ok) {
+        const data = await response.json()
+        setSettings({
+          contactEmail: data.contactEmail,
+          contactPhone: data.contactPhone,
+          contactLocation: data.contactLocation,
+          socialLinks: data.socialLinks || '{}'
+        })
+      }
+    } catch (error) {
+      console.error('Failed to fetch settings:', error)
+    }
+  }
+
+  const socialLinks = JSON.parse(settings.socialLinks)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -188,46 +224,77 @@ export default function Contact() {
             className="lg:col-span-2 space-y-6"
           >
             {/* Email */}
-            <div className="card">
-              <div className="text-4xl mb-3">📧</div>
-              <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">E-posta</h3>
-              <a
-                href="mailto:your.email@example.com"
-                className="text-gradient hover:underline"
-              >
-                your.email@example.com
-              </a>
-            </div>
+            {settings.contactEmail && (
+              <div className="card">
+                <div className="text-4xl mb-3">📧</div>
+                <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">E-posta</h3>
+                <a
+                  href={`mailto:${settings.contactEmail}`}
+                  className="text-gradient hover:underline"
+                >
+                  {settings.contactEmail}
+                </a>
+              </div>
+            )}
+
+            {/* Phone */}
+            {settings.contactPhone && (
+              <div className="card">
+                <div className="text-4xl mb-3">📞</div>
+                <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">Telefon</h3>
+                <a
+                  href={`tel:${settings.contactPhone}`}
+                  className="text-gradient hover:underline"
+                >
+                  {settings.contactPhone}
+                </a>
+              </div>
+            )}
+
+            {/* Location */}
+            {settings.contactLocation && (
+              <div className="card">
+                <div className="text-4xl mb-3">📍</div>
+                <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">Konum</h3>
+                <p className="text-light-text-secondary dark:text-dark-text-secondary">
+                  {settings.contactLocation}
+                </p>
+              </div>
+            )}
 
             {/* LinkedIn */}
-            <div className="card">
-              <div className="text-4xl mb-3">💼</div>
-              <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">LinkedIn</h3>
-              <a
-                href="https://linkedin.com/in/yourusername"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gradient hover:underline inline-flex items-center gap-2"
-              >
-                Profili Görüntüle
-                <span className="text-sm">↗</span>
-              </a>
-            </div>
+            {socialLinks.linkedin && (
+              <div className="card">
+                <div className="text-4xl mb-3">💼</div>
+                <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">LinkedIn</h3>
+                <a
+                  href={socialLinks.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gradient hover:underline inline-flex items-center gap-2"
+                >
+                  Profili Görüntüle
+                  <span className="text-sm">↗</span>
+                </a>
+              </div>
+            )}
 
             {/* GitHub */}
-            <div className="card">
-              <div className="text-4xl mb-3">💻</div>
-              <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">GitHub</h3>
-              <a
-                href="https://github.com/yourusername"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gradient hover:underline inline-flex items-center gap-2"
-              >
-                Projeleri İncele
-                <span className="text-sm">↗</span>
-              </a>
-            </div>
+            {socialLinks.github && (
+              <div className="card">
+                <div className="text-4xl mb-3">💻</div>
+                <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">GitHub</h3>
+                <a
+                  href={socialLinks.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gradient hover:underline inline-flex items-center gap-2"
+                >
+                  Projeleri İncele
+                  <span className="text-sm">↗</span>
+                </a>
+              </div>
+            )}
           </motion.div>
         </div>
       </div>

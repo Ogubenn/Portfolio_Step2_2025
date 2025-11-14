@@ -3,8 +3,47 @@
 import Link from 'next/link'
 import { ArrowRight, ChevronDown } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+
+interface SiteSettings {
+  heroTitle: string
+  heroSubtitle: string
+  heroCTA: string | null
+  heroImage: string | null
+}
 
 export default function Hero() {
+  const [settings, setSettings] = useState<SiteSettings>({
+    heroTitle: 'Merhaba, ben Oğulcan 👋',
+    heroSubtitle: 'Full-Stack Developer & Yaratıcı Yazılımcı',
+    heroCTA: 'Projelerimi Gör',
+    heroImage: null
+  })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchSettings()
+  }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch('/api/public/settings')
+      if (response.ok) {
+        const data = await response.json()
+        setSettings({
+          heroTitle: data.heroTitle || 'Merhaba, ben Oğulcan 👋',
+          heroSubtitle: data.heroSubtitle || 'Full-Stack Developer & Yaratıcı Yazılımcı',
+          heroCTA: data.heroCTA || 'Projelerimi Gör',
+          heroImage: data.heroImage || null
+        })
+      }
+    } catch (error) {
+      console.error('Failed to fetch settings:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <section
       id="hero"
@@ -26,7 +65,7 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg md:text-xl text-gradient font-medium mb-4"
             >
-              Merhaba, ben Oğulcan 👋
+              {settings.heroTitle}
             </motion.p>
 
             {/* Main Heading */}
@@ -36,8 +75,13 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="heading-1 mb-6"
             >
-              Full-Stack Developer &{' '}
-              <span className="text-gradient">Yaratıcı Yazılımcı</span>
+              {settings.heroSubtitle.split('&').map((part, index) => (
+                index === 0 ? (
+                  <span key={index}>{part} & </span>
+                ) : (
+                  <span key={index} className="text-gradient">{part}</span>
+                )
+              ))}
             </motion.h1>
 
             {/* Subheading */}
@@ -60,7 +104,7 @@ export default function Hero() {
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
               <Link href="/#projects" className="btn-primary group">
-                Projelerimi Gör
+                {settings.heroCTA || 'Projelerimi Gör'}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link href="/#contact" className="btn-secondary">
@@ -84,14 +128,21 @@ export default function Hero() {
               
               {/* Main image container */}
               <div className="relative w-full h-full bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-2xl overflow-hidden shadow-large flex items-center justify-center border border-light-border dark:border-dark-border">
-                {/* Replace with your actual image */}
-                <div className="text-center p-8">
-                  <div className="text-6xl mb-4">👨‍💻</div>
-                  <p className="text-light-text-secondary dark:text-dark-text-secondary">
-                    Buraya profilinizin fotoğrafını veya<br />
-                    özel bir illüstrasyon ekleyebilirsiniz
-                  </p>
-                </div>
+                {settings.heroImage ? (
+                  <img
+                    src={settings.heroImage}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="text-center p-8">
+                    <div className="text-6xl mb-4">👨‍💻</div>
+                    <p className="text-light-text-secondary dark:text-dark-text-secondary">
+                      Buraya profilinizin fotoğrafını veya<br />
+                      özel bir illüstrasyon ekleyebilirsiniz
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>

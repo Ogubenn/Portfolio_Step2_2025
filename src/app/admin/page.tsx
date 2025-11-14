@@ -18,6 +18,17 @@ interface Stats {
   services: number;
 }
 
+interface Activity {
+  id: string;
+  userId: string | null;
+  action: string;
+  entity: string;
+  entityId: string | null;
+  description: string;
+  metadata: string | null;
+  createdAt: string;
+}
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats>({
     projects: 0,
@@ -25,21 +36,65 @@ export default function AdminDashboard() {
     experience: 0,
     services: 0,
   });
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // TODO: Fetch real stats from API
-    // Şimdilik mock data
-    setTimeout(() => {
-      setStats({
-        projects: 8,
-        skills: 12,
-        experience: 3,
-        services: 4,
-      });
-      setLoading(false);
-    }, 500);
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const [statsRes, activitiesRes] = await Promise.all([
+        fetch('/api/stats'),
+        fetch('/api/activity?limit=5')
+      ]);
+
+      if (statsRes.ok) {
+        const statsData = await statsRes.json();
+        setStats(statsData);
+      }
+
+      if (activitiesRes.ok) {
+        const activitiesData = await activitiesRes.json();
+        setActivities(activitiesData);
+      }
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getActivityColor = (action: string) => {
+    switch (action.toLowerCase()) {
+      case 'create':
+        return 'bg-green-500';
+      case 'update':
+        return 'bg-blue-500';
+      case 'delete':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
+  const getTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (seconds < 60) return 'Az önce';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)} dakika önce`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)} saat önce`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)} gün önce`;
+    
+    return date.toLocaleDateString('tr-TR', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
 
   const statCards = [
     {
@@ -191,23 +246,21 @@ export default function AdminDashboard() {
       {/* Recent Activity */}
       <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
         <h2 className="text-xl font-bold text-white mb-4">Son Aktiviteler</h2>
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 p-3 bg-gray-700/30 rounded-lg">
-            <div className="w-2 h-2 bg-blue-500 rounded-full" />
-            <p className="text-gray-300 text-sm">Admin paneli kurulumu tamamlandı</p>
-            <span className="ml-auto text-xs text-gray-500">Az önce</span>
+        {activities.length === 0 ? (
+          <p className="text-gray-400 text-sm text-center py-8">Henüz aktivite bulunmuyor</p>
+        ) : (
+          <div className="space-y-3">
+            {activities.map((activity) => (
+              <div key={activity.id} className="flex items-center gap-3 p-3 bg-gray-700/30 rounded-lg">
+                <div className={`w-2 h-2 ${getActivityColor(activity.action)} rounded-full`} />
+                <p className="text-gray-300 text-sm flex-1">{activity.description}</p>
+                <span className="ml-auto text-xs text-gray-500 whitespace-nowrap">
+                  {getTimeAgo(activity.createdAt)}
+                </span>
+              </div>
+            ))}
           </div>
-          <div className="flex items-center gap-3 p-3 bg-gray-700/30 rounded-lg">
-            <div className="w-2 h-2 bg-green-500 rounded-full" />
-            <p className="text-gray-300 text-sm">Database başarıyla oluşturuldu</p>
-            <span className="ml-auto text-xs text-gray-500">Bugün</span>
-          </div>
-          <div className="flex items-center gap-3 p-3 bg-gray-700/30 rounded-lg">
-            <div className="w-2 h-2 bg-purple-500 rounded-full" />
-            <p className="text-gray-300 text-sm">Authentication sistemi aktif</p>
-            <span className="ml-auto text-xs text-gray-500">Bugün</span>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

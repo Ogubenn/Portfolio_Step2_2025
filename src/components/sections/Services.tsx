@@ -1,60 +1,46 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Code, Palette, Gamepad2, Wrench } from 'lucide-react'
+import * as LucideIcons from 'lucide-react'
+import { useEffect, useState } from 'react'
 
-const services = [
-  {
-    id: '1',
-    icon: Code,
-    title: 'Web Geliştirme',
-    description: 'Modern teknolojilerle web uygulamaları geliştiriyorum',
-    features: [
-      'React & Next.js ile full-stack projeler',
-      'Responsive ve kullanıcı dostu arayüzler',
-      'API entegrasyonları ve database yönetimi',
-      'Modern CSS ve animasyonlar',
-    ],
-  },
-  {
-    id: '2',
-    icon: Palette,
-    title: 'UI/UX Tasarım',
-    description: 'Estetik ve işlevsel kullanıcı arayüzleri tasarlıyorum',
-    features: [
-      'Figma ile tasarım ve prototipleme',
-      'Modern ve minimal tasarım anlayışı',
-      'Renk teorisi ve tipografi uygulamaları',
-      'Kullanıcı deneyimi odaklı yaklaşım',
-    ],
-  },
-  {
-    id: '3',
-    icon: Gamepad2,
-    title: 'Oyun Geliştirme',
-    description: 'Eğlenceli oyunlar ve interaktif deneyimler yaratıyorum',
-    features: [
-      'Unity ile 2D/3D oyun geliştirme',
-      'Oyun mekaniği tasarımı ve kodlama',
-      'Pixel art ve sprite animasyonları',
-      'Cross-platform oyun çözümleri',
-    ],
-  },
-  {
-    id: '4',
-    icon: Wrench,
-    title: 'Problem Çözme',
-    description: 'Kod optimizasyonu ve performans iyileştirmeleri',
-    features: [
-      'Clean code prensipleri',
-      'Performance optimizasyonu',
-      'Bug fixing ve debugging',
-      'Kod kalitesi ve maintainability',
-    ],
-  },
-]
+interface Service {
+  id: string
+  title: string
+  description: string
+  icon: string
+  features: string
+  order: number
+  visible: boolean
+}
 
 export default function Services() {
+  const [services, setServices] = useState<Service[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchServices()
+  }, [])
+
+  const fetchServices = async () => {
+    try {
+      const response = await fetch('/api/public/services')
+      if (response.ok) {
+        const data = await response.json()
+        setServices(data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch services:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getIcon = (iconName: string) => {
+    const Icon = (LucideIcons as any)[iconName] || LucideIcons.Code
+    return Icon
+  }
+
   return (
     <section id="services" className="section-padding bg-light-bg-secondary dark:bg-dark-bg-secondary">
       <div className="container-custom">
@@ -66,69 +52,88 @@ export default function Services() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="heading-2 mb-4">Yeteneklerim</h2>
+          <h2 className="heading-2 mb-4">Hizmetlerim</h2>
           <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary max-w-2xl mx-auto">
-            Odaklandığım alanlar ve teknolojiler
+            Sunduğum profesyonel hizmetler
           </p>
         </motion.div>
 
-        {/* Services Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, index) => (
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-electric"></div>
+          </div>
+        ) : services.length === 0 ? (
+          <p className="text-center text-light-text-secondary dark:text-dark-text-secondary py-12">
+            Henüz hizmet eklenmedi.
+          </p>
+        ) : (
+          <>
+            {/* Services Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {services.map((service, index) => {
+                const Icon = getIcon(service.icon)
+                const features = JSON.parse(service.features || '[]')
+                
+                return (
+                  <motion.div
+                    key={service.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="card hover:border-accent-electric dark:hover:border-accent-purple transition-colors"
+                  >
+                    {/* Icon */}
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-accent-electric/20 via-accent-purple/20 to-accent-pink/20 flex items-center justify-center mb-4">
+                      <Icon className="w-7 h-7 text-accent-electric" />
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+                      {service.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4">
+                      {service.description}
+                    </p>
+
+                    {/* Features List */}
+                    {features.length > 0 && (
+                      <ul className="space-y-2">
+                        {features.map((feature: string, idx: number) => (
+                          <li
+                            key={idx}
+                            className="flex items-start gap-2 text-sm text-light-text-secondary dark:text-dark-text-secondary"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent-electric to-accent-purple mt-1.5 flex-shrink-0" />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </motion.div>
+                )
+              })}
+            </div>
+
+            {/* CTA */}
             <motion.div
-              key={service.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="card hover:border-accent-electric dark:hover:border-accent-purple transition-colors"
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="text-center mt-12"
             >
-              {/* Icon */}
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-accent-electric/20 via-accent-purple/20 to-accent-pink/20 flex items-center justify-center mb-4">
-                <service.icon className="w-7 h-7 text-accent-electric" />
-              </div>
-
-              {/* Title */}
-              <h3 className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
-                {service.title}
-              </h3>
-
-              {/* Description */}
-              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4">
-                {service.description}
+              <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
+                Benimle çalışmak veya bir proje hakkında konuşmak ister misin?
               </p>
-
-              {/* Features List */}
-              <ul className="space-y-2">
-                {service.features.map((feature, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-start gap-2 text-sm text-light-text-secondary dark:text-dark-text-secondary"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent-electric to-accent-purple mt-1.5 flex-shrink-0" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              <a href="/#contact" className="btn-primary">
+                Benimle İletişime Geç
+              </a>
             </motion.div>
-          ))}
-        </div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center mt-12"
-        >
-          <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
-            Benimle çalışmak veya bir proje hakkında konuşmak ister misin?
-          </p>
-          <a href="/#contact" className="btn-primary">
-            Benimle İletişime Geç
-          </a>
-        </motion.div>
+          </>
+        )}
       </div>
     </section>
   )

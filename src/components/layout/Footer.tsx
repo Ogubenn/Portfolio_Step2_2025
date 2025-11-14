@@ -2,13 +2,43 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Github, Linkedin, Mail } from 'lucide-react'
 import { navItems } from '@/data/navigation'
-import { socialLinks } from '@/data/social'
+
+interface SiteSettings {
+  contactEmail: string | null
+  socialLinks: string
+}
 
 export default function Footer() {
   const pathname = usePathname()
   const currentYear = new Date().getFullYear()
+  const [settings, setSettings] = useState<SiteSettings>({
+    contactEmail: null,
+    socialLinks: '{}'
+  })
+
+  useEffect(() => {
+    fetchSettings()
+  }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch('/api/public/settings')
+      if (response.ok) {
+        const data = await response.json()
+        setSettings({
+          contactEmail: data.contactEmail,
+          socialLinks: data.socialLinks || '{}'
+        })
+      }
+    } catch (error) {
+      console.error('Failed to fetch settings:', error)
+    }
+  }
+
+  const socialLinks = JSON.parse(settings.socialLinks)
 
   // Admin sayfalarında footer'ı gizle
   if (pathname?.startsWith('/admin')) {
@@ -55,31 +85,43 @@ export default function Footer() {
           {/* Contact Info */}
           <div>
             <h3 className="text-lg font-semibold mb-4">İletişim</h3>
-            <ul className="space-y-3 text-dark-text-secondary text-sm">
-              <li className="flex items-start gap-2">
-                <Mail className="w-4 h-4 mt-0.5 text-accent-electric flex-shrink-0" />
-                <a
-                  href="mailto:your.email@example.com"
-                  className="hover:text-accent-electric transition-colors"
-                >
-                  your.email@example.com
-                </a>
-              </li>
-            </ul>
+            {settings.contactEmail && (
+              <ul className="space-y-3 text-dark-text-secondary text-sm">
+                <li className="flex items-start gap-2">
+                  <Mail className="w-4 h-4 mt-0.5 text-accent-electric flex-shrink-0" />
+                  <a
+                    href={`mailto:${settings.contactEmail}`}
+                    className="hover:text-accent-electric transition-colors"
+                  >
+                    {settings.contactEmail}
+                  </a>
+                </li>
+              </ul>
+            )}
             {/* Social Links */}
             <div className="flex gap-3 mt-4">
-              {socialLinks.map((link) => (
+              {socialLinks.github && (
                 <a
-                  key={link.platform}
-                  href={link.url}
+                  href={socialLinks.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 rounded-full bg-dark-bg-secondary hover:bg-gradient-to-r hover:from-accent-electric hover:via-accent-purple hover:to-accent-pink text-dark-text-primary flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 border border-dark-border"
-                  aria-label={link.platform}
+                  aria-label="GitHub"
                 >
-                  {getSocialIcon(link.platform)}
+                  <Github className="w-5 h-5" />
                 </a>
-              ))}
+              )}
+              {socialLinks.linkedin && (
+                <a
+                  href={socialLinks.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-full bg-dark-bg-secondary hover:bg-gradient-to-r hover:from-accent-electric hover:via-accent-purple hover:to-accent-pink text-dark-text-primary flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 border border-dark-border"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -109,18 +151,4 @@ export default function Footer() {
       </div>
     </footer>
   )
-}
-
-// Helper function for social icons
-function getSocialIcon(platform: string) {
-  switch (platform.toLowerCase()) {
-    case 'github':
-      return <Github className="w-5 h-5" />
-    case 'linkedin':
-      return <Linkedin className="w-5 h-5" />
-    case 'email':
-      return <Mail className="w-5 h-5" />
-    default:
-      return <ExternalLink className="w-5 h-5" />
-  }
 }

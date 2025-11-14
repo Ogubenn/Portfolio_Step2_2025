@@ -1,0 +1,320 @@
+'use client'
+
+import { motion } from 'framer-motion'
+import { Download, Code, Palette, Gamepad2, Database, FileText } from 'lucide-react'
+import { useEffect, useState } from 'react'
+
+interface Skill {
+  id: number
+  category: string
+  name: string
+  level: number
+  icon: string | null
+  order: number
+  visible: boolean
+}
+
+interface GroupedSkills {
+  [category: string]: Skill[]
+}
+
+const workExperience = [
+  {
+    company: 'Şirket Adı 1',
+    position: 'Full-Stack Developer',
+    period: '2023 - Günümüz',
+    description: 'Web uygulamaları geliştirme ve takım liderliği',
+  },
+  {
+    company: 'Şirket Adı 2',
+    position: 'Frontend Developer',
+    period: '2021 - 2023',
+    description: 'React ve Next.js ile modern web projeleri',
+  },
+  {
+    company: 'Freelance',
+    position: 'Bağımsız Çalışan',
+    period: '2020 - 2021',
+    description: 'Çeşitli web ve oyun geliştirme projeleri',
+  },
+]
+
+const categoryIcons: { [key: string]: any } = {
+  Languages: Code,
+  Frameworks: Palette,
+  Tools: Database,
+  Other: Gamepad2,
+}
+
+export default function About() {
+  const [skills, setSkills] = useState<GroupedSkills>({})
+  const [skillLevels, setSkillLevels] = useState<Skill[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchSkills()
+  }, [])
+
+  const fetchSkills = async () => {
+    try {
+      const response = await fetch('/api/public/skills')
+      if (response.ok) {
+        const data = await response.json()
+        
+        // Group skills by category
+        const grouped = data.reduce((acc: GroupedSkills, skill: Skill) => {
+          if (!acc[skill.category]) {
+            acc[skill.category] = []
+          }
+          acc[skill.category].push(skill)
+          return acc
+        }, {})
+        
+        setSkills(grouped)
+        setSkillLevels(data.slice(0, 6)) // Top 6 skills for level display
+      }
+    } catch (error) {
+      console.error('Failed to fetch skills:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <section id="about" className="section-padding bg-light-bg-secondary dark:bg-dark-bg-secondary">
+      <div className="container-custom">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h2 className="heading-2 mb-4">Hakkımda</h2>
+          <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary max-w-2xl mx-auto">
+            Tutkuyla kod yazan, detaylara önem veren bir geliştirici
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+          {/* Left Column - Bio */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <div className="prose prose-lg max-w-none">
+              <p className="text-light-text-primary dark:text-dark-text-primary leading-relaxed mb-4">
+                Merhaba! Ben Oğulcan, yazılım geliştirme tutkusuyla kod yazan bir
+                yazılımcıyım. Web uygulamaları ve oyun geliştirme alanında kendimi
+                sürekli geliştiriyor, yeni teknolojiler öğrenmeyi seviyorum.
+              </p>
+              <p className="text-light-text-primary dark:text-dark-text-primary leading-relaxed mb-4">
+                Her projede kaliteli ve kullanıcı dostu çözümler üretmeye odaklanıyorum.
+                Temiz kod yazmaya, performans optimizasyonuna ve kullanıcı deneyimine
+                önem veriyorum. Öğrenmeye açık, detaylara özen gösteren ve problem
+                çözme odaklı bir yaklaşımım var.
+              </p>
+              <p className="text-light-text-primary dark:text-dark-text-primary leading-relaxed mb-6">
+                Yeni projeler ve iş birlikleri için her zaman heyecanlıyım. İyi bir
+                fikir ve motivasyonla harika şeyler yaratabileceğimize inanıyorum.
+                Benimle çalışmak isterseniz, iletişime geçmekten çekinmeyin!
+              </p>
+            </div>
+
+            {/* Download Buttons */}
+            <div className="flex flex-wrap gap-4">
+              <a
+                href="/cv.pdf"
+                download
+                className="btn-primary inline-flex group"
+              >
+                <Download className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+                CV İndir
+              </a>
+              <a
+                href="/personality-test.pdf"
+                download
+                className="btn-secondary inline-flex group"
+              >
+                <FileText className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
+                Personality Test İndir
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right Column - Skills */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-electric"></div>
+              </div>
+            ) : (
+              <>
+                <div className="grid sm:grid-cols-2 gap-6">
+                  {Object.entries(skills).map(([category, items], index) => {
+                    const Icon = categoryIcons[category] || Code
+                    return (
+                      <motion.div
+                        key={category}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.1 * index }}
+                        className="card"
+                      >
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent-electric/20 via-accent-purple/20 to-accent-pink/20 flex items-center justify-center">
+                            <Icon className="w-5 h-5 text-accent-electric" />
+                          </div>
+                          <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary">
+                            {category}
+                          </h3>
+                        </div>
+                        <ul className="space-y-2">
+                          {items.map((skill) => (
+                            <li
+                              key={skill.id}
+                              className="flex items-center gap-2 text-sm text-light-text-secondary dark:text-dark-text-secondary"
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent-electric to-accent-purple" />
+                              {skill.name}
+                            </li>
+                          ))}
+                        </ul>
+                      </motion.div>
+                    )
+                  })}
+                </div>
+                </div>
+
+                {/* Additional Info */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  className="mt-6 p-6 bg-gradient-to-br from-accent-electric/5 via-accent-purple/5 to-accent-pink/5 rounded-xl border border-light-border dark:border-dark-border transition-all duration-300 hover:scale-105 hover:border-accent-electric/50 dark:hover:border-accent-purple/50 hover:shadow-xl"
+                >
+                  <h4 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
+                    Çalışma Yaklaşımım
+                  </h4>
+                  <ul className="space-y-2 text-sm text-light-text-primary dark:text-dark-text-primary">
+                    <li className="flex items-start gap-2">
+                      <span className="text-accent-electric mt-1">✓</span>
+                      <span>Agile/Scrum metodolojisi ile çalışma</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-accent-purple mt-1">✓</span>
+                      <span>Test-driven development (TDD) yaklaşımı</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-accent-pink mt-1">✓</span>
+                      <span>Sürekli öğrenme ve kendini geliştirme</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-accent-electric mt-1">✓</span>
+                      <span>Clean code ve best practices'e önem</span>
+                    </li>
+                  </ul>
+                </motion.div>
+              </>
+            )}
+          </motion.div>
+        </div>
+
+        {/* Skill Levels Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-16"
+        >
+          <h3 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-8 text-center">
+            Yetenek Seviyeleri
+          </h3>
+          {!loading && skillLevels.length > 0 && (
+            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              {skillLevels.map((skill, index) => (
+                <motion.div
+                  key={skill.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="space-y-2 p-4 rounded-lg border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary transition-all duration-300 hover:scale-105 hover:border-accent-electric/50 dark:hover:border-accent-purple/50 hover:shadow-xl"
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                      {skill.name}
+                    </span>
+                    <span className="text-sm font-semibold text-gradient">
+                      {skill.level}%
+                    </span>
+                  </div>
+                  <div className="h-2 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${skill.level}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, delay: index * 0.1, ease: 'easeOut' }}
+                      className="h-full bg-gradient-to-r from-accent-electric via-accent-purple to-accent-pink rounded-full"
+                    />
+                  </div>
+                </motion.div>
+              ))}
+          </div>
+        </motion.div>
+
+        {/* Work Experience Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-16"
+        >
+          <h3 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-8 text-center">
+            Çalıştığım Yerler
+          </h3>
+          <div className="max-w-3xl mx-auto space-y-6">
+            {workExperience.map((work, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="card-hover flex flex-col md:flex-row md:items-center gap-4"
+              >
+                <div className="flex-1">
+                  <h4 className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary mb-1">
+                    {work.position}
+                  </h4>
+                  <p className="text-accent-electric dark:text-accent-purple font-medium mb-2">
+                    {work.company}
+                  </p>
+                  <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                    {work.description}
+                  </p>
+                </div>
+                <div className="md:text-right">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-accent-electric/20 via-accent-purple/20 to-accent-pink/20 text-light-text-primary dark:text-dark-text-primary border border-accent-electric/30 dark:border-accent-purple/30">
+                    {work.period}
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
