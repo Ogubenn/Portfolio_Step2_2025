@@ -34,7 +34,7 @@ export async function GET(request: Request) {
     });
 
     // Technologies ve tags JSON parse et
-    const parsedProjects = projects.map((project) => ({
+    const parsedProjects = projects.map((project: any) => ({
       ...project,
       technologies: JSON.parse(project.technologies),
       tags: JSON.parse(project.tags),
