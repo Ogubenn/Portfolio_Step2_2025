@@ -11,11 +11,6 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  // Admin sayfalarında header'ı gizle
-  if (pathname?.startsWith('/admin')) {
-    return null
-  }
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
@@ -33,6 +28,11 @@ export default function Header() {
       document.body.style.overflow = 'unset'
     }
   }, [isMobileMenuOpen])
+
+  // Admin sayfalarında header'ı gizle
+  if (pathname?.startsWith('/admin')) {
+    return null
+  }
 
   return (
     <header
