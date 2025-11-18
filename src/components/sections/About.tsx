@@ -62,7 +62,7 @@ export default function About() {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('/api/public/settings')
+      const response = await fetch(`/api/public/settings?t=${Date.now()}`)
       if (response.ok) {
         const data = await response.json()
         setSettings({
@@ -82,7 +82,7 @@ export default function About() {
 
   const fetchSkills = async () => {
     try {
-      const response = await fetch('/api/public/skills')
+      const response = await fetch(`/api/public/skills?t=${Date.now()}`)
       if (response.ok) {
         const data: Skill[] = await response.json()
         
@@ -110,7 +110,7 @@ export default function About() {
 
   const fetchWorkExperience = async () => {
     try {
-      const response = await fetch('/api/public/experience')
+      const response = await fetch(`/api/public/experience?t=${Date.now()}`)
       if (response.ok) {
         const data: WorkExperience[] = await response.json()
         setWorkExperience(data)

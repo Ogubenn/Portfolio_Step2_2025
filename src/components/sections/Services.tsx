@@ -24,7 +24,7 @@ export default function Services() {
 
   const fetchServices = async () => {
     try {
-      const response = await fetch('/api/public/services')
+      const response = await fetch(`/api/public/services?t=${Date.now()}`)
       if (response.ok) {
         const data = await response.json()
         setServices(data)

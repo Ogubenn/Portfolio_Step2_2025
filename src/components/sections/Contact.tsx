@@ -33,7 +33,7 @@ export default function Contact() {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('/api/public/settings')
+      const response = await fetch(`/api/public/settings?t=${Date.now()}`)
       if (response.ok) {
         const data = await response.json()
         setSettings({
