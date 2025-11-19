@@ -69,11 +69,11 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero settings={settings} />
-      <About settings={settings} skills={skills} experience={experience} />
-      <Projects projects={projects} />
-      <Services services={services} />
-      <Contact settings={settings} />
+      <Hero settings={settings as any} />
+      <About settings={settings as any} skills={skills as any} experience={experience as any} />
+      <Projects projects={projects as any} />
+      <Services services={services as any} />
+      <Contact settings={settings as any} />
     </>
   )
 }
