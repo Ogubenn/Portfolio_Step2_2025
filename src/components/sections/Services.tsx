@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion'
 import * as LucideIcons from 'lucide-react'
-import { useEffect, useState } from 'react'
 
 interface Service {
   id: string
@@ -14,27 +13,12 @@ interface Service {
   visible: boolean
 }
 
-export default function Services() {
-  const [services, setServices] = useState<Service[]>([])
-  const [loading, setLoading] = useState(true)
+interface ServicesProps {
+  services: Service[] | null
+}
 
-  useEffect(() => {
-    fetchServices()
-  }, [])
-
-  const fetchServices = async () => {
-    try {
-      const response = await fetch(`/api/public/services?t=${Date.now()}`)
-      if (response.ok) {
-        const data = await response.json()
-        setServices(data)
-      }
-    } catch (error) {
-      console.error('Failed to fetch services:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+export default function Services({ services }: ServicesProps) {
+  const servicesData = services || []
 
   const getIcon = (iconName: string) => {
     const Icon = (LucideIcons as any)[iconName] || LucideIcons.Code
@@ -58,11 +42,7 @@ export default function Services() {
           </p>
         </motion.div>
 
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-electric"></div>
-          </div>
-        ) : services.length === 0 ? (
+        {servicesData.length === 0 ? (
           <p className="text-center text-light-text-secondary dark:text-dark-text-secondary py-12">
             Henüz hizmet eklenmedi.
           </p>
@@ -70,7 +50,7 @@ export default function Services() {
           <>
             {/* Services Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {services.map((service, index) => {
+              {servicesData.map((service, index) => {
                 const Icon = getIcon(service.icon)
                 const features = JSON.parse(service.features || '[]')
                 
