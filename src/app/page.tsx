@@ -8,7 +8,8 @@ import Contact from '@/components/sections/Contact'
 export const revalidate = 0 // Her zaman yeniden fetch et
 
 async function getSettings() {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/public/settings`, {
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
+  const res = await fetch(`${baseUrl}/api/public/settings`, {
     cache: 'no-store',
     next: { revalidate: 0 }
   })
@@ -17,7 +18,8 @@ async function getSettings() {
 }
 
 async function getSkills() {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/public/skills`, {
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
+  const res = await fetch(`${baseUrl}/api/public/skills`, {
     cache: 'no-store',
     next: { revalidate: 0 }
   })
@@ -26,7 +28,8 @@ async function getSkills() {
 }
 
 async function getExperience() {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/public/experience`, {
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
+  const res = await fetch(`${baseUrl}/api/public/experience`, {
     cache: 'no-store',
     next: { revalidate: 0 }
   })
@@ -35,7 +38,8 @@ async function getExperience() {
 }
 
 async function getServices() {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/public/services`, {
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
+  const res = await fetch(`${baseUrl}/api/public/services`, {
     cache: 'no-store',
     next: { revalidate: 0 }
   })
@@ -44,7 +48,8 @@ async function getServices() {
 }
 
 async function getProjects() {
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/public/projects?featured=true`, {
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
+  const res = await fetch(`${baseUrl}/api/public/projects?featured=true`, {
     cache: 'no-store',
     next: { revalidate: 0 }
   })
