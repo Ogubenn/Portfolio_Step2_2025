@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// Force dynamic rendering - no cache
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // Public endpoint - authentication gerekmez
 export async function GET(request: Request) {
   try {
@@ -40,7 +44,9 @@ export async function GET(request: Request) {
       tags: JSON.parse(project.tags),
     }));
 
-    return NextResponse.json(parsedProjects);
+    const response = NextResponse.json(parsedProjects);
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    return response;
   } catch (error) {
     console.error("GET /api/public/projects error:", error);
     return NextResponse.json(

@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// Force dynamic rendering - no cache
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // GET - Public yetenekler listesi
 export async function GET(request: NextRequest) {
   try {
@@ -20,7 +24,9 @@ export async function GET(request: NextRequest) {
       ],
     });
 
-    return NextResponse.json(skills);
+    const response = NextResponse.json(skills);
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    return response;
   } catch (error) {
     console.error('GET /api/public/skills error:', error);
     return NextResponse.json(

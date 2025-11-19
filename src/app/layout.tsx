@@ -11,6 +11,10 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
+// Disable static optimization for dynamic data
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export const metadata: Metadata = {
   title: {
     default: 'Oğulcan - Full-Stack Developer & Yaratıcı Yazılımcı',

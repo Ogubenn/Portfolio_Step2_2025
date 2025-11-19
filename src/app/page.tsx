@@ -4,14 +4,21 @@ import Projects from '@/components/sections/Projects'
 import Services from '@/components/sections/Services'
 import Contact from '@/components/sections/Contact'
 
-// Server Component - Her istekte fresh data
-export const revalidate = 0 // Her zaman yeniden fetch et
+// Force dynamic rendering - NEVER cache this page
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
 
 async function getSettings() {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
   const res = await fetch(`${baseUrl}/api/public/settings`, {
     cache: 'no-store',
-    next: { revalidate: 0 }
+    next: { revalidate: 0 },
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
   })
   if (!res.ok) return null
   return res.json()
@@ -21,7 +28,12 @@ async function getSkills() {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
   const res = await fetch(`${baseUrl}/api/public/skills`, {
     cache: 'no-store',
-    next: { revalidate: 0 }
+    next: { revalidate: 0 },
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
   })
   if (!res.ok) return []
   return res.json()
@@ -31,7 +43,12 @@ async function getExperience() {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
   const res = await fetch(`${baseUrl}/api/public/experience`, {
     cache: 'no-store',
-    next: { revalidate: 0 }
+    next: { revalidate: 0 },
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
   })
   if (!res.ok) return []
   return res.json()
@@ -41,7 +58,12 @@ async function getServices() {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
   const res = await fetch(`${baseUrl}/api/public/services`, {
     cache: 'no-store',
-    next: { revalidate: 0 }
+    next: { revalidate: 0 },
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
   })
   if (!res.ok) return []
   return res.json()
@@ -51,7 +73,12 @@ async function getProjects() {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
   const res = await fetch(`${baseUrl}/api/public/projects?featured=true`, {
     cache: 'no-store',
-    next: { revalidate: 0 }
+    next: { revalidate: 0 },
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
   })
   if (!res.ok) return []
   return res.json()
