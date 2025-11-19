@@ -163,69 +163,69 @@ export default function About({ settings, skills, experience }: AboutProps) {
             {/* Skills by Category */}
             <div className="grid gap-4 mb-6">
               {Object.entries(groupedSkills).map(([category, items], index) => {
-                    const Icon = categoryIcons[category] || Code
-                    return (
-                      <motion.div
-                        key={category}
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: 0.1 * index }}
-                        className="card"
-                      >
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-electric/20 via-accent-purple/20 to-accent-pink/20 flex items-center justify-center flex-shrink-0">
-                            <Icon className="w-4 h-4 text-accent-electric" />
-                          </div>
-                          <h3 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
-                            {category}
-                          </h3>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {items.map((skill) => (
-                            <span
-                              key={skill.id}
-                              className="px-2.5 py-1 text-xs bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary rounded-md border border-light-border dark:border-dark-border hover:border-accent-electric dark:hover:border-accent-purple transition-colors"
-                            >
-                              {skill.name}
-                            </span>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )
-                  })}
-                </div>
+                const Icon = categoryIcons[category] || Code
+                return (
+                  <motion.div
+                    key={category}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.1 * index }}
+                    className="card"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-electric/20 via-accent-purple/20 to-accent-pink/20 flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-4 h-4 text-accent-electric" />
+                      </div>
+                      <h3 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
+                        {category}
+                      </h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {items.map((skill) => (
+                        <span
+                          key={skill.id}
+                          className="px-2.5 py-1 text-xs bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary rounded-md border border-light-border dark:border-dark-border hover:border-accent-electric dark:hover:border-accent-purple transition-colors"
+                        >
+                          {skill.name}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+                )
+              })}
+            </div>
 
-                {/* Additional Info */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
-                  className="p-5 bg-gradient-to-br from-accent-electric/5 via-accent-purple/5 to-accent-pink/5 rounded-xl border border-light-border dark:border-dark-border"
-                >
-                  <h4 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
-                    Çalışma Yaklaşımım
-                  </h4>
-                  <ul className="space-y-2 text-xs text-light-text-primary dark:text-dark-text-primary">
-                    <li className="flex items-start gap-2">
-                      <span className="text-accent-electric mt-0.5">✓</span>
-                      <span>Agile/Scrum metodolojisi ile çalışma</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-accent-purple mt-0.5">✓</span>
-                      <span>Test-driven development (TDD) yaklaşımı</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-accent-pink mt-0.5">✓</span>
-                      <span>Sürekli öğrenme ve kendini geliştirme</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-accent-electric mt-0.5">✓</span>
-                      <span>Clean code ve best practices'e önem</span>
-                    </li>
-                  </ul>
-                </motion.div>
+            {/* Additional Info */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="p-5 bg-gradient-to-br from-accent-electric/5 via-accent-purple/5 to-accent-pink/5 rounded-xl border border-light-border dark:border-dark-border"
+            >
+              <h4 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-3">
+                Çalışma Yaklaşımım
+              </h4>
+              <ul className="space-y-2 text-xs text-light-text-primary dark:text-dark-text-primary">
+                <li className="flex items-start gap-2">
+                  <span className="text-accent-electric mt-0.5">✓</span>
+                  <span>Agile/Scrum metodolojisi ile çalışma</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-accent-purple mt-0.5">✓</span>
+                  <span>Test-driven development (TDD) yaklaşımı</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-accent-pink mt-0.5">✓</span>
+                  <span>Sürekli öğrenme ve kendini geliştirme</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-accent-electric mt-0.5">✓</span>
+                  <span>Clean code ve best practices'e önem</span>
+                </li>
+              </ul>
+            </motion.div>
           </motion.div>
         </div>
 
