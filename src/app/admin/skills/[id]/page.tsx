@@ -239,6 +239,27 @@ export default function EditSkillPage({ params }: { params: { id: string } }) {
               Kategori içindeki gösterim sırası (küçük sayı önce gelir)
             </p>
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Yetenek Seviyesi: {formData.level}%
+            </label>
+            <input
+              type="range"
+              name="level"
+              min="0"
+              max="100"
+              step="5"
+              value={formData.level}
+              onChange={handleChange}
+              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider-thumb"
+            />
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <span>Başlangıç (0%)</span>
+              <span>Orta (50%)</span>
+              <span>Uzman (100%)</span>
+            </div>
+          </div>
         </div>
 
         {/* Settings */}
