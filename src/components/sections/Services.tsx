@@ -69,12 +69,12 @@ export default function Services({ services }: ServicesProps) {
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+                    <h3 className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary mb-2 break-words">
                       {service.title}
                     </h3>
 
                     {/* Description */}
-                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4">
+                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4 break-words whitespace-normal">
                       {service.description}
                     </p>
 
@@ -87,7 +87,7 @@ export default function Services({ services }: ServicesProps) {
                             className="flex items-start gap-2 text-sm text-light-text-secondary dark:text-dark-text-secondary"
                           >
                             <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-accent-electric to-accent-purple mt-1.5 flex-shrink-0" />
-                            <span>{feature}</span>
+                            <span className="break-words">{feature}</span>
                           </li>
                         ))}
                       </ul>
