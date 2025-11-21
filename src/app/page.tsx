@@ -71,7 +71,7 @@ async function getServices() {
 
 async function getProjects() {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
-  const res = await fetch(`${baseUrl}/api/public/projects?featured=true`, {
+  const res = await fetch(`${baseUrl}/api/public/projects`, {
     cache: 'no-store',
     next: { revalidate: 0 },
     headers: {
