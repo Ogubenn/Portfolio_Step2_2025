@@ -58,14 +58,29 @@
 - [x] SEO Settings
 - [x] Activity Log entegrasyonu
 
-## 📁 File Management
-- [ ] **ŞİMDİ:** File Upload - Cloudinary/S3 Entegrasyonu
-- [ ] Multiple Image Upload (Project Images)
-- [ ] Image/Video Preview & Optimization
-- [ ] CV & Personality Test File Upload
-- [ ] File Delete Functionality
+## 📁 File Management (🔴 KRİTİK ÖNCELİK)
+- [ ] **ŞİMDİ:** Cloudinary Setup & API Key Entegrasyonu
+  - [ ] Cloudinary hesap oluştur (Free: 10GB, 25 credits/ay)
+  - [ ] Environment variables ekle (CLOUD_NAME, API_KEY, SECRET)
+  - [ ] `cloudinary` npm paketi yükle
+- [ ] `/api/upload` Route'unu Cloudinary'ye Adapte Et
+- [ ] Admin Forms - Cloudinary URL Entegrasyonu
+  - [ ] Hero profil fotoğrafı yükleme
+  - [ ] Proje thumbnail yükleme
+  - [ ] Proje galeri yükleme (multiple images)
+  - [ ] CV/PDF döküman yükleme
+- [ ] Image Preview & Delete Functionality
+- [ ] Video Upload Support (optional)
+- [ ] **NOT:** Vercel ephemeral filesystem - yerel dosya storage çalışmaz!
 
 ## 🎨 UI/UX Enhancements
+- [ ] **ÖNCELİK:** Skills Bölümü Görsel İyileştirme (Ana Sayfa)
+  - [ ] Badge boyutlarını büyüt
+  - [ ] Gradient renkleri belirginleştir
+  - [ ] Icon entegrasyonu (DB'de icon field mevcut)
+  - [ ] Hover'da level % tooltip göster
+  - [ ] Grid/flex düzeni optimize et
+- [ ] Text Wrapping Audit (About, Projects, Contact)
 - [ ] Rich Text Editor Entegrasyonu (Tiptap/Lexical)
 - [ ] Image Cropper/Editor
 - [ ] Drag & Drop File Upload
@@ -81,12 +96,19 @@
 
 ## 🛡️ Advanced Features
 - [x] Activity Log Sistemi (Create/Update/Delete tracking)
+- [x] Search & Filter - Admin Panel (Projects & Skills)
+- [ ] Admin UX İyileştirmeleri
+  - [ ] Image preview (upload öncesi)
+  - [ ] Bulk actions (toplu silme)
+  - [ ] Drag-drop sıralama (skills/services)
+- [ ] next/image Dönüşümü (şu an <img> warnings var)
 - [ ] Error Boundaries & Error Pages
 - [ ] Admin Permissions & Roles
-- [ ] Bulk Operations (Delete multiple items)
-- [x] Search & Filter - Admin Panel (Projects & Skills)
 - [ ] Draft/Published System
 - [ ] SEO Management Panel
+  - [ ] Meta tags dinamikleştirilmesi
+  - [ ] Sitemap oluşturma
+  - [ ] robots.txt
 - [ ] Analytics Integration
 - [ ] Email Notifications
 - [ ] Backup & Export System
@@ -98,7 +120,20 @@
 - [x] Log Skill Actions
 - [x] Admin Activity Log Viewer (optional)
 
+## ✅ Son Tamamlananlar (21 Kasım 2025)
+- [x] **Cache Elimination:** SSR mimarisi + force-dynamic tüm API/page'lerde
+- [x] **Admin → Homepage Real-time Updates:** Admin değişiklikler anında yansıyor
+- [x] **Projects Featured Filter Removed:** Tüm published projeler ana sayfada
+- [x] **Skill Level Slider:** 0-100% ayarlanabilir slider + custom CSS
+- [x] **Hero Bio Editable:** Admin settings'ten düzenlenebilir textarea
+- [x] **Services Text Wrap Fix:** break-words + whitespace-normal eklendi
+- [x] **Prisma Generate Build Script:** Vercel deploy düzeltmeleri
+- [x] **MySQL Migration Lock:** SQLite → MySQL dönüşümü
+
 ---
-**Son Güncelleme:** 14 Kasım 2025
-**Tamamlanan Modüller:** Projects ✅, Skills ✅, Work Experience ✅, Services ✅, Site Settings ✅
-**Sıradaki:** File Management 📁
+**Son Güncelleme:** 21 Kasım 2025
+**Tamamlanan Modüller:** Projects ✅, Skills ✅, Work Experience ✅, Services ✅, Site Settings ✅, Cache System ✅
+**Sıradaki Öncelikler:** 
+1. 🔴 Cloudinary File Management (Kritik)
+2. 🟡 Skills UI İyileştirme
+3. 🟢 SEO & Performance Optimizasyonu
