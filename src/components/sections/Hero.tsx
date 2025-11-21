@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 interface SiteSettings {
   heroTitle: string
   heroSubtitle: string
+  heroBio: string | null
   heroCTA: string | null
   heroImage: string | null
 }
@@ -19,6 +20,7 @@ export default function Hero({ settings }: HeroProps) {
   const defaultSettings = {
     heroTitle: 'Merhaba, ben Oğulcan 👋',
     heroSubtitle: 'Full-Stack Developer & Yaratıcı Yazılımcı',
+    heroBio: 'Web teknolojileri ve oyun geliştirme konusunda tutkulu bir yazılımcıyım. Kullanıcı deneyimini ön planda tutarak, modern ve performanslı projeler geliştirmeyi seviyorum.',
     heroCTA: 'Projelerimi Gör',
     heroImage: null
   }
@@ -70,11 +72,9 @@ export default function Hero({ settings }: HeroProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-lg md:text-xl text-light-text-secondary dark:text-dark-text-secondary mb-8 max-w-2xl mx-auto lg:mx-0"
+              className="text-lg md:text-xl text-light-text-secondary dark:text-dark-text-secondary mb-8 max-w-2xl mx-auto lg:mx-0 break-words whitespace-normal"
             >
-              Web teknolojileri ve oyun geliştirme konusunda tutkulu bir yazılımcıyım.
-              Kullanıcı deneyimini ön planda tutarak, modern ve performanslı projeler
-              geliştirmeyi seviyorum.
+              {data.heroBio || defaultSettings.heroBio}
             </motion.p>
 
             {/* CTA Buttons */}

@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
           id: 1,
           heroTitle: 'Merhaba, Ben [İsim]',
           heroSubtitle: 'Full-Stack Developer & Designer',
+          heroBio: 'Web teknolojileri ve oyun geliştirme konusunda tutkulu bir yazılımcıyım. Kullanıcı deneyimini ön planda tutarak, modern ve performanslı projeler geliştirmeyi seviyorum.',
           heroCTA: 'Projelerime Göz At',
           heroImage: null,
           aboutDescription: 'Hakkımda kısa açıklama...',

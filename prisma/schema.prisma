@@ -136,6 +136,7 @@ model SiteSettings {
   // Hero Section
   heroTitle         String
   heroSubtitle      String
+  heroBio           String?
   heroCTA           String?
   heroImage         String?
   

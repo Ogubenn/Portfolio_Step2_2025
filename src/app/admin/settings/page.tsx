@@ -8,6 +8,7 @@ interface SiteSettings {
   id: number
   heroTitle: string
   heroSubtitle: string
+  heroBio: string | null
   heroCTA: string | null
   heroImage: string | null
   aboutTitle: string | null
@@ -154,7 +155,7 @@ export default function SettingsPage() {
       
       switch (section) {
         case 'hero':
-          return { ...prev, heroTitle: '', heroSubtitle: '', heroCTA: null, heroImage: null }
+          return { ...prev, heroTitle: '', heroSubtitle: '', heroBio: null, heroCTA: null, heroImage: null }
         case 'about':
           return { ...prev, aboutTitle: null, aboutDescription: '', aboutBio1: null, aboutBio2: null, aboutBio3: null, cvFileUrl: null, testFileUrl: null }
         case 'contact':
@@ -303,6 +304,19 @@ export default function SettingsPage() {
                 value={settings.heroSubtitle}
                 onChange={handleChange}
                 className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Açıklama Metni
+              </label>
+              <textarea
+                name="heroBio"
+                value={settings.heroBio || ''}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Web teknolojileri ve oyun geliştirme konusunda tutkulu bir yazılımcıyım..."
               />
             </div>
             <div>
