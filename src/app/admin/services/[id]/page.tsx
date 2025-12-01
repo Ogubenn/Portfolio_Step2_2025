@@ -16,6 +16,24 @@ interface Service {
   visible: boolean
 }
 
+// Safe JSON parsing helper
+const safeParseFeatures = (featuresStr: string): string[] => {
+  try {
+    const parsed = JSON.parse(featuresStr || '[]')
+    return Array.isArray(parsed) ? parsed : []
+  } catch (error) {
+    console.error('JSON Parse Error in Edit Service:', error)
+    // Fallback: split by comma or newline
+    if (featuresStr.includes(',')) {
+      return featuresStr.split(',').map(s => s.trim()).filter(Boolean)
+    }
+    if (featuresStr.includes('\n')) {
+      return featuresStr.split('\n').map(s => s.trim()).filter(Boolean)
+    }
+    return [''] // Default empty item for form
+  }
+}
+
 export default function EditServicePage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -33,7 +51,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
       if (response.ok) {
         const data = await response.json()
         setFormData(data)
-        setFeatures(JSON.parse(data.features || '[]'))
+        setFeatures(safeParseFeatures(data.features))
       } else {
         alert('❌ Hizmet bulunamadı')
         router.push('/admin/services')

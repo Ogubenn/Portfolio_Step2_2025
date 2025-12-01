@@ -16,6 +16,24 @@ interface Service {
   visible: boolean
 }
 
+// Safe JSON parsing helper
+const safeParseFeatures = (featuresStr: string): string[] => {
+  try {
+    const parsed = JSON.parse(featuresStr || '[]')
+    return Array.isArray(parsed) ? parsed : []
+  } catch (error) {
+    console.error('JSON Parse Error in Admin Services:', error)
+    // Fallback: split by comma or newline
+    if (featuresStr.includes(',')) {
+      return featuresStr.split(',').map(s => s.trim()).filter(Boolean)
+    }
+    if (featuresStr.includes('\n')) {
+      return featuresStr.split('\n').map(s => s.trim()).filter(Boolean)
+    }
+    return []
+  }
+}
+
 export default function ServicesPage() {
   const router = useRouter()
   const [services, setServices] = useState<Service[]>([])
@@ -151,7 +169,7 @@ export default function ServicesPage() {
           </div>
         ) : (
           filteredServices.map((service) => {
-            const features = JSON.parse(service.features || '[]')
+            const features = safeParseFeatures(service.features)
             return (
               <motion.div
                 key={service.id}
