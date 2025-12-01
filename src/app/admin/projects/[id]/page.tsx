@@ -72,6 +72,19 @@ export default function EditProjectPage() {
       if (response.ok) {
         const project = await response.json()
         
+        // Safe parse helper
+        const parseJsonField = (field: any): string[] => {
+          if (Array.isArray(field)) return field
+          if (typeof field === 'string') {
+            try {
+              return JSON.parse(field)
+            } catch {
+              return []
+            }
+          }
+          return []
+        }
+        
         setFormData({
           title: project.title || '',
           slug: project.slug || '',
@@ -82,8 +95,8 @@ export default function EditProjectPage() {
           videoUrl: project.videoUrl || '',
           demoUrl: project.demoUrl || '',
           githubUrl: project.githubUrl || '',
-          technologies: Array.isArray(project.technologies) ? project.technologies : [],
-          tags: Array.isArray(project.tags) ? project.tags : [],
+          technologies: parseJsonField(project.technologies),
+          tags: parseJsonField(project.tags),
           year: project.year || new Date().getFullYear(),
           duration: project.duration || '',
           problem: project.problem || '',

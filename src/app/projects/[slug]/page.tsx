@@ -17,8 +17,8 @@ interface Project {
   videoUrl?: string | null
   demoUrl?: string | null
   githubUrl?: string | null
-  technologies: string[]
-  tags: string[]
+  technologies: string[] | string  // API'den string veya array gelebilir
+  tags: string[] | string
   year: number
   duration?: string | null
   problem?: string | null
@@ -32,6 +32,17 @@ interface Project {
     alt: string | null
     order: number
   }>
+}
+
+// Safe array parse helper
+const ensureArray = (value: string[] | string | undefined | null): string[] => {
+  if (!value) return []
+  if (Array.isArray(value)) return value
+  try {
+    return JSON.parse(value)
+  } catch {
+    return []
+  }
 }
 
 export default function ProjectDetailPage() {
@@ -52,6 +63,9 @@ export default function ProjectDetailPage() {
       const response = await fetch(`/api/public/projects/${slug}`)
       if (response.ok) {
         const data = await response.json()
+        // Normalize data
+        data.technologies = ensureArray(data.technologies)
+        data.tags = ensureArray(data.tags)
         setProject(data)
       } else {
         setNotFound(true)
@@ -379,9 +393,9 @@ export default function ProjectDetailPage() {
               🛠️ Kullanılan Teknolojiler
             </h2>
             <div className="flex flex-wrap gap-3">
-              {project.technologies.map((tech, index) => (
+              {ensureArray(project.technologies).map((tech, index) => (
                 <motion.span
-                  key={tech}
+                  key={`${tech}-${index}`}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
@@ -395,7 +409,7 @@ export default function ProjectDetailPage() {
           </motion.div>
 
           {/* Tags */}
-          {project.tags && project.tags.length > 0 && (
+          {ensureArray(project.tags).length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -406,9 +420,9 @@ export default function ProjectDetailPage() {
                 🏷️ Etiketler
               </h2>
               <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
+                {ensureArray(project.tags).map((tag, index) => (
                   <span
-                    key={tag}
+                    key={`${tag}-${index}`}
                     className="px-3 py-1 bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-secondary dark:text-dark-text-secondary text-sm rounded-full border border-light-border dark:border-dark-border"
                   >
                     #{tag}

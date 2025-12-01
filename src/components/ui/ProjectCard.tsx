@@ -12,8 +12,8 @@ interface ProjectCardProps {
     category: string
     shortDesc: string
     thumbnail: string | null
-    technologies: string[]
-    tags: string[]
+    technologies: string[] | string  // API'den string veya array gelebilir
+    tags: string[] | string
     featured: boolean
     year: number
     demoUrl?: string | null
@@ -21,8 +21,21 @@ interface ProjectCardProps {
   }
 }
 
+// Safe array parse helper
+const ensureArray = (value: string[] | string): string[] => {
+  if (Array.isArray(value)) return value
+  try {
+    return JSON.parse(value)
+  } catch {
+    return []
+  }
+}
+
 export default function ProjectCard({ project }: ProjectCardProps) {
   const [showAllTech, setShowAllTech] = useState(false)
+  
+  // Normalize technologies to array
+  const technologies = ensureArray(project.technologies)
 
   return (
     <article className="card-hover h-full flex flex-col group">
@@ -93,15 +106,15 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
         {/* Tech Tags */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {(showAllTech ? project.technologies : project.technologies.slice(0, 3)).map((tech) => (
+          {(showAllTech ? technologies : technologies.slice(0, 3)).map((tech, index) => (
             <span
-              key={tech}
+              key={`${tech}-${index}`}
               className="px-2 py-1 bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary text-xs rounded border border-light-border dark:border-dark-border"
             >
               {tech}
             </span>
           ))}
-          {project.technologies.length > 3 && !showAllTech && (
+          {technologies.length > 3 && !showAllTech && (
             <button
               onClick={(e) => {
                 e.preventDefault()
@@ -109,10 +122,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               }}
               className="px-2 py-1 bg-gradient-to-r from-accent-electric/20 to-accent-purple/20 hover:from-accent-electric/30 hover:to-accent-purple/30 text-accent-electric dark:text-accent-electric text-xs rounded border border-accent-electric/50 dark:border-accent-electric/50 transition-all duration-200 cursor-pointer font-medium"
             >
-              +{project.technologies.length - 3}
+              +{technologies.length - 3}
             </button>
           )}
-          {showAllTech && project.technologies.length > 3 && (
+          {showAllTech && technologies.length > 3 && (
             <button
               onClick={(e) => {
                 e.preventDefault()
