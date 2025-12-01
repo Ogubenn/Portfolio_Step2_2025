@@ -17,6 +17,22 @@ interface ServicesProps {
   services: Service[] | null
 }
 
+// Safe JSON parse helper
+const safeParseFeatures = (featuresString: string): string[] => {
+  if (!featuresString) return []
+  try {
+    const parsed = JSON.parse(featuresString)
+    return Array.isArray(parsed) ? parsed : []
+  } catch (error) {
+    console.error('JSON Parse Error in Services:', error, 'Value:', featuresString)
+    // Fallback: eğer virgülle ayrılmış string ise
+    if (featuresString.includes(',')) {
+      return featuresString.split(',').map(s => s.trim()).filter(Boolean)
+    }
+    return []
+  }
+}
+
 export default function Services({ services }: ServicesProps) {
   const servicesData = services || []
 
@@ -52,7 +68,7 @@ export default function Services({ services }: ServicesProps) {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {servicesData.map((service, index) => {
                 const Icon = getIcon(service.icon)
-                const features = JSON.parse(service.features || '[]')
+                const features = safeParseFeatures(service.features)
                 
                 return (
                   <motion.div
