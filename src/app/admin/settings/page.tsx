@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Save, Globe, Mail, Phone, MapPin, Github, Linkedin, Upload, FileText, X } from 'lucide-react'
+import { TextInputWithCounter, TextAreaWithCounter } from '@/components/ui/CharacterCounter'
+import { CHAR_LIMITS } from '@/lib/constants'
 
 interface SiteSettings {
   id: number
@@ -287,55 +289,45 @@ export default function SettingsPage() {
             </button>
           </div>
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Ana Başlık
-              </label>
-              <input
-                type="text"
-                name="heroTitle"
-                value={settings.heroTitle}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Alt Başlık
-              </label>
-              <input
-                type="text"
-                name="heroSubtitle"
-                value={settings.heroSubtitle}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Açıklama Metni
-              </label>
-              <textarea
-                name="heroBio"
-                value={settings.heroBio || ''}
-                onChange={handleChange}
-                rows={3}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Web teknolojileri ve oyun geliştirme konusunda tutkulu bir yazılımcıyım..."
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                CTA Butonu Metni
-              </label>
-              <input
-                type="text"
-                name="heroCTA"
-                value={settings.heroCTA || ''}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+            <TextInputWithCounter
+              type="text"
+              name="heroTitle"
+              value={settings.heroTitle}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.TITLE}
+              label="Ana Başlık"
+              required
+            />
+            
+            <TextInputWithCounter
+              type="text"
+              name="heroSubtitle"
+              value={settings.heroSubtitle}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.SUBTITLE}
+              label="Alt Başlık"
+              required
+            />
+            
+            <TextAreaWithCounter
+              name="heroBio"
+              value={settings.heroBio || ''}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.BIO}
+              label="Açıklama Metni"
+              rows={3}
+              placeholder="Web teknolojileri ve oyun geliştirme konusunda tutkulu bir yazılımcıyım..."
+            />
+            
+            <TextInputWithCounter
+              type="text"
+              name="heroCTA"
+              value={settings.heroCTA || ''}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.CTA}
+              label="CTA Butonu Metni"
+              placeholder="Projelerimi İncele"
+            />
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Hero Profil Fotoğrafı

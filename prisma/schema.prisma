@@ -29,29 +29,29 @@ model User {
 model Project {
   id          String   @id @default(uuid())
   slug        String   @unique
-  title       String
-  category    String   // web, game, mobile, tool
-  description String
-  shortDesc   String
+  title       String   @db.VarChar(191)
+  category    String   @db.VarChar(50)  // web, game, mobile, tool
+  description String   @db.Text
+  shortDesc   String   @db.VarChar(500)
   
   // Media
-  thumbnail   String?
+  thumbnail   String?  @db.VarChar(500)
   images      ProjectImage[]
-  videoUrl    String?
-  demoUrl     String?
-  githubUrl   String?
+  videoUrl    String?  @db.VarChar(500)
+  demoUrl     String?  @db.VarChar(500)
+  githubUrl   String?  @db.VarChar(500)
   
   // Details
-  technologies String   // JSON array
-  tags         String   // JSON array
+  technologies String   @db.Text  // JSON array
+  tags         String   @db.Text  // JSON array
   year         Int
-  duration     String?  // "3 months", "2 weeks"
+  duration     String?  @db.VarChar(100)  // "3 months", "2 weeks"
   
   // Content sections
-  problem      String?
-  solution     String?
-  process      String?
-  learnings    String?
+  problem      String?  @db.Text
+  solution     String?  @db.Text
+  process      String?  @db.Text
+  learnings    String?  @db.Text
   
   // Status
   featured     Boolean  @default(false)
@@ -98,14 +98,14 @@ model Skill {
 // Work Experience Model
 model WorkExperience {
   id          String   @id @default(uuid())
-  company     String
-  position    String
+  company     String   @db.VarChar(191)
+  position    String   @db.VarChar(191)
   startDate   DateTime
   endDate     DateTime?
   current     Boolean  @default(false)
-  description String
-  location    String?
-  type        String?  // "Full-time", "Part-time", "Freelance", "Contract"
+  description String   @db.Text
+  location    String?  @db.VarChar(191)
+  type        String?  @db.VarChar(50)  // "Full-time", "Part-time", "Freelance", "Contract"
   order       Int      @default(0)
   visible     Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -117,10 +117,10 @@ model WorkExperience {
 // Services/Capabilities Model
 model Service {
   id          String   @id @default(uuid())
-  title       String
-  description String
-  icon        String   // Icon name (lucide-react)
-  features    String   // JSON array of features
+  title       String   @db.VarChar(191)
+  description String   @db.Text
+  icon        String   @db.VarChar(50)  // Icon name (lucide-react)
+  features    String   @db.Text  // JSON array of features
   order       Int      @default(0)
   visible     Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -134,36 +134,36 @@ model SiteSettings {
   id                Int      @id @default(1)
   
   // Hero Section
-  heroTitle         String
-  heroSubtitle      String
-  heroBio           String?
-  heroCTA           String?
-  heroImage         String?
+  heroTitle         String   @db.VarChar(191)
+  heroSubtitle      String   @db.VarChar(500)
+  heroBio           String?  @db.Text
+  heroCTA           String?  @db.VarChar(100)
+  heroImage         String?  @db.VarChar(500)
   
   // About Section
-  aboutTitle        String?
-  aboutDescription  String
-  aboutBio1         String?
-  aboutBio2         String?
-  aboutBio3         String?
-  aboutImage        String?
-  workApproach      String?  // JSON array: ["Item 1", "Item 2", ...]
-  cvFileUrl         String?
-  testFileUrl       String?
+  aboutTitle        String?  @db.VarChar(191)
+  aboutDescription  String   @db.Text
+  aboutBio1         String?  @db.Text
+  aboutBio2         String?  @db.Text
+  aboutBio3         String?  @db.Text
+  aboutImage        String?  @db.VarChar(500)
+  workApproach      String?  @db.Text  // JSON array: ["Item 1", "Item 2", ...]
+  cvFileUrl         String?  @db.VarChar(500)
+  testFileUrl       String?  @db.VarChar(500)
   
   // Contact Section
-  contactEmail      String?
-  contactPhone      String?
-  contactLocation   String?
+  contactEmail      String?  @db.VarChar(191)
+  contactPhone      String?  @db.VarChar(50)
+  contactLocation   String?  @db.VarChar(191)
   
   // Social Links (JSON)
-  socialLinks       String   // {github, linkedin}
+  socialLinks       String   @db.Text  // {github, linkedin}
   
   // SEO
-  siteTitle         String?
-  siteDescription   String?
-  siteKeywords      String?
-  ogImage           String?
+  siteTitle         String?  @db.VarChar(191)
+  siteDescription   String?  @db.VarChar(500)
+  siteKeywords      String?  @db.Text
+  ogImage           String?  @db.VarChar(500)
   
   updatedAt         DateTime @updatedAt
 }
