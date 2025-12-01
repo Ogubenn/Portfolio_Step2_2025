@@ -1,12 +1,13 @@
-import { writeFile } from 'fs/promises';
 import { NextRequest, NextResponse } from 'next/server';
-import path from 'path';
+
+// ⚠️ WORKAROUND: Vercel ephemeral filesystem - base64 storage kullanıyoruz
+// TODO: Cloudinary entegrasyonu ile değiştirilecek
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const type = formData.get('type') as string; // 'project', 'cv', 'test', etc.
+    const type = formData.get('type') as string;
     
     if (!file) {
       return NextResponse.json(
@@ -32,64 +33,37 @@ export async function POST(request: NextRequest) {
     }
 
     // Dosya boyutu kontrolü
-    const maxImageSize = 20 * 1024 * 1024; // 20MB for images
-    const maxVideoSize = 541 * 1024 * 1024; // 541MB for videos
-    const maxDocSize = 50 * 1024 * 1024; // 50MB for documents
+    const maxImageSize = 5 * 1024 * 1024; // 5MB for images (base64 için küçültüldü)
+    const maxVideoSize = 10 * 1024 * 1024; // 10MB for videos
+    const maxDocSize = 5 * 1024 * 1024; // 5MB for documents
     
     let maxSize = maxImageSize;
     if (isVideo) maxSize = maxVideoSize;
     if (isDocument) maxSize = maxDocSize;
     
     if (file.size > maxSize) {
-      const sizeLimit = isVideo ? '541MB' : isDocument ? '50MB' : '20MB';
+      const sizeLimit = isVideo ? '10MB' : '5MB';
       return NextResponse.json(
         { error: `Dosya boyutu ${sizeLimit}'dan küçük olmalıdır` },
         { status: 400 }
       );
     }
 
-    // Dosya adını temizle ve benzersiz yap
-    const timestamp = Date.now();
-    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '-');
-    const fileName = `${timestamp}-${originalName}`;
-
-    // Buffer'a çevir
+    // Buffer'a çevir ve base64 encode
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-
-    // Klasör yapısını belirle
-    let folder = 'thumbnails';
-    let basePath = 'projects';
+    const base64 = buffer.toString('base64');
     
-    if (type === 'heroImage') {
-      basePath = 'images';
-      folder = 'hero';
-    } else if (isVideo) {
-      folder = 'videos';
-    } else if (isDocument) {
-      if (type === 'cv') {
-        basePath = 'files';
-        folder = 'cv';
-      } else if (type === 'test') {
-        basePath = 'files';
-        folder = 'tests';
-      } else {
-        basePath = 'files';
-        folder = 'documents';
-      }
-    }
-
-    const filePath = path.join(process.cwd(), 'public', basePath, folder, fileName);
-    await writeFile(filePath, buffer);
-
-    // URL'i döndür
-    const fileUrl = `/${basePath}/${folder}/${fileName}`;
+    // Data URL oluştur
+    const dataUrl = `data:${file.type};base64,${base64}`;
 
     return NextResponse.json({
       success: true,
-      url: fileUrl,
-      fileName: fileName,
-      type: isImage ? 'image' : isVideo ? 'video' : 'document'
+      url: dataUrl,
+      fileName: file.name,
+      type: isImage ? 'image' : isVideo ? 'video' : 'document',
+      size: file.size,
+      mimeType: file.type
     });
 
   } catch (error) {

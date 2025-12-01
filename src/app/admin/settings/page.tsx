@@ -17,6 +17,7 @@ interface SiteSettings {
   aboutBio2: string | null
   aboutBio3: string | null
   aboutImage: string | null
+  workApproach: string | null  // JSON array
   cvFileUrl: string | null
   testFileUrl: string | null
   contactEmail: string | null
@@ -40,6 +41,7 @@ export default function SettingsPage() {
   const [uploading, setUploading] = useState<string | null>(null)
   const [settings, setSettings] = useState<SiteSettings | null>(null)
   const [socialLinks, setSocialLinks] = useState<SocialLinks>({})
+  const [workApproachItems, setWorkApproachItems] = useState<string[]>([])
   const heroImageInputRef = useRef<HTMLInputElement>(null)
   const cvInputRef = useRef<HTMLInputElement>(null)
   const testInputRef = useRef<HTMLInputElement>(null)
@@ -55,6 +57,7 @@ export default function SettingsPage() {
         const data = await response.json()
         setSettings(data)
         setSocialLinks(JSON.parse(data.socialLinks || '{}'))
+        setWorkApproachItems(JSON.parse(data.workApproach || '["Agile/Scrum metodolojisi ile çalışma", "Test-driven development (TDD) yaklaşımı", "Sürekli öğrenme ve kendini geliştirme", "Clean code ve best practices\'e önem"]'))
       }
     } catch (error) {
       console.error('Failed to fetch settings:', error)
@@ -157,7 +160,8 @@ export default function SettingsPage() {
         case 'hero':
           return { ...prev, heroTitle: '', heroSubtitle: '', heroBio: null, heroCTA: null, heroImage: null }
         case 'about':
-          return { ...prev, aboutTitle: null, aboutDescription: '', aboutBio1: null, aboutBio2: null, aboutBio3: null, cvFileUrl: null, testFileUrl: null }
+          setWorkApproachItems([])
+          return { ...prev, aboutTitle: null, aboutDescription: '', aboutBio1: null, aboutBio2: null, aboutBio3: null, workApproach: null, cvFileUrl: null, testFileUrl: null }
         case 'contact':
           return { ...prev, contactEmail: null, contactPhone: null, contactLocation: null }
         case 'social':
@@ -183,7 +187,8 @@ export default function SettingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...settings,
-          socialLinks: JSON.stringify(socialLinks)
+          socialLinks: JSON.stringify(socialLinks),
+          workApproach: JSON.stringify(workApproachItems)
         })
       })
 
@@ -468,6 +473,45 @@ export default function SettingsPage() {
                 placeholder="Örn: Yeni projeler ve iş birlikleri için her zaman heyecanlıyım..."
                 className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Çalışma Yaklaşımım (Maddeler)
+              </label>
+              <div className="space-y-2">
+                {workApproachItems.map((item, index) => (
+                  <div key={index} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={item}
+                      onChange={(e) => {
+                        const newItems = [...workApproachItems]
+                        newItems[index] = e.target.value
+                        setWorkApproachItems(newItems)
+                      }}
+                      placeholder={`Madde ${index + 1}`}
+                      className="flex-1 px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newItems = workApproachItems.filter((_, i) => i !== index)
+                        setWorkApproachItems(newItems)
+                      }}
+                      className="px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setWorkApproachItems([...workApproachItems, ''])}
+                  className="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 border border-dashed border-gray-600 rounded-lg text-gray-400 hover:text-white transition-colors"
+                >
+                  + Yeni Madde Ekle
+                </button>
+              </div>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div>

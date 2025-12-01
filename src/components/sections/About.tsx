@@ -35,6 +35,7 @@ interface SiteSettings {
   aboutBio1: string | null
   aboutBio2: string | null
   aboutBio3: string | null
+  workApproach: string | null  // JSON array
   cvFileUrl: string | null
   testFileUrl: string | null
 }
@@ -58,14 +59,32 @@ const defaultSettings: SiteSettings = {
   aboutBio1: null,
   aboutBio2: null,
   aboutBio3: null,
+  workApproach: null,
   cvFileUrl: null,
   testFileUrl: null
 }
+
+const defaultWorkApproach = [
+  'Agile/Scrum metodolojisi ile çalışma',
+  'Test-driven development (TDD) yaklaşımı',
+  'Sürekli öğrenme ve kendini geliştirme',
+  'Clean code ve best practices\'e önem'
+]
 
 export default function About({ settings, skills, experience }: AboutProps) {
   const data = settings || defaultSettings
   const skillsData = skills || []
   const experienceData = experience || []
+
+  // Parse work approach items
+  let workApproachItems: string[] = defaultWorkApproach
+  try {
+    if (data.workApproach) {
+      workApproachItems = JSON.parse(data.workApproach)
+    }
+  } catch {
+    workApproachItems = defaultWorkApproach
+  }
 
   // Group skills by category
   const groupedSkills = skillsData.reduce((acc: GroupedSkills, skill: Skill) => {
@@ -208,22 +227,16 @@ export default function About({ settings, skills, experience }: AboutProps) {
                 Çalışma Yaklaşımım
               </h4>
               <ul className="space-y-2 text-xs text-light-text-primary dark:text-dark-text-primary">
-                <li className="flex items-start gap-2">
-                  <span className="text-accent-electric mt-0.5">✓</span>
-                  <span>Agile/Scrum metodolojisi ile çalışma</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-accent-purple mt-0.5">✓</span>
-                  <span>Test-driven development (TDD) yaklaşımı</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-accent-pink mt-0.5">✓</span>
-                  <span>Sürekli öğrenme ve kendini geliştirme</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-accent-electric mt-0.5">✓</span>
-                  <span>Clean code ve best practices'e önem</span>
-                </li>
+                {workApproachItems.map((item, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className={`mt-0.5 ${
+                      index % 3 === 0 ? 'text-accent-electric' : 
+                      index % 3 === 1 ? 'text-accent-purple' : 
+                      'text-accent-pink'
+                    }`}>✓</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
             </motion.div>
           </motion.div>

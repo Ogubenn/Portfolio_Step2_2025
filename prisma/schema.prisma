@@ -147,6 +147,7 @@ model SiteSettings {
   aboutBio2         String?
   aboutBio3         String?
   aboutImage        String?
+  workApproach      String?  // JSON array: ["Item 1", "Item 2", ...]
   cvFileUrl         String?
   testFileUrl       String?
   

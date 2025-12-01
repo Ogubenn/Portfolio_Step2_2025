@@ -12,8 +12,8 @@ interface Project {
   category: string
   shortDesc: string
   thumbnail: string | null
-  technologies: string[]
-  tags: string[]
+  technologies: string[] | string // API'den JSON string veya array gelebilir
+  tags: string[] | string
   featured: boolean
   year: number
   demoUrl?: string | null
@@ -22,6 +22,16 @@ interface Project {
 
 interface ProjectsProps {
   projects: Project[] | null
+}
+
+// Helper function to safely parse JSON fields
+const parseJsonField = (field: string[] | string): string[] => {
+  if (Array.isArray(field)) return field
+  try {
+    return JSON.parse(field)
+  } catch {
+    return []
+  }
 }
 
 const categories = [
@@ -37,10 +47,17 @@ export default function Projects({ projects }: ProjectsProps) {
   const [activeCategory, setActiveCategory] = useState('all')
   const [showAll, setShowAll] = useState(false)
 
+  // Normalize projects data - parse JSON strings
+  const normalizedProjects = projectsData.map(project => ({
+    ...project,
+    technologies: parseJsonField(project.technologies),
+    tags: parseJsonField(project.tags)
+  }))
+
   // Filter projects by category
   const filteredProjects = activeCategory === 'all'
-    ? projectsData
-    : projectsData.filter((p) => p.category === activeCategory)
+    ? normalizedProjects
+    : normalizedProjects.filter((p) => p.category === activeCategory)
 
   // Sadece "all" kategorisinde limit uygula
   const displayedProjects =
@@ -52,8 +69,8 @@ export default function Projects({ projects }: ProjectsProps) {
 
   // Kategori sayılarını hesapla
   const getCategoryCount = (categoryId: string) => {
-    if (categoryId === 'all') return projectsData.length
-    return projectsData.filter((p) => p.category === categoryId).length
+    if (categoryId === 'all') return normalizedProjects.length
+    return normalizedProjects.filter((p) => p.category === categoryId).length
   }
 
   return (
