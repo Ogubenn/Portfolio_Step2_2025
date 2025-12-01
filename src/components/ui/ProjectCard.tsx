@@ -24,10 +24,19 @@ interface ProjectCardProps {
 // Safe array parse helper
 const ensureArray = (value: string[] | string): string[] => {
   if (Array.isArray(value)) return value
+  if (!value) return []
+  if (typeof value !== 'string') return []
+  
   try {
-    return JSON.parse(value)
-  } catch {
-    return []
+    const parsed = JSON.parse(value)
+    return Array.isArray(parsed) ? parsed : []
+  } catch (error) {
+    console.error('JSON Parse Error:', error, 'Value:', value)
+    // Fallback strategies
+    if (value.includes(',')) {
+      return value.split(',').map(s => s.trim()).filter(Boolean)
+    }
+    return value ? [value] : []
   }
 }
 

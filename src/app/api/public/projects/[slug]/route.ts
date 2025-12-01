@@ -26,11 +26,22 @@ export async function GET(
       );
     }
 
-    // Technologies ve tags JSON parse et
+    // Safe JSON parse helper
+    const safeJsonParse = (value: string, fallback: any = []): any => {
+      if (!value) return fallback
+      try {
+        return JSON.parse(value)
+      } catch (error) {
+        console.error('JSON Parse Error in project detail:', error, 'Value:', value)
+        return fallback
+      }
+    }
+
+    // Technologies ve tags JSON parse et (safely)
     const parsedProject = {
       ...project,
-      technologies: JSON.parse(project.technologies),
-      tags: JSON.parse(project.tags),
+      technologies: safeJsonParse(project.technologies, []),
+      tags: safeJsonParse(project.tags, []),
     };
 
     return NextResponse.json(parsedProject);

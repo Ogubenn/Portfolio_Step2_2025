@@ -27,10 +27,20 @@ interface ProjectsProps {
 // Helper function to safely parse JSON fields
 const parseJsonField = (field: string[] | string): string[] => {
   if (Array.isArray(field)) return field
+  if (!field) return []
+  if (typeof field !== 'string') return []
+  
   try {
-    return JSON.parse(field)
-  } catch {
-    return []
+    const parsed = JSON.parse(field)
+    return Array.isArray(parsed) ? parsed : []
+  } catch (error) {
+    console.error('JSON Parse Error:', error, 'Field value:', field)
+    // Fallback: eğer virgülle ayrılmış string ise split et
+    if (field.includes(',')) {
+      return field.split(',').map(s => s.trim()).filter(Boolean)
+    }
+    // Tek bir değerse array yap
+    return field ? [field] : []
   }
 }
 

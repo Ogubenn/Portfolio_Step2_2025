@@ -28,11 +28,22 @@ export async function GET(
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    // Parse JSON fields
+    // Safe JSON parse helper
+    const safeJsonParse = (value: string | null, fallback: any = []): any => {
+      if (!value) return fallback
+      try {
+        return JSON.parse(value)
+      } catch (error) {
+        console.error('JSON Parse Error in admin project API:', error, 'Value:', value)
+        return fallback
+      }
+    }
+
+    // Parse JSON fields (safely)
     const parsedProject = {
       ...project,
-      technologies: project.technologies ? JSON.parse(project.technologies) : [],
-      tags: project.tags ? JSON.parse(project.tags) : [],
+      technologies: safeJsonParse(project.technologies, []),
+      tags: safeJsonParse(project.tags, []),
     };
 
     return NextResponse.json(parsedProject);
@@ -105,6 +116,15 @@ export async function PUT(
       });
     }
 
+    // Safe stringify helper - eğer zaten string ise stringify yapma
+    const safeStringify = (value: any): string | undefined => {
+      if (value === undefined) return undefined
+      if (typeof value === 'string') return value
+      if (Array.isArray(value)) return JSON.stringify(value)
+      if (value === null) return JSON.stringify([])
+      return JSON.stringify(value)
+    }
+
     const project = await prisma.project.update({
       where: { id: params.id },
       data: {
@@ -117,8 +137,8 @@ export async function PUT(
         videoUrl: videoUrl || null,
         demoUrl: demoUrl || null,
         githubUrl: githubUrl || null,
-        technologies: technologies ? JSON.stringify(technologies) : undefined,
-        tags: tags ? JSON.stringify(tags) : undefined,
+        technologies: safeStringify(technologies),
+        tags: safeStringify(tags),
         year: year ? (typeof year === 'string' ? parseInt(year) : year) : undefined,
         duration: duration || null,
         problem: problem || null,

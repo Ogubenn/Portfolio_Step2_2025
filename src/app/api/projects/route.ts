@@ -78,6 +78,14 @@ export async function POST(request: Request) {
       );
     }
 
+    // Safe stringify helper - eğer zaten string ise stringify yapma
+    const safeStringify = (value: any): string => {
+      if (typeof value === 'string') return value
+      if (Array.isArray(value)) return JSON.stringify(value)
+      if (value === null || value === undefined) return JSON.stringify([])
+      return JSON.stringify(value)
+    }
+
     const project = await prisma.project.create({
       data: {
         slug,
@@ -89,8 +97,8 @@ export async function POST(request: Request) {
         videoUrl,
         demoUrl,
         githubUrl,
-        technologies: JSON.stringify(technologies || []),
-        tags: JSON.stringify(tags || []),
+        technologies: safeStringify(technologies),
+        tags: safeStringify(tags),
         year: parseInt(year),
         duration,
         problem,

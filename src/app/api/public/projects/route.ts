@@ -37,11 +37,22 @@ export async function GET(request: Request) {
       ],
     });
 
-    // Technologies ve tags JSON parse et
+    // Safe JSON parse helper
+    const safeJsonParse = (value: string, fallback: any = []): any => {
+      if (!value) return fallback
+      try {
+        return JSON.parse(value)
+      } catch (error) {
+        console.error('JSON Parse Error in /api/public/projects:', error, 'Value:', value)
+        return fallback
+      }
+    }
+
+    // Technologies ve tags JSON parse et (safely)
     const parsedProjects = projects.map((project: any) => ({
       ...project,
-      technologies: JSON.parse(project.technologies),
-      tags: JSON.parse(project.tags),
+      technologies: safeJsonParse(project.technologies, []),
+      tags: safeJsonParse(project.tags, []),
     }));
 
     const response = NextResponse.json(parsedProjects);
