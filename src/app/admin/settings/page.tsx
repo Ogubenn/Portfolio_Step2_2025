@@ -403,69 +403,52 @@ export default function SettingsPage() {
             </button>
           </div>
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Başlık
-              </label>
-              <input
-                type="text"
-                name="aboutTitle"
-                value={settings.aboutTitle || ''}
-                onChange={handleChange}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Açıklama
-              </label>
-              <textarea
-                name="aboutDescription"
-                value={settings.aboutDescription}
-                onChange={handleChange}
-                rows={2}
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Biyografi Paragraf 1
-              </label>
-              <textarea
-                name="aboutBio1"
-                value={settings.aboutBio1 || ''}
-                onChange={handleChange}
-                rows={3}
-                placeholder="Örn: Merhaba! Ben Oğulcan, yazılım geliştirme tutkusuyla kod yazan bir yazılımcıyım..."
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Biyografi Paragraf 2
-              </label>
-              <textarea
-                name="aboutBio2"
-                value={settings.aboutBio2 || ''}
-                onChange={handleChange}
-                rows={3}
-                placeholder="Örn: Her projede kaliteli ve kullanıcı dostu çözümler üretmeye odaklanıyorum..."
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Biyografi Paragraf 3
-              </label>
-              <textarea
-                name="aboutBio3"
-                value={settings.aboutBio3 || ''}
-                onChange={handleChange}
-                rows={3}
-                placeholder="Örn: Yeni projeler ve iş birlikleri için her zaman heyecanlıyım..."
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-              />
-            </div>
+            <TextInputWithCounter
+              type="text"
+              name="aboutTitle"
+              value={settings.aboutTitle || ''}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.TITLE}
+              label="Başlık"
+              placeholder="Hakkımda"
+            />
+            
+            <TextAreaWithCounter
+              name="aboutDescription"
+              value={settings.aboutDescription}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.SUBTITLE}
+              label="Açıklama"
+              rows={2}
+              required
+            />
+            <TextAreaWithCounter
+              name="aboutBio1"
+              value={settings.aboutBio1 || ''}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.BIO}
+              label="Biyografi Paragraf 1"
+              rows={3}
+              placeholder="Örn: Merhaba! Ben Oğulcan, yazılım geliştirme tutkusuyla kod yazan bir yazılımcıyım..."
+            />
+            <TextAreaWithCounter
+              name="aboutBio2"
+              value={settings.aboutBio2 || ''}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.BIO}
+              label="Biyografi Paragraf 2"
+              rows={3}
+              placeholder="Örn: Her projede kaliteli ve kullanıcı dostu çözümler üretmeye odaklanıyorum..."
+            />
+            <TextAreaWithCounter
+              name="aboutBio3"
+              value={settings.aboutBio3 || ''}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.BIO}
+              label="Biyografi Paragraf 3"
+              rows={3}
+              placeholder="Örn: Yeni projeler ve iş birlikleri için her zaman heyecanlıyım..."
+            />
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Çalışma Yaklaşımım (Maddeler)
@@ -743,32 +726,25 @@ export default function SettingsPage() {
             </button>
           </div>
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Site Başlığı
-              </label>
-              <input
-                type="text"
-                name="siteTitle"
-                value={settings.siteTitle || ''}
-                onChange={handleChange}
-                placeholder="Portfolio - Full-Stack Developer"
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Site Açıklaması
-              </label>
-              <textarea
-                name="siteDescription"
-                value={settings.siteDescription || ''}
-                onChange={handleChange}
-                rows={3}
-                placeholder="Kısa site açıklaması (SEO için)"
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-              />
-            </div>
+            <TextInputWithCounter
+              type="text"
+              name="siteTitle"
+              value={settings.siteTitle || ''}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.TITLE}
+              label="Site Başlığı"
+              placeholder="Portfolio - Full-Stack Developer"
+            />
+            <TextAreaWithCounter
+              name="siteDescription"
+              value={settings.siteDescription || ''}
+              onChange={handleChange}
+              maxLength={CHAR_LIMITS.META_DESC}
+              label="Site Açıklaması"
+              rows={3}
+              placeholder="Kısa site açıklaması (SEO için)"
+              helperText="Google'da görünecek açıklama (160 karakter ideal)"
+            />
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Anahtar Kelimeler (virgülle ayırın)
