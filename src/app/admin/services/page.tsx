@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Plus, Search, Eye, EyeOff, Edit, Trash2, Wrench } from 'lucide-react'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
 
 interface Service {
   id: string
@@ -40,6 +42,8 @@ export default function ServicesPage() {
   const [filteredServices, setFilteredServices] = useState<Service[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; service: Service | null }>({ isOpen: false, service: null })
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     fetchServices()
@@ -95,25 +99,40 @@ export default function ServicesPage() {
     }
   }
 
-  const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`"${title}" hizmetini silmek istediğinize emin misiniz?`)) {
-      return
+  const openDeleteDialog = (service: Service) => {
+    setDeleteDialog({ isOpen: true, service })
+  }
+
+  const closeDeleteDialog = () => {
+    if (!isDeleting) {
+      setDeleteDialog({ isOpen: false, service: null })
     }
+  }
+
+  const handleDelete = async () => {
+    if (!deleteDialog.service) return
+
+    setIsDeleting(true)
+    const deleteToast = toast.loading('Hizmet siliniyor...')
 
     try {
-      const response = await fetch(`/api/services/${id}`, {
+      const response = await fetch(`/api/services/${deleteDialog.service.id}`, {
         method: 'DELETE'
       })
 
       if (response.ok) {
-        alert('✅ Hizmet silindi')
+        toast.success('Hizmet başarıyla silindi!', { id: deleteToast })
+        closeDeleteDialog()
         fetchServices()
       } else {
-        alert('❌ Hizmet silinemedi')
+        const data = await response.json()
+        toast.error(data.error || 'Hizmet silinemedi', { id: deleteToast })
       }
     } catch (error) {
       console.error('Failed to delete service:', error)
-      alert('❌ Bir hata oluştu')
+      toast.error('Bir hata oluştu', { id: deleteToast })
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -234,7 +253,7 @@ export default function ServicesPage() {
                       <Edit className="w-5 h-5 text-gray-400" />
                     </Link>
                     <button
-                      onClick={() => handleDelete(service.id, service.title)}
+                      onClick={() => openDeleteDialog(service)}
                       className="p-2 hover:bg-red-600/20 rounded-lg transition-colors"
                     >
                       <Trash2 className="w-5 h-5 text-red-400" />
@@ -246,6 +265,19 @@ export default function ServicesPage() {
           })
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDelete}
+        title="Hizmeti Sil"
+        message={`"${deleteDialog.service?.title}" hizmetini kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz ve tüm hizmet verileri silinecektir.`}
+        confirmText="Evet, Sil"
+        cancelText="İptal"
+        isLoading={isDeleting}
+        variant="danger"
+      />
     </div>
   )
 }

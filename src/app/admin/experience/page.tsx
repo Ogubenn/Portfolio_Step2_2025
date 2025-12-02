@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Plus, Search, Eye, EyeOff, Edit, Trash2, Briefcase } from 'lucide-react'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
 
 interface WorkExperience {
   id: string
@@ -26,6 +28,8 @@ export default function ExperiencePage() {
   const [filteredExperiences, setFilteredExperiences] = useState<WorkExperience[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; experience: WorkExperience | null }>({ isOpen: false, experience: null })
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     fetchExperiences()
@@ -81,25 +85,40 @@ export default function ExperiencePage() {
     }
   }
 
-  const handleDelete = async (id: string, position: string, company: string) => {
-    if (!confirm(`"${position} - ${company}" deneyimini silmek istediğinize emin misiniz?`)) {
-      return
+  const openDeleteDialog = (experience: WorkExperience) => {
+    setDeleteDialog({ isOpen: true, experience })
+  }
+
+  const closeDeleteDialog = () => {
+    if (!isDeleting) {
+      setDeleteDialog({ isOpen: false, experience: null })
     }
+  }
+
+  const handleDelete = async () => {
+    if (!deleteDialog.experience) return
+
+    setIsDeleting(true)
+    const deleteToast = toast.loading('Deneyim siliniyor...')
 
     try {
-      const response = await fetch(`/api/experience/${id}`, {
+      const response = await fetch(`/api/experience/${deleteDialog.experience.id}`, {
         method: 'DELETE'
       })
 
       if (response.ok) {
-        alert('✅ Deneyim silindi')
+        toast.success('Deneyim başarıyla silindi!', { id: deleteToast })
+        closeDeleteDialog()
         fetchExperiences()
       } else {
-        alert('❌ Deneyim silinemedi')
+        const data = await response.json()
+        toast.error(data.error || 'Deneyim silinemedi', { id: deleteToast })
       }
     } catch (error) {
       console.error('Failed to delete experience:', error)
-      alert('❌ Bir hata oluştu')
+      toast.error('Bir hata oluştu', { id: deleteToast })
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -248,7 +267,7 @@ export default function ExperiencePage() {
                     <Edit className="w-5 h-5 text-gray-400" />
                   </Link>
                   <button
-                    onClick={() => handleDelete(experience.id, experience.position, experience.company)}
+                    onClick={() => openDeleteDialog(experience)}
                     className="p-2 hover:bg-red-600/20 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-5 h-5 text-red-400" />
@@ -259,6 +278,19 @@ export default function ExperiencePage() {
           ))
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDelete}
+        title="Deneyimi Sil"
+        message={`"${deleteDialog.experience?.position} - ${deleteDialog.experience?.company}" iş deneyimini kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`}
+        confirmText="Evet, Sil"
+        cancelText="İptal"
+        isLoading={isDeleting}
+        variant="danger"
+      />
     </div>
   )
 }

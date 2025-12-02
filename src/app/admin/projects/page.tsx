@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import {
   Plus,
   Search,
@@ -32,6 +34,8 @@ export default function AdminProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
+  const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; project: Project | null }>({ isOpen: false, project: null });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -51,24 +55,40 @@ export default function AdminProjectsPage() {
     }
   };
 
-  const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`"${title}" projesini silmek istediğinize emin misiniz?`)) {
-      return;
+  const openDeleteDialog = (project: Project) => {
+    setDeleteDialog({ isOpen: true, project });
+  };
+
+  const closeDeleteDialog = () => {
+    if (!isDeleting) {
+      setDeleteDialog({ isOpen: false, project: null });
     }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteDialog.project) return;
+
+    setIsDeleting(true);
+    const deleteToast = toast.loading('Proje siliniyor...');
 
     try {
-      const response = await fetch(`/api/projects/${id}`, {
+      const response = await fetch(`/api/projects/${deleteDialog.project.id}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
-        setProjects(projects.filter((p) => p.id !== id));
+        setProjects(projects.filter((p) => p.id !== deleteDialog.project!.id));
+        toast.success('Proje başarıyla silindi!', { id: deleteToast });
+        closeDeleteDialog();
       } else {
-        alert("Proje silinemedi");
+        const data = await response.json();
+        toast.error(data.error || 'Proje silinemedi', { id: deleteToast });
       }
     } catch (error) {
       console.error("Failed to delete project:", error);
-      alert("Bir hata oluştu");
+      toast.error('Bir hata oluştu', { id: deleteToast });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -241,7 +261,7 @@ export default function AdminProjectsPage() {
                     Düzenle
                   </Link>
                   <button
-                    onClick={() => handleDelete(project.id, project.title)}
+                    onClick={() => openDeleteDialog(project)}
                     className="flex items-center gap-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-colors ml-auto"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -252,6 +272,19 @@ export default function AdminProjectsPage() {
           ))}
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDelete}
+        title="Projeyi Sil"
+        message={`"${deleteDialog.project?.title}" projesini kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz ve tüm proje verileri (galeri resimleri dahil) silinecektir.`}
+        confirmText="Evet, Sil"
+        cancelText="İptal"
+        isLoading={isDeleting}
+        variant="danger"
+      />
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Pencil, Trash2, Eye, EyeOff, Search, Filter } from 'lucide-react'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
 
 interface Skill {
   id: string
@@ -24,6 +26,8 @@ export default function SkillsPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; skill: Skill | null }>({ isOpen: false, skill: null })
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     fetchSkills()
@@ -47,23 +51,40 @@ export default function SkillsPage() {
     }
   }
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`"${name}" yeteneğini silmek istediğinize emin misiniz?`)) return
+  const openDeleteDialog = (skill: Skill) => {
+    setDeleteDialog({ isOpen: true, skill })
+  }
+
+  const closeDeleteDialog = () => {
+    if (!isDeleting) {
+      setDeleteDialog({ isOpen: false, skill: null })
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!deleteDialog.skill) return
+
+    setIsDeleting(true)
+    const deleteToast = toast.loading('Yetenek siliniyor...')
 
     try {
-      const response = await fetch(`/api/skills/${id}`, {
+      const response = await fetch(`/api/skills/${deleteDialog.skill.id}`, {
         method: 'DELETE',
       })
 
       if (response.ok) {
-        setSkills(skills.filter(s => s.id !== id))
-        alert('✅ Yetenek silindi!')
+        setSkills(skills.filter(s => s.id !== deleteDialog.skill!.id))
+        toast.success('Yetenek başarıyla silindi!', { id: deleteToast })
+        closeDeleteDialog()
       } else {
-        alert('❌ Silme başarısız')
+        const data = await response.json()
+        toast.error(data.error || 'Yetenek silinemedi', { id: deleteToast })
       }
     } catch (error) {
       console.error('Delete error:', error)
-      alert('❌ Bir hata oluştu')
+      toast.error('Bir hata oluştu', { id: deleteToast })
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -176,7 +197,7 @@ export default function SkillsPage() {
                     <SkillCard
                       key={skill.id}
                       skill={skill}
-                      onDelete={handleDelete}
+                      onDelete={openDeleteDialog}
                       onToggleVisibility={toggleVisibility}
                     />
                   ))}
@@ -191,7 +212,7 @@ export default function SkillsPage() {
             <SkillCard
               key={skill.id}
               skill={skill}
-              onDelete={handleDelete}
+              onDelete={openDeleteDialog}
               onToggleVisibility={toggleVisibility}
             />
           ))}
@@ -203,13 +224,26 @@ export default function SkillsPage() {
           <p className="text-gray-400">Yetenek bulunamadı</p>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDelete}
+        title="Yeteneği Sil"
+        message={`"${deleteDialog.skill?.name}" yeteneğini kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`}
+        confirmText="Evet, Sil"
+        cancelText="İptal"
+        isLoading={isDeleting}
+        variant="danger"
+      />
     </div>
   )
 }
 
 interface SkillCardProps {
   skill: Skill
-  onDelete: (id: string, name: string) => void
+  onDelete: (skill: Skill) => void
   onToggleVisibility: (skill: Skill) => void
 }
 
@@ -261,7 +295,7 @@ function SkillCard({ skill, onDelete, onToggleVisibility }: SkillCardProps) {
           <Pencil className="w-4 h-4" />
         </Link>
         <button
-          onClick={() => onDelete(skill.id, skill.name)}
+          onClick={() => onDelete(skill)}
           className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
         >
           <Trash2 className="w-4 h-4" />
