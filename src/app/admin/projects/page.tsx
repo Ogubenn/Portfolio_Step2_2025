@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { ProjectCardSkeleton } from "@/components/ui/Skeleton";
-import { ProjectCardSkeleton } from "@/components/ui/Skeleton";
 import {
   Plus,
   Search,
