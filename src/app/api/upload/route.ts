@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 
-// ⚠️ WORKAROUND: Vercel ephemeral filesystem - base64 storage kullanıyoruz
-// TODO: Cloudinary entegrasyonu ile değiştirilecek
+// ✅ Cloudinary entegrasyonu - Production-ready file upload
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const type = formData.get('type') as string;
+    const folder = (formData.get('folder') as string) || 'portfolio'; // Default folder
     
     if (!file) {
       return NextResponse.json(
@@ -33,43 +33,51 @@ export async function POST(request: NextRequest) {
     }
 
     // Dosya boyutu kontrolü
-    const maxImageSize = 5 * 1024 * 1024; // 5MB for images (base64 için küçültüldü)
-    const maxVideoSize = 10 * 1024 * 1024; // 10MB for videos
-    const maxDocSize = 5 * 1024 * 1024; // 5MB for documents
+    const maxImageSize = 20 * 1024 * 1024; // 20MB for images
+    const maxVideoSize = 100 * 1024 * 1024; // 100MB for videos
+    const maxDocSize = 50 * 1024 * 1024; // 50MB for documents
     
     let maxSize = maxImageSize;
     if (isVideo) maxSize = maxVideoSize;
     if (isDocument) maxSize = maxDocSize;
     
     if (file.size > maxSize) {
-      const sizeLimit = isVideo ? '10MB' : '5MB';
+      const sizeLimit = isVideo ? '100MB' : isDocument ? '50MB' : '20MB';
       return NextResponse.json(
         { error: `Dosya boyutu ${sizeLimit}'dan küçük olmalıdır` },
         { status: 400 }
       );
     }
 
-    // Buffer'a çevir ve base64 encode
+    // Buffer'a çevir
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const base64 = buffer.toString('base64');
     
-    // Data URL oluştur
-    const dataUrl = `data:${file.type};base64,${base64}`;
+    // Cloudinary resource type belirle
+    let resourceType: 'image' | 'video' | 'raw' = 'image';
+    if (isVideo) resourceType = 'video';
+    if (isDocument) resourceType = 'raw';
+    
+    // Cloudinary'ye yükle
+    const result = await uploadToCloudinary(buffer, folder, resourceType);
 
     return NextResponse.json({
       success: true,
-      url: dataUrl,
+      url: result.secure_url,
+      publicId: result.public_id,
       fileName: file.name,
       type: isImage ? 'image' : isVideo ? 'video' : 'document',
-      size: file.size,
-      mimeType: file.type
+      size: result.bytes,
+      mimeType: file.type,
+      width: result.width,
+      height: result.height,
+      format: result.format,
     });
 
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(
-      { error: 'Dosya yüklenirken bir hata oluştu' },
+      { error: 'Dosya yüklenirken bir hata oluştu: ' + (error instanceof Error ? error.message : 'Bilinmeyen hata') },
       { status: 500 }
     );
   }
