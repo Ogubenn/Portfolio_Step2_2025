@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
+import { validateSkillForm } from '@/lib/validation'
 
 const categories = ['Tarım Becerileri', 'Ekipman', 'Bilgi', 'Languages', 'Frameworks', 'Tools', 'Other']
 
@@ -41,7 +43,16 @@ export default function NewSkillPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate form
+    const errors = validateSkillForm(formData)
+    if (errors.length > 0) {
+      errors.forEach(error => toast.error(error.message))
+      return
+    }
+
     setLoading(true)
+    const saveToast = toast.loading('Yetenek kaydediliyor...')
 
     try {
       const response = await fetch('/api/skills', {
@@ -55,16 +66,16 @@ export default function NewSkillPage() {
       })
 
       if (response.ok) {
-        alert('✅ Yetenek başarıyla eklendi!')
+        toast.success('Yetenek başarıyla eklendi!', { id: saveToast })
         router.push('/admin/skills')
         router.refresh()
       } else {
         const data = await response.json()
-        alert(`❌ Hata: ${data.error || 'Yetenek eklenemedi'}`)
+        toast.error(data.error || 'Yetenek eklenemedi', { id: saveToast })
       }
     } catch (error) {
       console.error('Failed to create skill:', error)
-      alert('❌ Bir hata oluştu')
+      toast.error('Bir hata oluştu', { id: saveToast })
     } finally {
       setLoading(false)
     }
@@ -204,10 +215,19 @@ export default function NewSkillPage() {
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-lg transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
           >
-            <Save className="w-5 h-5" />
-            {loading ? 'Kaydediliyor...' : 'Kaydet'}
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Kaydediliyor...
+              </>
+            ) : (
+              <>
+                <Save className="w-5 h-5" />
+                Kaydet
+              </>
+            )}
           </button>
         </div>
       </motion.form>

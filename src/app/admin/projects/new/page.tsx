@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, Save, Eye } from "lucide-react";
+import { ArrowLeft, Save, Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { validateProjectForm, generateSlug } from "@/lib/validation";
 
 interface ProjectFormData {
   slug: string;
@@ -69,13 +71,13 @@ export default function NewProjectPage() {
       [name]: type === "checkbox" ? checked : value,
     });
 
-    // Auto-generate slug from title
-    if (name === "title" && !formData.slug) {
-      const slug = value
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
-      setFormData((prev) => ({ ...prev, slug }));
+    // Auto-generate slug from title (only if slug is empty)
+    if (name === "title") {
+      const currentSlug = formData.slug;
+      // Only auto-generate if slug is empty or matches previous title's slug
+      if (!currentSlug || currentSlug === generateSlug(formData.title)) {
+        setFormData((prev) => ({ ...prev, slug: generateSlug(value) }));
+      }
     }
   };
 
@@ -119,21 +121,23 @@ export default function NewProjectPage() {
 
     // Dosya boyutu kontrolü
     if (file.size > 20 * 1024 * 1024) {
-      alert('❌ Dosya boyutu 20MB\'dan küçük olmalıdır');
+      toast.error('Dosya boyutu 20MB\'dan küçük olmalıdır');
       return;
     }
 
     // Dosya türü kontrolü
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
-      alert('❌ Sadece resim dosyaları yüklenebilir (jpg, png, webp, gif)');
+      toast.error('Sadece resim dosyaları yüklenebilir (jpg, png, webp, gif)');
       return;
     }
 
     setUploading(true);
+    const uploadToast = toast.loading('Fotoğraf yükleniyor...');
     try {
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('folder', 'portfolio/projects/thumbnails');
 
       const response = await fetch('/api/upload', {
         method: 'POST',
@@ -144,13 +148,13 @@ export default function NewProjectPage() {
 
       if (response.ok && data.success) {
         setFormData(prev => ({ ...prev, thumbnail: data.url }));
-        alert('✅ Fotoğraf başarıyla yüklendi!');
+        toast.success('Fotoğraf başarıyla yüklendi!', { id: uploadToast });
       } else {
-        alert('❌ ' + (data.error || 'Yükleme başarısız'));
+        toast.error(data.error || 'Yükleme başarısız', { id: uploadToast });
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('❌ Yükleme sırasında bir hata oluştu');
+      toast.error('Yükleme sırasında bir hata oluştu', { id: uploadToast });
     } finally {
       setUploading(false);
     }
@@ -161,22 +165,24 @@ export default function NewProjectPage() {
     if (!file) return;
 
     // Dosya boyutu kontrolü
-    if (file.size > 541 * 1024 * 1024) {
-      alert('❌ Dosya boyutu 541MB\'dan küçük olmalıdır');
+    if (file.size > 100 * 1024 * 1024) {
+      toast.error('Dosya boyutu 100MB\'dan küçük olmalıdır');
       return;
     }
 
     // Dosya türü kontrolü
     const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
     if (!allowedTypes.includes(file.type)) {
-      alert('❌ Sadece video dosyaları yüklenebilir (mp4, webm, ogg, mov)');
+      toast.error('Sadece video dosyaları yüklenebilir (mp4, webm, ogg, mov)');
       return;
     }
 
     setUploading(true);
+    const uploadToast = toast.loading('Video yükleniyor...');
     try {
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('folder', 'portfolio/projects/videos');
 
       const response = await fetch('/api/upload', {
         method: 'POST',
@@ -187,13 +193,13 @@ export default function NewProjectPage() {
 
       if (response.ok && data.success) {
         setFormData(prev => ({ ...prev, videoUrl: data.url }));
-        alert('✅ Video başarıyla yüklendi!');
+        toast.success('Video başarıyla yüklendi!', { id: uploadToast });
       } else {
-        alert('❌ ' + (data.error || 'Yükleme başarısız'));
+        toast.error(data.error || 'Yükleme başarısız', { id: uploadToast });
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('❌ Yükleme sırasında bir hata oluştu');
+      toast.error('Yükleme sırasında bir hata oluştu', { id: uploadToast });
     } finally {
       setUploading(false);
     }
@@ -242,10 +248,10 @@ export default function NewProjectPage() {
 
       const uploadedUrls = await Promise.all(uploadPromises);
       setGalleryImages(prev => [...prev, ...uploadedUrls]);
-      alert(`✅ ${uploadedUrls.length} fotoğraf galeriye eklendi!`);
+      toast.success(`${uploadedUrls.length} fotoğraf galeriye eklendi!`);
     } catch (error: any) {
       console.error('Gallery upload error:', error);
-      alert('❌ ' + error.message);
+      toast.error(error.message);
     } finally {
       setUploading(false);
       // Input'u temizle
@@ -259,7 +265,16 @@ export default function NewProjectPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form
+    const errors = validateProjectForm(formData);
+    if (errors.length > 0) {
+      errors.forEach(error => toast.error(error.message));
+      return;
+    }
+
     setLoading(true);
+    const saveToast = toast.loading('Proje kaydediliyor...');
 
     try {
       // Önce projeyi oluştur
@@ -286,16 +301,16 @@ export default function NewProjectPage() {
           }
         }
         
-        alert('✅ Proje başarıyla oluşturuldu!');
+        toast.success('Proje başarıyla oluşturuldu!', { id: saveToast });
         router.push("/admin/projects");
         router.refresh();
       } else {
         const data = await response.json();
-        alert(data.error || "Proje oluşturulamadı");
+        toast.error(data.error || "Proje oluşturulamadı", { id: saveToast });
       }
     } catch (error) {
       console.error("Failed to create project:", error);
-      alert("Bir hata oluştu");
+      toast.error("Bir hata oluştu", { id: saveToast });
     } finally {
       setLoading(false);
     }
@@ -811,11 +826,20 @@ export default function NewProjectPage() {
         <div className="flex items-center gap-4">
           <button
             type="submit"
-            disabled={loading}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50"
+            disabled={loading || uploading}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Save className="w-5 h-5" />
-            {loading ? "Kaydediliyor..." : "Projeyi Kaydet"}
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Kaydediliyor...
+              </>
+            ) : (
+              <>
+                <Save className="w-5 h-5" />
+                Projeyi Kaydet
+              </>
+            )}
           </button>
 
           <Link

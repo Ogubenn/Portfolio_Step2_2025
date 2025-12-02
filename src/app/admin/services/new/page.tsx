@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Save, Plus, X } from 'lucide-react'
+import { ArrowLeft, Save, Plus, X, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
+import { validateServiceForm } from '@/lib/validation'
 
 export default function NewServicePage() {
   const router = useRouter()
@@ -19,7 +21,23 @@ export default function NewServicePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate form
+    const errors = validateServiceForm(formData)
+    if (errors.length > 0) {
+      errors.forEach(error => toast.error(error.message))
+      return
+    }
+
+    // Feature kontrolü
+    const validFeatures = features.filter(f => f.trim() !== '')
+    if (validFeatures.length === 0) {
+      toast.error('En az bir özellik eklemelisiniz')
+      return
+    }
+
     setSaving(true)
+    const saveToast = toast.loading('Hizmet kaydediliyor...')
 
     try {
       const response = await fetch('/api/services', {
@@ -27,20 +45,21 @@ export default function NewServicePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          features: JSON.stringify(features.filter(f => f.trim() !== ''))
+          features: JSON.stringify(validFeatures)
         })
       })
 
       if (response.ok) {
-        alert('✅ Hizmet eklendi')
+        toast.success('Hizmet başarıyla eklendi!', { id: saveToast })
         router.push('/admin/services')
+        router.refresh()
       } else {
         const error = await response.json()
-        alert(`❌ Hata: ${error.error || 'Hizmet eklenemedi'}`)
+        toast.error(error.error || 'Hizmet eklenemedi', { id: saveToast })
       }
     } catch (error) {
       console.error('Failed to create service:', error)
-      alert('❌ Bir hata oluştu')
+      toast.error('Bir hata oluştu', { id: saveToast })
     } finally {
       setSaving(false)
     }
@@ -203,7 +222,7 @@ export default function NewServicePage() {
           >
             {saving ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                <Loader2 className="w-5 h-5 animate-spin" />
                 Kaydediliyor...
               </>
             ) : (

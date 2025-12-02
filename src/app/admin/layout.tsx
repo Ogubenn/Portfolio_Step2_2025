@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import { Toaster } from "react-hot-toast";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -42,6 +43,29 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen bg-gray-900">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#1f2937',
+            color: '#fff',
+            border: '1px solid #374151',
+          },
+          success: {
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
