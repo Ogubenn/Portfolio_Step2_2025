@@ -19,7 +19,7 @@
 
 **Kritik Blocker:**
 - 🔴 **File upload production'da çalışmaz** (Vercel ephemeral filesystem)
-  - **Çözüm:** Cloudinary entegrasyonu gerekli
+  - **Çözüm:** Cloudinary entegrasyonu gerekli.
 
 **Genel Skor:** ⭐⭐⭐⭐☆ **4.2/5.0**
 
