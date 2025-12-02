@@ -7,6 +7,7 @@ import { Plus, Search, Eye, EyeOff, Edit, Trash2, Wrench } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import { ServiceCardSkeleton } from '@/components/ui/Skeleton'
 
 interface Service {
   id: string
@@ -140,8 +141,18 @@ export default function ServicesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white">Hizmetler</h1>
+            <p className="text-gray-400 mt-1">Yükleniyor...</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ServiceCardSkeleton key={i} />
+          ))}
+        </div>
       </div>
     )
   }

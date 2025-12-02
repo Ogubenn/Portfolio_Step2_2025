@@ -4,6 +4,8 @@ import { useParams, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { ArrowLeft, Save, X, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
+import { validateProjectForm, generateSlug } from '@/lib/validation'
 
 interface ProjectFormData {
   slug: string
@@ -182,21 +184,23 @@ export default function EditProjectPage() {
 
     // Dosya boyutu kontrolü
     if (file.size > 20 * 1024 * 1024) {
-      alert('❌ Dosya boyutu 20MB\'dan küçük olmalıdır')
+      toast.error('Dosya boyutu 20MB\'dan küçük olmalıdır')
       return
     }
 
     // Dosya türü kontrolü
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
     if (!allowedTypes.includes(file.type)) {
-      alert('❌ Sadece resim dosyaları yüklenebilir (jpg, png, webp, gif)')
+      toast.error('Sadece resim dosyaları yüklenebilir (jpg, png, webp, gif)')
       return
     }
 
     setUploading(true)
+    const uploadToast = toast.loading('Fotoğraf yükleniyor...')
     try {
       const uploadFormData = new FormData()
       uploadFormData.append('file', file)
+      uploadFormData.append('folder', 'portfolio/projects/thumbnails')
 
       const response = await fetch('/api/upload', {
         method: 'POST',
@@ -207,9 +211,9 @@ export default function EditProjectPage() {
 
       if (response.ok && data.success) {
         setFormData(prev => ({ ...prev, thumbnail: data.url }))
-        alert('✅ Fotoğraf başarıyla yüklendi!')
+        toast.success('Fotoğraf başarıyla yüklendi!', { id: uploadToast })
       } else {
-        alert('❌ ' + (data.error || 'Yükleme başarısız'))
+        toast.error(data.error || 'Yükleme başarısız', { id: uploadToast })
       }
     } catch (error) {
       console.error('Upload error:', error)
@@ -224,22 +228,24 @@ export default function EditProjectPage() {
     if (!file) return
 
     // Dosya boyutu kontrolü
-    if (file.size > 541 * 1024 * 1024) {
-      alert('❌ Dosya boyutu 541MB\'dan küçük olmalıdır')
+    if (file.size > 100 * 1024 * 1024) {
+      toast.error('Dosya boyutu 100MB\'dan küçük olmalıdır')
       return
     }
 
     // Dosya türü kontrolü
     const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime']
     if (!allowedTypes.includes(file.type)) {
-      alert('❌ Sadece video dosyaları yüklenebilir (mp4, webm, ogg, mov)')
+      toast.error('Sadece video dosyaları yüklenebilir (mp4, webm, ogg, mov)')
       return
     }
 
     setUploading(true)
+    const uploadToast = toast.loading('Video yükleniyor...')
     try {
       const uploadFormData = new FormData()
       uploadFormData.append('file', file)
+      uploadFormData.append('folder', 'portfolio/projects/videos')
 
       const response = await fetch('/api/upload', {
         method: 'POST',
@@ -250,13 +256,13 @@ export default function EditProjectPage() {
 
       if (response.ok && data.success) {
         setFormData(prev => ({ ...prev, videoUrl: data.url }))
-        alert('✅ Video başarıyla yüklendi!')
+        toast.success('Video başarıyla yüklendi!', { id: uploadToast })
       } else {
-        alert('❌ ' + (data.error || 'Yükleme başarısız'))
+        toast.error(data.error || 'Yükleme başarısız', { id: uploadToast })
       }
     } catch (error) {
       console.error('Upload error:', error)
-      alert('❌ Yükleme sırasında bir hata oluştu')
+      toast.error('Yükleme sırasında bir hata oluştu', { id: uploadToast })
     } finally {
       setUploading(false)
     }

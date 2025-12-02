@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Save, Trash2 } from 'lucide-react'
+import { ArrowLeft, Save, Trash2, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
+import { validateSkillForm } from '@/lib/validation'
 
 const categories = ['Tarım Becerileri', 'Ekipman', 'Bilgi', 'Languages', 'Frameworks', 'Tools', 'Other']
 
@@ -73,7 +75,16 @@ export default function EditSkillPage({ params }: { params: { id: string } }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate form
+    const errors = validateSkillForm(formData)
+    if (errors.length > 0) {
+      errors.forEach(error => toast.error(error.message))
+      return
+    }
+
     setSaving(true)
+    const saveToast = toast.loading('Yetenek güncelleniyor...')
 
     try {
       const response = await fetch(`/api/skills/${params.id}`, {
@@ -88,16 +99,16 @@ export default function EditSkillPage({ params }: { params: { id: string } }) {
       })
 
       if (response.ok) {
-        alert('✅ Yetenek güncellendi!')
+        toast.success('Yetenek başarıyla güncellendi!', { id: saveToast })
         router.push('/admin/skills')
         router.refresh()
       } else {
         const data = await response.json()
-        alert(`❌ Hata: ${data.error || 'Yetenek güncellenemedi'}`)
+        toast.error(data.error || 'Yetenek güncellenemedi', { id: saveToast })
       }
     } catch (error) {
       console.error('Failed to update skill:', error)
-      alert('❌ Bir hata oluştu')
+      toast.error('Bir hata oluştu', { id: saveToast })
     } finally {
       setSaving(false)
     }
@@ -292,10 +303,19 @@ export default function EditSkillPage({ params }: { params: { id: string } }) {
           <button
             type="submit"
             disabled={saving}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-lg transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
           >
-            <Save className="w-5 h-5" />
-            {saving ? 'Kaydediliyor...' : 'Güncelle'}
+            {saving ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Kaydediliyor...
+              </>
+            ) : (
+              <>
+                <Save className="w-5 h-5" />
+                Güncelle
+              </>
+            )}
           </button>
         </div>
       </motion.form>

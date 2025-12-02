@@ -6,6 +6,7 @@ import { Plus, Pencil, Trash2, Eye, EyeOff, Search, Filter } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import { SkillCardSkeleton } from '@/components/ui/Skeleton'
 
 interface Skill {
   id: string
@@ -119,10 +120,17 @@ export default function SkillsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Yükleniyor...</p>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white">Yetenekler</h1>
+            <p className="text-gray-400 mt-1">Yükleniyor...</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkillCardSkeleton key={i} />
+          ))}
         </div>
       </div>
     )

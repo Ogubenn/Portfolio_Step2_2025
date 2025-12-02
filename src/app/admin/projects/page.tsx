@@ -5,6 +5,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { ProjectCardSkeleton } from "@/components/ui/Skeleton";
+import { ProjectCardSkeleton } from "@/components/ui/Skeleton";
 import {
   Plus,
   Search,
@@ -112,11 +114,15 @@ export default function AdminProjectsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-48 bg-gray-700 rounded animate-pulse" />
-        <div className="h-12 bg-gray-800 rounded animate-pulse" />
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white">Projeler</h1>
+            <p className="text-gray-400 mt-1">Yükleniyor...</p>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-64 bg-gray-800 rounded-xl animate-pulse" />
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ProjectCardSkeleton key={i} />
           ))}
         </div>
       </div>
