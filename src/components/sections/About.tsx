@@ -200,11 +200,11 @@ export default function About({ settings, skills, experience }: AboutProps) {
                         {category}
                       </h3>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2.5">
                       {items.map((skill) => (
                         <span
                           key={skill.id}
-                          className="px-2.5 py-1 text-xs bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary rounded-md border border-light-border dark:border-dark-border hover:border-accent-electric dark:hover:border-accent-purple transition-colors"
+                          className="px-4 py-2 text-sm font-medium bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary rounded-lg border border-light-border dark:border-dark-border hover:border-accent-electric dark:hover:border-accent-purple hover:scale-105 transition-all duration-200 cursor-default shadow-sm"
                         >
                           {skill.name}
                         </span>
