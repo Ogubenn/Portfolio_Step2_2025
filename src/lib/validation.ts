@@ -76,12 +76,13 @@ export function validateSlug(value: string): ValidationError | null {
     return { field: 'slug', message: 'Slug alanı zorunludur' };
   }
   
-  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  // Slug: küçük harf, rakam, tire, nokta, alt çizgi
+  const slugRegex = /^[a-z0-9]+(?:[._-][a-z0-9]+)*$/;
   
   if (!slugRegex.test(value)) {
     return {
       field: 'slug',
-      message: 'Slug sadece küçük harf, rakam ve tire içerebilir',
+      message: 'Slug sadece küçük harf, rakam, tire, nokta ve alt çizgi içerebilir',
     };
   }
   
