@@ -34,6 +34,43 @@ export default function Contact({ settings }: ContactProps) {
   })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({})
+
+  const MAX_MESSAGE_LENGTH = 500
+  const MAX_NAME_LENGTH = 100
+
+  const validateForm = () => {
+    const newErrors: { name?: string; email?: string; message?: string } = {}
+
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = 'İsim gereklidir'
+    } else if (formData.name.length > MAX_NAME_LENGTH) {
+      newErrors.name = `İsim ${MAX_NAME_LENGTH} karakterden uzun olamaz`
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = 'E-posta gereklidir'
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = 'Geçerli bir e-posta adresi girin'
+      }
+    }
+
+    // Message validation
+    if (!formData.message.trim()) {
+      newErrors.message = 'Mesaj gereklidir'
+    } else if (formData.message.length < 10) {
+      newErrors.message = 'Mesaj en az 10 karakter olmalıdır'
+    } else if (formData.message.length > MAX_MESSAGE_LENGTH) {
+      newErrors.message = `Mesaj ${MAX_MESSAGE_LENGTH} karakterden uzun olamaz`
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,36 +80,45 @@ export default function Contact({ settings }: ContactProps) {
       return // Silently fail for bots
     }
 
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.message) {
+    // Validate form
+    if (!validateForm()) {
       setStatus('error')
-      setErrorMessage('Lütfen tüm alanları doldurun.')
-      return
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(formData.email)) {
-      setStatus('error')
-      setErrorMessage('Geçerli bir e-posta adresi girin.')
+      setErrorMessage('Lütfen tüm alanları doğru şekilde doldurun.')
       return
     }
 
     setStatus('loading')
+    setErrorMessage('')
 
     try {
-      // Burada form submit işlemi yapılır (örn: API call, email service, etc.)
-      // Şimdilik simüle ediyoruz
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          message: formData.message.trim(),
+        }),
+      })
 
-      setStatus('success')
-      setFormData({ name: '', email: '', message: '', honeypot: '' })
-      
-      // Reset success message after 5 seconds
-      setTimeout(() => setStatus('idle'), 5000)
+      const result = await response.json()
+
+      if (response.ok) {
+        setStatus('success')
+        setFormData({ name: '', email: '', message: '', honeypot: '' })
+        setErrors({})
+        
+        // Reset success message after 5 seconds
+        setTimeout(() => setStatus('idle'), 5000)
+      } else {
+        setStatus('error')
+        setErrorMessage(result.error || 'Bir hata oluştu. Lütfen tekrar deneyin.')
+      }
     } catch (error) {
       setStatus('error')
-      setErrorMessage('Bir hata oluştu. Lütfen tekrar deneyin.')
+      setErrorMessage('Bağlantı hatası. Lütfen tekrar deneyin.')
     }
   }
 
@@ -112,11 +158,25 @@ export default function Contact({ settings }: ContactProps) {
                   type="text"
                   id="name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="input"
+                  onChange={(e) => {
+                    setFormData({ ...formData, name: e.target.value })
+                    if (errors.name) setErrors({ ...errors, name: undefined })
+                  }}
+                  className={`input ${errors.name ? 'border-red-500 focus:ring-red-500' : ''}`}
                   placeholder="Adınız Soyadınız"
+                  maxLength={MAX_NAME_LENGTH}
                   required
                 />
+                <div className="flex justify-between items-center mt-1 text-xs">
+                  {errors.name ? (
+                    <span className="text-red-500">{errors.name}</span>
+                  ) : (
+                    <span className="text-gray-500">Tam adınız</span>
+                  )}
+                  <span className={`${formData.name.length > MAX_NAME_LENGTH - 10 ? 'text-amber-500' : 'text-gray-500'}`}>
+                    {formData.name.length}/{MAX_NAME_LENGTH}
+                  </span>
+                </div>
               </div>
 
               {/* Email Field */}
@@ -128,11 +188,17 @@ export default function Contact({ settings }: ContactProps) {
                   type="email"
                   id="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="input"
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value })
+                    if (errors.email) setErrors({ ...errors, email: undefined })
+                  }}
+                  className={`input ${errors.email ? 'border-red-500 focus:ring-red-500' : ''}`}
                   placeholder="ornek@email.com"
                   required
                 />
+                {errors.email && (
+                  <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+                )}
               </div>
 
               {/* Message Field */}
@@ -143,12 +209,26 @@ export default function Contact({ settings }: ContactProps) {
                 <textarea
                   id="message"
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="textarea"
+                  onChange={(e) => {
+                    setFormData({ ...formData, message: e.target.value })
+                    if (errors.message) setErrors({ ...errors, message: undefined })
+                  }}
+                  className={`textarea ${errors.message ? 'border-red-500 focus:ring-red-500' : ''}`}
                   placeholder="Projen veya fikrin hakkında biraz bilgi verir misin?..."
                   rows={6}
+                  maxLength={MAX_MESSAGE_LENGTH}
                   required
                 />
+                <div className="flex justify-between items-center mt-1 text-xs">
+                  {errors.message ? (
+                    <span className="text-red-500">{errors.message}</span>
+                  ) : (
+                    <span className="text-gray-500">En az 10 karakter</span>
+                  )}
+                  <span className={`${formData.message.length > MAX_MESSAGE_LENGTH - 50 ? 'text-amber-500' : 'text-gray-500'}`}>
+                    {formData.message.length}/{MAX_MESSAGE_LENGTH}
+                  </span>
+                </div>
               </div>
 
               {/* Honeypot - Hidden from users */}
