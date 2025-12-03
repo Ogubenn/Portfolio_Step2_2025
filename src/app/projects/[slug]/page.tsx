@@ -311,9 +311,10 @@ export default function ProjectDetailPage() {
             <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
               🎯 Problem
             </h2>
-            <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary">
-              {project.problem}
-            </p>
+            <div 
+              className="prose prose-invert max-w-none text-lg text-light-text-secondary dark:text-dark-text-secondary"
+              dangerouslySetInnerHTML={{ __html: project.problem || '' }}
+            />
           </motion.div>
 
           {/* Solution */}
@@ -327,9 +328,10 @@ export default function ProjectDetailPage() {
             <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
               💡 Çözüm
             </h2>
-            <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary">
-              {project.solution}
-            </p>
+            <div 
+              className="prose prose-invert max-w-none text-lg text-light-text-secondary dark:text-dark-text-secondary"
+              dangerouslySetInnerHTML={{ __html: project.solution || '' }}
+            />
           </motion.div>
 
           {/* Process */}
@@ -344,9 +346,10 @@ export default function ProjectDetailPage() {
               <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
                 ⚙️ Süreç
               </h2>
-              <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary whitespace-pre-line">
-                {project.process}
-              </p>
+              <div 
+                className="prose prose-invert max-w-none text-lg text-light-text-secondary dark:text-dark-text-secondary"
+                dangerouslySetInnerHTML={{ __html: project.process }}
+              />
             </motion.div>
           )}
 
@@ -362,9 +365,10 @@ export default function ProjectDetailPage() {
               <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
                 📚 Öğrendiklerim
               </h2>
-              <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary whitespace-pre-line">
-                {project.learnings}
-              </p>
+              <div 
+                className="prose prose-invert max-w-none text-lg text-light-text-secondary dark:text-dark-text-secondary"
+                dangerouslySetInnerHTML={{ __html: project.learnings }}
+              />
             </motion.div>
           )}
 

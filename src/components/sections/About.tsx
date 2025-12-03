@@ -129,21 +129,24 @@ export default function About({ settings, skills, experience }: AboutProps) {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="prose prose-lg max-w-none">
+            <div className="space-y-4">
               {data.aboutBio1 && (
-                <p className="text-light-text-primary dark:text-dark-text-primary leading-relaxed mb-4">
-                  {data.aboutBio1}
-                </p>
+                <div 
+                  dangerouslySetInnerHTML={{ __html: data.aboutBio1 }} 
+                  className="prose prose-invert max-w-none prose-p:text-gray-300 prose-headings:text-white prose-a:text-blue-400"
+                />
               )}
               {data.aboutBio2 && (
-                <p className="text-light-text-primary dark:text-dark-text-primary leading-relaxed mb-4">
-                  {data.aboutBio2}
-                </p>
+                <div 
+                  dangerouslySetInnerHTML={{ __html: data.aboutBio2 }} 
+                  className="prose prose-invert max-w-none prose-p:text-gray-300 prose-headings:text-white prose-a:text-blue-400"
+                />
               )}
               {data.aboutBio3 && (
-                <p className="text-light-text-primary dark:text-dark-text-primary leading-relaxed mb-6">
-                  {data.aboutBio3}
-                </p>
+                <div 
+                  dangerouslySetInnerHTML={{ __html: data.aboutBio3 }} 
+                  className="prose prose-invert max-w-none prose-p:text-gray-300 prose-headings:text-white prose-a:text-blue-400"
+                />
               )}
             </div>
 
@@ -332,9 +335,10 @@ export default function About({ settings, skills, experience }: AboutProps) {
                         </span>
                       )}
                     </p>
-                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary line-clamp-3 break-words">
-                      {work.description}
-                    </p>
+                    <div 
+                      className="prose prose-sm prose-invert max-w-none text-sm text-light-text-secondary dark:text-dark-text-secondary line-clamp-3"
+                      dangerouslySetInnerHTML={{ __html: work.description }}
+                    />
                   </div>
                   <div className="md:text-right flex-shrink-0">
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-accent-electric/20 via-accent-purple/20 to-accent-pink/20 text-light-text-primary dark:text-dark-text-primary border border-accent-electric/30 dark:border-accent-purple/30 whitespace-nowrap">

@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ArrowLeft, Save, Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import RichTextEditor from "@/components/ui/RichTextEditor";
 import { validateProjectForm, generateSlug } from "@/lib/validation";
 
 interface ProjectFormData {
@@ -446,14 +447,11 @@ export default function NewProjectPage() {
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Detaylı Açıklama *
             </label>
-            <textarea
-              name="description"
+            <RichTextEditor
               value={formData.description}
-              onChange={handleChange}
-              required
-              rows={6}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => setFormData({ ...formData, description: value })}
               placeholder="Proje hakkında detaylı bilgi..."
+              minHeight="300px"
             />
           </div>
         </div>
@@ -745,13 +743,11 @@ export default function NewProjectPage() {
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Problem
             </label>
-            <textarea
-              name="problem"
+            <RichTextEditor
               value={formData.problem}
-              onChange={handleChange}
-              rows={4}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => setFormData({ ...formData, problem: value })}
               placeholder="Projenin çözdüğü problem..."
+              minHeight="250px"
             />
           </div>
 
@@ -759,13 +755,11 @@ export default function NewProjectPage() {
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Çözüm
             </label>
-            <textarea
-              name="solution"
+            <RichTextEditor
               value={formData.solution}
-              onChange={handleChange}
-              rows={4}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => setFormData({ ...formData, solution: value })}
               placeholder="Uygulanan çözüm..."
+              minHeight="250px"
             />
           </div>
 
@@ -773,13 +767,11 @@ export default function NewProjectPage() {
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Süreç
             </label>
-            <textarea
-              name="process"
+            <RichTextEditor
               value={formData.process}
-              onChange={handleChange}
-              rows={4}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => setFormData({ ...formData, process: value })}
               placeholder="Geliştirme süreci..."
+              minHeight="250px"
             />
           </div>
 
@@ -787,13 +779,11 @@ export default function NewProjectPage() {
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Öğrendiklerim
             </label>
-            <textarea
-              name="learnings"
+            <RichTextEditor
               value={formData.learnings}
-              onChange={handleChange}
-              rows={4}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(value) => setFormData({ ...formData, learnings: value })}
               placeholder="Projeden öğrenilenler..."
+              minHeight="250px"
             />
           </div>
         </div>

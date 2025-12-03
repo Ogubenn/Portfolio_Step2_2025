@@ -90,9 +90,10 @@ export default function Services({ services }: ServicesProps) {
                     </h3>
 
                     {/* Description */}
-                    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4 break-words whitespace-normal">
-                      {service.description}
-                    </p>
+                    <div 
+                      className="prose prose-sm prose-invert max-w-none text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4"
+                      dangerouslySetInnerHTML={{ __html: service.description }}
+                    />
 
                     {/* Features List */}
                     {features.length > 0 && (

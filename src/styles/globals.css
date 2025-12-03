@@ -283,5 +283,85 @@
     border-color: #ec4899;
     box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.2);
   }
+
+  /* Tiptap Rich Text Editor Styles */
+  .ProseMirror {
+    @apply text-gray-200 leading-relaxed;
+  }
+
+  .ProseMirror p {
+    @apply mb-4;
+  }
+
+  .ProseMirror h1 {
+    @apply text-3xl font-bold text-white mb-4 mt-6;
+  }
+
+  .ProseMirror h2 {
+    @apply text-2xl font-bold text-white mb-3 mt-5;
+  }
+
+  .ProseMirror h3 {
+    @apply text-xl font-semibold text-white mb-3 mt-4;
+  }
+
+  .ProseMirror ul {
+    @apply list-disc list-inside mb-4 space-y-2;
+  }
+
+  .ProseMirror ol {
+    @apply list-decimal list-inside mb-4 space-y-2;
+  }
+
+  .ProseMirror li {
+    @apply text-gray-300;
+  }
+
+  .ProseMirror code {
+    @apply bg-gray-800 text-blue-400 px-2 py-1 rounded text-sm font-mono;
+  }
+
+  .ProseMirror pre {
+    @apply bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto mb-4 font-mono text-sm;
+  }
+
+  .ProseMirror pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .ProseMirror blockquote {
+    @apply border-l-4 border-blue-500 pl-4 italic text-gray-400 mb-4;
+  }
+
+  .ProseMirror a {
+    @apply text-blue-400 underline hover:text-blue-300 transition-colors;
+  }
+
+  .ProseMirror strong {
+    @apply font-bold text-white;
+  }
+
+  .ProseMirror em {
+    @apply italic;
+  }
+
+  .ProseMirror hr {
+    @apply border-gray-600 my-6;
+  }
+
+  /* Placeholder */
+  .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #6B7280;
+    pointer-events: none;
+    height: 0;
+  }
+
+  /* Focus */
+  .ProseMirror:focus {
+    @apply outline-none;
+  }
 }
+
 

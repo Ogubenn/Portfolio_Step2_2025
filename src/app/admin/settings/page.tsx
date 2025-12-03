@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { Save, Globe, Mail, Phone, MapPin, Github, Linkedin, Upload, FileText, X } from 'lucide-react'
 import { TextInputWithCounter, TextAreaWithCounter } from '@/components/ui/CharacterCounter'
 import { CHAR_LIMITS } from '@/lib/constants'
+import RichTextEditor from '@/components/ui/RichTextEditor'
 
 interface SiteSettings {
   id: number
@@ -300,25 +301,29 @@ export default function SettingsPage() {
               required
             />
             
-            <TextInputWithCounter
-              type="text"
-              name="heroSubtitle"
-              value={settings.heroSubtitle}
-              onChange={handleChange}
-              maxLength={CHAR_LIMITS.SUBTITLE}
-              label="Alt Başlık"
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Alt Başlık <span className="text-red-500">*</span>
+              </label>
+              <RichTextEditor
+                value={settings.heroSubtitle}
+                onChange={(value) => setSettings(prev => prev ? { ...prev, heroSubtitle: value } : null)}
+                placeholder="Full-Stack Developer & UI/UX Enthusiast"
+                minHeight="120px"
+              />
+            </div>
             
-            <TextAreaWithCounter
-              name="heroBio"
-              value={settings.heroBio || ''}
-              onChange={handleChange}
-              maxLength={CHAR_LIMITS.BIO}
-              label="Açıklama Metni"
-              rows={3}
-              placeholder="Web teknolojileri ve oyun geliştirme konusunda tutkulu bir yazılımcıyım..."
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Açıklama Metni
+              </label>
+              <RichTextEditor
+                value={settings.heroBio || ''}
+                onChange={(value) => setSettings(prev => prev ? { ...prev, heroBio: value } : null)}
+                placeholder="Web teknolojileri ve oyun geliştirme konusunda tutkulu bir yazılımcıyım..."
+                minHeight="150px"
+              />
+            </div>
             
             <TextInputWithCounter
               type="text"
@@ -425,33 +430,39 @@ export default function SettingsPage() {
               rows={2}
               required
             />
-            <TextAreaWithCounter
-              name="aboutBio1"
-              value={settings.aboutBio1 || ''}
-              onChange={handleChange}
-              maxLength={CHAR_LIMITS.BIO}
-              label="Biyografi Paragraf 1"
-              rows={3}
-              placeholder="Örn: Merhaba! Ben Oğulcan, yazılım geliştirme tutkusuyla kod yazan bir yazılımcıyım..."
-            />
-            <TextAreaWithCounter
-              name="aboutBio2"
-              value={settings.aboutBio2 || ''}
-              onChange={handleChange}
-              maxLength={CHAR_LIMITS.BIO}
-              label="Biyografi Paragraf 2"
-              rows={3}
-              placeholder="Örn: Her projede kaliteli ve kullanıcı dostu çözümler üretmeye odaklanıyorum..."
-            />
-            <TextAreaWithCounter
-              name="aboutBio3"
-              value={settings.aboutBio3 || ''}
-              onChange={handleChange}
-              maxLength={CHAR_LIMITS.BIO}
-              label="Biyografi Paragraf 3"
-              rows={3}
-              placeholder="Örn: Yeni projeler ve iş birlikleri için her zaman heyecanlıyım..."
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Biyografi Paragraf 1
+              </label>
+              <RichTextEditor
+                value={settings.aboutBio1 || ''}
+                onChange={(value) => setSettings(prev => prev ? { ...prev, aboutBio1: value } : null)}
+                placeholder="Örn: Merhaba! Ben Oğulcan, yazılım geliştirme tutkusuyla kod yazan bir yazılımcıyım..."
+                minHeight="150px"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Biyografi Paragraf 2
+              </label>
+              <RichTextEditor
+                value={settings.aboutBio2 || ''}
+                onChange={(value) => setSettings(prev => prev ? { ...prev, aboutBio2: value } : null)}
+                placeholder="Örn: Her projede kaliteli ve kullanıcı dostu çözümler üretmeye odaklanıyorum..."
+                minHeight="150px"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Biyografi Paragraf 3
+              </label>
+              <RichTextEditor
+                value={settings.aboutBio3 || ''}
+                onChange={(value) => setSettings(prev => prev ? { ...prev, aboutBio3: value } : null)}
+                placeholder="Örn: Yeni projeler ve iş birlikleri için her zaman heyecanlıyım..."
+                minHeight="150px"
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Çalışma Yaklaşımım (Maddeler)

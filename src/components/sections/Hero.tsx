@@ -59,24 +59,24 @@ export default function Hero({ settings }: HeroProps) {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="heading-1 mb-6"
             >
-              {data.heroSubtitle.split('&').map((part, index) => (
-                index === 0 ? (
-                  <span key={index}>{part} & </span>
-                ) : (
-                  <span key={index} className="text-gradient">{part}</span>
-                )
-              ))}
+              <div 
+                dangerouslySetInnerHTML={{ __html: data.heroSubtitle || defaultSettings.heroSubtitle }} 
+                className="prose prose-invert max-w-none prose-headings:text-white prose-p:text-white"
+              />
             </motion.h1>
 
             {/* Subheading */}
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-lg md:text-xl text-light-text-secondary dark:text-dark-text-secondary mb-8 max-w-2xl mx-auto lg:mx-0 break-words whitespace-normal"
+              className="text-lg md:text-xl text-light-text-secondary dark:text-dark-text-secondary mb-8 max-w-2xl mx-auto lg:mx-0"
             >
-              {data.heroBio || defaultSettings.heroBio}
-            </motion.p>
+              <div 
+                dangerouslySetInnerHTML={{ __html: data.heroBio || defaultSettings.heroBio }} 
+                className="prose prose-invert max-w-none prose-p:text-gray-400"
+              />
+            </motion.div>
 
             {/* CTA Buttons */}
             <motion.div

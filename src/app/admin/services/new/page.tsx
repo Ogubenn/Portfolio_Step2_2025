@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Save, Plus, X, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import RichTextEditor from '@/components/ui/RichTextEditor'
 import { validateServiceForm } from '@/lib/validation'
 
 export default function NewServicePage() {
@@ -151,14 +152,11 @@ export default function NewServicePage() {
           <label className="block text-sm font-medium text-gray-300 mb-2">
             Açıklama <span className="text-red-500">*</span>
           </label>
-          <textarea
-            name="description"
+          <RichTextEditor
             value={formData.description}
-            onChange={handleChange}
-            required
-            rows={4}
+            onChange={(value) => setFormData({ ...formData, description: value })}
             placeholder="Hizmet açıklaması..."
-            className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            minHeight="250px"
           />
         </div>
 
