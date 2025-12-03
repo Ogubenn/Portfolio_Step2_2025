@@ -4,6 +4,7 @@ import '@/styles/globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import AuthProvider from '@/components/providers/AuthProvider'
+import { PersonSchema, WebsiteSchema } from '@/components/seo/JsonLd'
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -17,35 +18,51 @@ export const revalidate = 0
 
 export const metadata: Metadata = {
   title: {
-    default: 'Oğulcan - Full-Stack Developer & Yaratıcı Yazılımcı',
-    template: '%s | Oğulcan',
+    default: 'Oğulcan Benli - Full-Stack Developer & Creative Coder',
+    template: '%s | Oğulcan Benli',
   },
-  description: 'Web ve oyun geliştirme konusunda tutkulu bir yazılımcı. React, Next.js, TypeScript ve modern teknolojilerle yaratıcı projeler geliştiriyorum.',
-  keywords: ['full-stack developer', 'web developer', 'game developer', 'react', 'next.js', 'typescript', 'unity', 'portfolio', 'yazılımcı'],
-  authors: [{ name: 'Oğulcan' }],
-  creator: 'Oğulcan',
-  metadataBase: new URL('https://yourwebsite.com'), // Kendi domain'inizi buraya ekleyin
+  description: 'Full-stack yazılım geliştiricisi. React, Next.js, TypeScript, Node.js ve Unity ile modern web uygulamaları ve oyunlar geliştiriyorum. Türkiye\'de web geliştirme hizmetleri.',
+  keywords: [
+    // Core skills
+    'full-stack developer', 'web developer', 'game developer', 'yazılım geliştirici',
+    // Technologies
+    'react', 'next.js', 'typescript', 'javascript', 'node.js', 'prisma', 'mysql', 'unity', 'c#',
+    // Services
+    'web development', 'game development', 'frontend', 'backend', 'full-stack',
+    // Location
+    'türkiye', 'turkey', 'istanbul',
+    // General
+    'portfolio', 'freelance', 'yazılımcı', 'developer portfolio'
+  ],
+  authors: [{ name: 'Oğulcan Benli', url: 'https://ogubenn.com.tr' }],
+  creator: 'Oğulcan Benli',
+  publisher: 'Oğulcan Benli',
+  metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: 'website',
     locale: 'tr_TR',
-    url: 'https://yourwebsite.com',
-    siteName: 'Oğulcan - Portfolio',
-    title: 'Oğulcan - Full-Stack Developer & Yaratıcı Yazılımcı',
-    description: 'Web ve oyun geliştirme konusunda tutkulu bir yazılımcı.',
+    url: process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr',
+    siteName: 'Oğulcan Benli - Portfolio',
+    title: 'Oğulcan Benli - Full-Stack Developer & Creative Coder',
+    description: 'Full-stack yazılım geliştiricisi. React, Next.js, TypeScript, Node.js ve Unity ile modern web uygulamaları ve oyunlar geliştiriyorum.',
     images: [
       {
-        url: '/og-image.jpg', // Open Graph görseli ekleyin
+        url: '/og-image.jpg', // TODO: Open Graph görseli ekleyin (1200x630px)
         width: 1200,
         height: 630,
-        alt: 'Oğulcan Portfolio',
+        alt: 'Oğulcan Benli - Full-Stack Developer Portfolio',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Oğulcan - Full-Stack Developer',
-    description: 'Web ve oyun geliştirme konusunda tutkulu bir yazılımcı.',
-    images: ['/og-image.jpg'],
+    title: 'Oğulcan Benli - Full-Stack Developer',
+    description: 'React, Next.js, TypeScript, Node.js ve Unity ile modern web uygulamaları ve oyunlar geliştiriyorum.',
+    images: ['/og-image.jpg'], // TODO: Twitter card görseli ekleyin
+    creator: '@ogubenn', // TODO: Twitter username'inizi ekleyin
   },
   robots: {
     index: true,
@@ -70,9 +87,35 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const siteUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
+  
   return (
     <html lang="tr" className={`dark ${inter.variable}`}>
       <body className="antialiased">
+        {/* JSON-LD Structured Data */}
+        <PersonSchema
+          name="Oğulcan Benli"
+          url={siteUrl}
+          image={`${siteUrl}/og-image.jpg`}
+          jobTitle="Full-Stack Developer & Creative Coder"
+          description="React, Next.js, TypeScript, Node.js ve Unity ile modern web uygulamaları ve oyunlar geliştiren yazılım geliştirici."
+          email="ogulcan285@outlook.com"
+          sameAs={[
+            'https://github.com/ogubenn',
+            'https://linkedin.com/in/ogubenn',
+            'https://twitter.com/ogubenn',
+          ]}
+        />
+        <WebsiteSchema
+          name="Oğulcan Benli - Portfolio"
+          url={siteUrl}
+          description="Full-stack yazılım geliştiricisi. React, Next.js, TypeScript, Node.js ve Unity ile modern web uygulamaları ve oyunlar geliştiriyorum."
+          author={{
+            name: 'Oğulcan Benli',
+            url: siteUrl,
+          }}
+        />
+        
         <AuthProvider>
           <Header />
           <main className="min-h-screen">
