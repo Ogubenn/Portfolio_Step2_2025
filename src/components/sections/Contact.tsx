@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Send, CheckCircle, AlertCircle, Mail, Github, Linkedin, MapPin, Phone } from 'lucide-react'
+import { trackContactFormSubmit } from '@/lib/analytics'
 
 interface SiteSettings {
   contactEmail: string | null
@@ -110,15 +111,24 @@ export default function Contact({ settings }: ContactProps) {
         setFormData({ name: '', email: '', message: '', honeypot: '' })
         setErrors({})
         
+        // Track successful form submission
+        trackContactFormSubmit(true)
+        
         // Reset success message after 5 seconds
         setTimeout(() => setStatus('idle'), 5000)
       } else {
         setStatus('error')
         setErrorMessage(result.error || 'Bir hata oluştu. Lütfen tekrar deneyin.')
+        
+        // Track failed form submission
+        trackContactFormSubmit(false)
       }
     } catch (error) {
       setStatus('error')
       setErrorMessage('Bağlantı hatası. Lütfen tekrar deneyin.')
+      
+      // Track failed form submission
+      trackContactFormSubmit(false)
     }
   }
 

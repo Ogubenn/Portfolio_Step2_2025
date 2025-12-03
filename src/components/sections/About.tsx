@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Download, Code, Palette, Gamepad2, Database, FileText } from 'lucide-react'
+import { trackCVDownload } from '@/lib/analytics'
 
 interface Skill {
   id: number
@@ -156,6 +157,7 @@ export default function About({ settings, skills, experience }: AboutProps) {
                 <a
                   href={data.cvFileUrl}
                   download
+                  onClick={() => trackCVDownload()}
                   className="btn-primary inline-flex group"
                 >
                   <Download className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />

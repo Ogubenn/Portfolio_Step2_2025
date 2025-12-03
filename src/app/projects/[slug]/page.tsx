@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { ArrowLeft, ExternalLink, Github, Calendar, Users, Clock, Tag, Home } from 'lucide-react'
 import Link from 'next/link'
 import ImageCarousel from '@/components/ui/ImageCarousel'
+import { trackProjectView, trackProjectClick } from '@/lib/analytics'
 
 interface Project {
   id: string
@@ -77,6 +78,9 @@ export default function ProjectDetailPage() {
         data.technologies = ensureArray(data.technologies)
         data.tags = ensureArray(data.tags)
         setProject(data)
+        
+        // Track project view
+        trackProjectView(data.title, data.slug)
       } else {
         setNotFound(true)
       }
@@ -168,6 +172,7 @@ export default function ProjectDetailPage() {
                     href={project.demoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackProjectClick(project.title, 'demo')}
                     className="btn-primary inline-flex"
                   >
                     <ExternalLink className="w-5 h-5" />
@@ -179,6 +184,7 @@ export default function ProjectDetailPage() {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackProjectClick(project.title, 'github')}
                     className="btn-secondary inline-flex"
                   >
                     <Github className="w-5 h-5" />

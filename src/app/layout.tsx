@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Script from 'next/script'
+import { Analytics } from '@vercel/analytics/react'
 import '@/styles/globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import AuthProvider from '@/components/providers/AuthProvider'
+import PageViewTracker from '@/components/analytics/PageViewTracker'
 import { PersonSchema, WebsiteSchema } from '@/components/seo/JsonLd'
 
 const inter = Inter({
@@ -88,9 +91,31 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const siteUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
   
   return (
     <html lang="tr" className={`dark ${inter.variable}`}>
+      <head>
+        {/* Google Analytics 4 */}
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}', {
+                  page_path: window.location.pathname,
+                });
+              `}
+            </Script>
+          </>
+        )}
+      </head>
       <body className="antialiased">
         {/* JSON-LD Structured Data */}
         <PersonSchema
@@ -123,6 +148,10 @@ export default function RootLayout({
           </main>
           <Footer />
         </AuthProvider>
+        
+        {/* Analytics tracking */}
+        <PageViewTracker />
+        <Analytics />
       </body>
     </html>
   )
