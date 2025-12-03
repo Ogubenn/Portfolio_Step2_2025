@@ -3,6 +3,7 @@
 import { useParams, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { ArrowLeft, ExternalLink, Github, Calendar, Users, Clock, Tag, Home } from 'lucide-react'
 import Link from 'next/link'
 
@@ -253,12 +254,14 @@ export default function ProjectDetailPage() {
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="relative group overflow-hidden rounded-xl"
+                      className="relative group overflow-hidden rounded-xl h-64"
                     >
-                      <img
+                      <Image
                         src={image.url}
                         alt={image.alt || `${project.title} - Görsel ${index + 1}`}
-                        className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </motion.div>

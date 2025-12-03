@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
@@ -200,10 +201,12 @@ export default function AdminProjectsPage() {
               {/* Thumbnail */}
               <div className="relative h-48 bg-gray-900 overflow-hidden">
                 {project.thumbnail ? (
-                  <img
+                  <Image
                     src={project.thumbnail}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-600">

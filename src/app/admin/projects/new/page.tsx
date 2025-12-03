@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { ArrowLeft, Save, Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -498,11 +499,13 @@ export default function NewProjectPage() {
 
             {/* Önizleme */}
             {formData.thumbnail && (
-              <div className="mt-3">
-                <img
+              <div className="mt-3 relative h-48 rounded-lg border border-gray-600 overflow-hidden">
+                <Image
                   src={formData.thumbnail}
                   alt="Thumbnail preview"
-                  className="w-full h-48 object-cover rounded-lg border border-gray-600"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}
@@ -542,11 +545,13 @@ export default function NewProjectPage() {
             {galleryImages.length > 0 && (
               <div className="grid grid-cols-3 gap-3">
                 {galleryImages.map((imageUrl, index) => (
-                  <div key={index} className="relative group">
-                    <img
+                  <div key={index} className="relative group h-32">
+                    <Image
                       src={imageUrl}
                       alt={`Gallery ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-lg border border-gray-600"
+                      fill
+                      className="object-cover rounded-lg border border-gray-600"
+                      sizes="(max-width: 768px) 33vw, 20vw"
                     />
                     <button
                       type="button"

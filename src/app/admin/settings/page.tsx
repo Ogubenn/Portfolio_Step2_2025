@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { Save, Globe, Mail, Phone, MapPin, Github, Linkedin, Upload, FileText, X } from 'lucide-react'
 import { TextInputWithCounter, TextAreaWithCounter } from '@/components/ui/CharacterCounter'
 import { CHAR_LIMITS } from '@/lib/constants'
@@ -342,10 +343,12 @@ export default function SettingsPage() {
               {settings.heroImage ? (
                 <div className="space-y-2">
                   <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-700">
-                    <img
+                    <Image
                       src={settings.heroImage}
                       alt="Hero"
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   </div>
                   <div className="flex gap-2">

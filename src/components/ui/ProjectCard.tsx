@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, ExternalLink, Github } from 'lucide-react'
 
 interface ProjectCardProps {
@@ -51,10 +52,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       {/* Project Image */}
       <div className="relative w-full aspect-video bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded-lg overflow-hidden mb-4">
         {project.thumbnail ? (
-          <img
+          <Image
             src={project.thumbnail}
             alt={project.title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-accent-electric/20 via-accent-purple/20 to-accent-pink/20 flex items-center justify-center">

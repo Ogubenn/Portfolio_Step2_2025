@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, ChevronDown } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -110,10 +111,13 @@ export default function Hero({ settings }: HeroProps) {
               {/* Main image container */}
               <div className="relative w-full h-full bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-2xl overflow-hidden shadow-large flex items-center justify-center border border-light-border dark:border-dark-border">
                 {data.heroImage ? (
-                  <img
+                  <Image
                     src={data.heroImage}
                     alt="Profile"
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 0vw, 50vw"
+                    priority
                   />
                 ) : (
                   <div className="text-center p-8">
