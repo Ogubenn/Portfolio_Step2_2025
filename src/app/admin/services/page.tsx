@@ -144,7 +144,7 @@ export default function ServicesPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white">Hizmetler</h1>
+            <h1 className="text-3xl font-bold text-white">Neler Yapıyorum</h1>
             <p className="text-gray-400 mt-1">Yükleniyor...</p>
           </div>
         </div>
@@ -162,7 +162,7 @@ export default function ServicesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Hizmetler</h1>
+          <h1 className="text-3xl font-bold text-white">Neler Yapıyorum</h1>
           <p className="text-gray-400 mt-1">
             Toplam {services.length} hizmet • {visibleCount} görünür
           </p>

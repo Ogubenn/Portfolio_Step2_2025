@@ -52,7 +52,7 @@ export default function Services({ services }: ServicesProps) {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="heading-2 mb-4">Hizmetlerim</h2>
+          <h2 className="heading-2 mb-4">Neler Yapıyorum</h2>
           <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary max-w-2xl mx-auto">
             Sunduğum profesyonel hizmetler
           </p>

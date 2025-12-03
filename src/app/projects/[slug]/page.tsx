@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { ArrowLeft, ExternalLink, Github, Calendar, Users, Clock, Tag, Home } from 'lucide-react'
 import Link from 'next/link'
+import ImageCarousel from '@/components/ui/ImageCarousel'
 
 interface Project {
   id: string
@@ -234,7 +235,7 @@ export default function ProjectDetailPage() {
       {(project.images && project.images.length > 0) || project.videoUrl ? (
         <section className="section-padding bg-light-bg-secondary dark:bg-dark-bg-secondary">
           <div className="container-custom max-w-5xl">
-            {/* Proje Fotoğrafları */}
+            {/* Proje Fotoğrafları - Swiper Carousel */}
             {project.images && project.images.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -246,27 +247,7 @@ export default function ProjectDetailPage() {
                 <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-6">
                   Proje Görselleri
                 </h2>
-                <div className={`grid gap-6 ${project.images.length === 1 ? 'grid-cols-1' : project.images.length === 2 ? 'grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
-                  {project.images.map((image, index) => (
-                    <motion.div
-                      key={image.id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="relative group overflow-hidden rounded-xl h-64"
-                    >
-                      <Image
-                        src={image.url}
-                        alt={image.alt || `${project.title} - Görsel ${index + 1}`}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </motion.div>
-                  ))}
-                </div>
+                <ImageCarousel images={project.images} projectTitle={project.title} />
               </motion.div>
             )}
 
