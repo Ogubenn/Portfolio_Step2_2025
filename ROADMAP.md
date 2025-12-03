@@ -252,7 +252,7 @@ Son Güncelleme: 2 Aralık 2025
 - [x] Submit loading state ✅
 - [x] Success/error feedback ✅
 - [x] Real-time error messages ✅
-- [x] Field-level validation ✅
+- [x] Field-level validation ✅.
 
 #### B. Backend API ✅
 - [x] `/api/contact` endpoint ✅
