@@ -98,10 +98,9 @@ export default function Header() {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-dark-bg-primary/95 backdrop-blur-md md:hidden"
-          style={{ top: '64px' }}
+          className="fixed inset-0 bg-dark-bg-primary/98 backdrop-blur-lg md:hidden z-40"
         >
-          <nav className="container-custom py-8">
+          <nav className="container-custom pt-24 pb-8 h-full overflow-y-auto">
             <ul className="flex flex-col gap-6">
               {navItems.map((item, index) => (
                 <li

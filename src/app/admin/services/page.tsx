@@ -230,8 +230,52 @@ export default function ServicesPage() {
         </Link>
       </div>
 
-      {/* Search */}
+      {/* Bulk Actions Bar */}
+      {selectedServices.size > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-blue-400 font-medium">
+              {selectedServices.size} hizmet seçildi
+            </span>
+            <button
+              onClick={() => setSelectedServices(new Set())}
+              className="text-sm text-gray-400 hover:text-white transition-colors"
+            >
+              Seçimi Temizle
+            </button>
+          </div>
+          <button
+            onClick={() => setBulkDeleteDialog(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-all"
+          >
+            <Trash2 className="w-4 h-4" />
+            Toplu Sil
+          </button>
+        </motion.div>
+      )}
+
+      {/* Search & Select All */}
       <div className="flex gap-4">
+        {/* Select All Checkbox */}
+        {filteredServices.length > 0 && (
+          <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg">
+            <input
+              type="checkbox"
+              id="select-all-services"
+              checked={selectedServices.size === filteredServices.length && filteredServices.length > 0}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+            />
+            <label htmlFor="select-all-services" className="text-sm text-gray-400 cursor-pointer select-none">
+              Tümünü Seç
+            </label>
+          </div>
+        )}
+        
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
           <input
@@ -254,14 +298,28 @@ export default function ServicesPage() {
         ) : (
           filteredServices.map((service) => {
             const features = safeParseFeatures(service.features)
+            const isSelected = selectedServices.has(service.id)
             return (
               <motion.div
                 key={service.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-gray-600 transition-colors"
+                className={`bg-gray-800 border rounded-lg p-6 hover:border-gray-600 transition-all relative ${
+                  isSelected ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-700'
+                }`}
               >
-                <div className="flex items-start justify-between gap-4 mb-4">
+                {/* Checkbox for selection */}
+                <div className="absolute top-3 right-3 z-10">
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleServiceSelection(service.id)}
+                    className="w-5 h-5 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+
+                <div className="flex items-start justify-between gap-4 mb-4 pr-8">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-2 flex-wrap">
                       <h3 className="text-xl font-bold text-white break-words">
@@ -341,6 +399,19 @@ export default function ServicesPage() {
         confirmText="Evet, Sil"
         cancelText="İptal"
         isLoading={isDeleting}
+        variant="danger"
+      />
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={bulkDeleteDialog}
+        onClose={() => !isBulkDeleting && setBulkDeleteDialog(false)}
+        onConfirm={handleBulkDelete}
+        title={`${selectedServices.size} Hizmeti Sil`}
+        message={`Seçili ${selectedServices.size} hizmeti kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`}
+        confirmText="Evet, Toplu Sil"
+        cancelText="İptal"
+        isLoading={isBulkDeleting}
         variant="danger"
       />
     </div>
