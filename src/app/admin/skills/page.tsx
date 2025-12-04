@@ -29,6 +29,11 @@ export default function SkillsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; skill: Skill | null }>({ isOpen: false, skill: null })
   const [isDeleting, setIsDeleting] = useState(false)
+  
+  // Bulk operations state
+  const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set())
+  const [bulkDeleteDialog, setBulkDeleteDialog] = useState(false)
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false)
 
   useEffect(() => {
     fetchSkills()
@@ -86,6 +91,55 @@ export default function SkillsPage() {
       toast.error('Bir hata oluştu', { id: deleteToast })
     } finally {
       setIsDeleting(false)
+    }
+  }
+
+  // Bulk operations handlers
+  const toggleSkillSelection = (skillId: string) => {
+    const newSelected = new Set(selectedSkills)
+    if (newSelected.has(skillId)) {
+      newSelected.delete(skillId)
+    } else {
+      newSelected.add(skillId)
+    }
+    setSelectedSkills(newSelected)
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedSkills.size === filteredSkills.length) {
+      setSelectedSkills(new Set())
+    } else {
+      setSelectedSkills(new Set(filteredSkills.map(s => s.id)))
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedSkills.size === 0) return
+
+    setIsBulkDeleting(true)
+    const deleteToast = toast.loading(`${selectedSkills.size} yetenek siliniyor...`)
+
+    try {
+      const response = await fetch('/api/skills/bulk', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: Array.from(selectedSkills) }),
+      })
+
+      if (response.ok) {
+        setSkills(skills.filter(s => !selectedSkills.has(s.id)))
+        setSelectedSkills(new Set())
+        toast.success(`${selectedSkills.size} yetenek başarıyla silindi!`, { id: deleteToast })
+        setBulkDeleteDialog(false)
+      } else {
+        const data = await response.json()
+        toast.error(data.error || 'Yetenekler silinemedi', { id: deleteToast })
+      }
+    } catch (error) {
+      console.error('Bulk delete error:', error)
+      toast.error('Bir hata oluştu', { id: deleteToast })
+    } finally {
+      setIsBulkDeleting(false)
     }
   }
 
@@ -155,8 +209,52 @@ export default function SkillsPage() {
         </Link>
       </div>
 
+      {/* Bulk Actions Bar */}
+      {selectedSkills.size > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-blue-400 font-medium">
+              {selectedSkills.size} yetenek seçildi
+            </span>
+            <button
+              onClick={() => setSelectedSkills(new Set())}
+              className="text-sm text-gray-400 hover:text-white transition-colors"
+            >
+              Seçimi Temizle
+            </button>
+          </div>
+          <button
+            onClick={() => setBulkDeleteDialog(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-all"
+          >
+            <Trash2 className="w-4 h-4" />
+            Toplu Sil
+          </button>
+        </motion.div>
+      )}
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
+        {/* Select All Checkbox */}
+        {filteredSkills.length > 0 && (
+          <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg">
+            <input
+              type="checkbox"
+              id="select-all-skills"
+              checked={selectedSkills.size === filteredSkills.length && filteredSkills.length > 0}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+            />
+            <label htmlFor="select-all-skills" className="text-sm text-gray-400 cursor-pointer select-none">
+              Tümünü Seç
+            </label>
+          </div>
+        )}
+        
         {/* Search */}
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -205,6 +303,8 @@ export default function SkillsPage() {
                     <SkillCard
                       key={skill.id}
                       skill={skill}
+                      isSelected={selectedSkills.has(skill.id)}
+                      onSelect={toggleSkillSelection}
                       onDelete={openDeleteDialog}
                       onToggleVisibility={toggleVisibility}
                     />
@@ -220,6 +320,8 @@ export default function SkillsPage() {
             <SkillCard
               key={skill.id}
               skill={skill}
+              isSelected={selectedSkills.has(skill.id)}
+              onSelect={toggleSkillSelection}
               onDelete={openDeleteDialog}
               onToggleVisibility={toggleVisibility}
             />
@@ -245,25 +347,52 @@ export default function SkillsPage() {
         isLoading={isDeleting}
         variant="danger"
       />
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={bulkDeleteDialog}
+        onClose={() => !isBulkDeleting && setBulkDeleteDialog(false)}
+        onConfirm={handleBulkDelete}
+        title="Toplu Silme"
+        message={`${selectedSkills.size} yeteneği kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`}
+        confirmText={`Evet, ${selectedSkills.size} Yeteneği Sil`}
+        cancelText="İptal"
+        isLoading={isBulkDeleting}
+        variant="danger"
+      />
     </div>
   )
 }
 
 interface SkillCardProps {
   skill: Skill
+  isSelected: boolean
+  onSelect: (skillId: string) => void
   onDelete: (skill: Skill) => void
   onToggleVisibility: (skill: Skill) => void
 }
 
-function SkillCard({ skill, onDelete, onToggleVisibility }: SkillCardProps) {
+function SkillCard({ skill, isSelected, onSelect, onDelete, onToggleVisibility }: SkillCardProps) {
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
-      className="bg-gray-800 border border-gray-700 rounded-xl p-4 relative group"
+      className={`bg-gray-800 border rounded-xl p-4 relative group ${
+        isSelected ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-700'
+      }`}
     >
+      {/* Checkbox */}
+      <div className="absolute top-3 right-3 z-10">
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={() => onSelect(skill.id)}
+          className="w-4 h-4 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+        />
+      </div>
+
       {/* Visibility Badge */}
       {!skill.visible && (
-        <div className="absolute top-2 right-2 px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded">
+        <div className="absolute top-2 left-2 px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded">
           Gizli
         </div>
       )}

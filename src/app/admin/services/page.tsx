@@ -45,6 +45,11 @@ export default function ServicesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; service: Service | null }>({ isOpen: false, service: null })
   const [isDeleting, setIsDeleting] = useState(false)
+  
+  // Bulk operations state
+  const [selectedServices, setSelectedServices] = useState<Set<string>>(new Set())
+  const [bulkDeleteDialog, setBulkDeleteDialog] = useState(false)
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false)
 
   useEffect(() => {
     fetchServices()
@@ -123,17 +128,66 @@ export default function ServicesPage() {
 
       if (response.ok) {
         toast.success('Hizmet başarıyla silindi!', { id: deleteToast })
-        closeDeleteDialog()
         fetchServices()
+        closeDeleteDialog()
       } else {
         const data = await response.json()
         toast.error(data.error || 'Hizmet silinemedi', { id: deleteToast })
       }
     } catch (error) {
-      console.error('Failed to delete service:', error)
+      console.error('Delete error:', error)
       toast.error('Bir hata oluştu', { id: deleteToast })
     } finally {
       setIsDeleting(false)
+    }
+  }
+
+  // Bulk operations handlers
+  const toggleServiceSelection = (serviceId: string) => {
+    const newSelected = new Set(selectedServices)
+    if (newSelected.has(serviceId)) {
+      newSelected.delete(serviceId)
+    } else {
+      newSelected.add(serviceId)
+    }
+    setSelectedServices(newSelected)
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedServices.size === filteredServices.length) {
+      setSelectedServices(new Set())
+    } else {
+      setSelectedServices(new Set(filteredServices.map(s => s.id)))
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedServices.size === 0) return
+
+    setIsBulkDeleting(true)
+    const deleteToast = toast.loading(`${selectedServices.size} hizmet siliniyor...`)
+
+    try {
+      const response = await fetch('/api/services/bulk', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: Array.from(selectedServices) }),
+      })
+
+      if (response.ok) {
+        setServices(services.filter(s => !selectedServices.has(s.id)))
+        setSelectedServices(new Set())
+        toast.success(`${selectedServices.size} hizmet başarıyla silindi!`, { id: deleteToast })
+        setBulkDeleteDialog(false)
+      } else {
+        const data = await response.json()
+        toast.error(data.error || 'Hizmetler silinemedi', { id: deleteToast })
+      }
+    } catch (error) {
+      console.error('Bulk delete error:', error)
+      toast.error('Bir hata oluştu', { id: deleteToast })
+    } finally {
+      setIsBulkDeleting(false)
     }
   }
 

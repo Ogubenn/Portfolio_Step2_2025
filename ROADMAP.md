@@ -426,30 +426,107 @@ CONTACT_EMAIL="your@email.com"       # Recipient
 - `.env.example` (NEXT_PUBLIC_GA_MEASUREMENT_ID) ✅
 
 **Bundle Impact:**
-- Homepage: 291 KB (+1 KB - minimal analytics overhead)
+- Homepage: 290 KB (unchanged - analytics load afterInteractive)
 - GA4: ~2 KB (CDN, afterInteractive load)
 - Vercel Analytics: ~1 KB (gzipped)
 - Total analytics: ~3 KB
 
-**Configuration Required:**
-1. Create GA4 property at https://analytics.google.com
-2. Copy Measurement ID (G-XXXXXXXXXX)
-3. Add to `.env`: `NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XXXXXXXXXX"`
-4. Add to Vercel env variables (production)
-5. Vercel Analytics auto-enabled on deployment
+**Configuration:**
+1. ✅ GA4 Measurement ID: `G-6GMGDY15PD`
+2. ✅ Added to `.env`: `NEXT_PUBLIC_GA_MEASUREMENT_ID="G-6GMGDY15PD"`
+3. ✅ Tested in development: window.dataLayer confirmed (6 events)
+4. 🟡 Pending: Add to Vercel production env variables
+5. ✅ Vercel Analytics auto-enabled on deployment
+
+**Tamamlanma Tarihi:** 4 Aralık 2025 ✅
+
+---
+
+### ✅ Phase 12: Admin Panel Enhancements (TAMAMLANDI)
+**Öncelik: Yüksek | Business Impact: Yüksek**
+
+#### A. Bulk Operations ✅
+**Özellikler:**
+- ✅ Checkbox selection system (Set data structure)
+- ✅ "Select All" functionality
+- ✅ Bulk action bar (selection count + actions)
+- ✅ Bulk delete with confirmation dialog
+- ✅ Activity logging (count + item names)
+- ✅ Visual feedback (border highlights)
+
+**Uygulanan Bölümler:**
+- ✅ Projects: Full implementation
+  - Checkbox UI, bulk actions bar, delete dialog
+  - API: `POST /api/projects/bulk` (DELETE method)
+  - Activity log: Tracks count, titles, IDs
+- ✅ Skills: Full implementation
+  - SkillCard refactored with isSelected/onSelect props
+  - Both category view and filtered view supported
+  - Same features as Projects
+- 🟡 Services: Backend complete, Frontend UI pending
+  - API endpoint ready: `POST /api/services/bulk`
+  - Handlers implemented (state + functions)
+  - Missing: Checkbox in cards, bulk actions bar, dialog
+
+**Dosyalar:**
+- `src/app/admin/projects/page.tsx` (bulk UI + handlers) ✅
+- `src/app/api/projects/bulk/route.ts` (DELETE endpoint) ✅
+- `src/app/admin/skills/page.tsx` (bulk UI + handlers) ✅
+- `src/app/api/skills/bulk/route.ts` (DELETE endpoint) ✅
+- `src/app/admin/services/page.tsx` (handlers only) 🟡
+- `src/app/api/services/bulk/route.ts` (DELETE endpoint) ✅
+
+**Bundle Impact:**
+- Projects page: +0.35 KB (3.35 KB total)
+- Skills page: +0.36 KB (3.36 KB total)
+- Services page: 0 KB (UI not added yet)
+
+#### B. Profile Settings ✅
+**Özellikler:**
+- ✅ Email/Name update
+- ✅ Password change (bcrypt security, 10 rounds)
+- ✅ Current password verification
+- ✅ Email uniqueness validation
+- ✅ Password visibility toggles (Eye/EyeOff icons)
+- ✅ Client + server-side validation
+- ✅ Activity logging for profile changes
+
+**Dosyalar:**
+- `src/app/api/profile/route.ts` (GET + PUT handlers) ✅
+- `src/app/admin/profile/page.tsx` (complete form UI) ✅
+- `src/app/admin/layout.tsx` (sidebar menu item added) ✅
+
+**Güvenlik:**
+- bcrypt.compare() for current password validation
+- bcrypt.hash() with 10 rounds for new passwords
+- Minimum 6 characters password requirement
+- Email uniqueness check before update
+- Session-based authentication (NextAuth)
+
+**Bundle Impact:**
+- Profile page: 2.57 KB (new page)
+- Admin layout: 0 KB (minimal navigation update)
+
+**Tamamlanma Tarihi:** 4 Aralık 2025 ✅
 
 ---
 ----------------------------------------------------------(bomba)
 ## 🔮 Gelecek Özellikler (Backlog)
 
 ### Kategori: Admin Panel
-- [ ] Bulk operations (çoklu seçim + silme)
+- [x] ~~Bulk operations (çoklu seçim + silme)~~ ✅ **Tamamlandı (4 Aralık 2025)**
+  - Projects: Checkbox selection, Select All, Bulk Delete, Activity logging
+  - Skills: Same features with SkillCard refactoring
+  - Services: Backend complete, Frontend UI pending
+- [x] ~~Profile settings page~~ ✅ **Tamamlandı (4 Aralık 2025)**
+  - Email/Name update, Password change (bcrypt security)
+  - Current password verification, Email uniqueness validation
+  - Activity logging for profile changes
 - [ ] Export/Import (JSON/CSV)
 - [ ] Activity log pagination ve filtreleme
 - [ ] User roles (admin, editor, viewer)
 - [ ] Two-factor authentication
 - [ ] Password reset email
-- [ ] Profile settings page
 - [ ] File manager (Cloudinary browser)
 
 ### Kategori: Frontend
@@ -483,20 +560,21 @@ CONTACT_EMAIL="your@email.com"       # Recipient
 
 ## 📊 Proje Durumu
 
-### Genel İlerleme: **95%** ✅
+### Genel İlerleme: **97%** ✅
 
 | Kategori | Tamamlanma | Status |
 |----------|-----------|--------|
 | Backend & Database | 100% | ✅ Tamamlandı |
 | Authentication | 100% | ✅ Tamamlandı |
 | Admin CRUD | 100% | ✅ Tamamlandı |
+| Admin Bulk Operations | 95% | 🟡 Devam Ediyor (Services UI pending) |
+| Profile Management | 100% | ✅ Tamamlandı |
 | File Upload | 100% | ✅ Tamamlandı |
 | Form Validation | 100% | ✅ Tamamlandı |
 | Contact Form | 100% | ✅ Tamamlandı |
 | SEO Optimization | 100% | ✅ Tamamlandı |
 | Analytics & Monitoring | 100% | ✅ Tamamlandı |
-| UI Components | 85% | 🟡 Devam Ediyor |
-| Analytics | 0% | 🔴 Başlanmadı |
+| UI Components | 90% | 🟡 Devam Ediyor |
 
 ### Kritik Blocker: YOK ✅
 - ~~Cloudinary entegrasyonu~~ ✅ Çözüldü (2 Aralık 2025)

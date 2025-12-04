@@ -26,6 +26,7 @@ const navigation = [
   { name: "İş Geçmişi", href: "/admin/experience", icon: Briefcase },
   { name: "Hizmetler", href: "/admin/services", icon: Wrench },
   { name: "Site Ayarları", href: "/admin/settings", icon: Settings },
+  { name: "Profil Ayarları", href: "/admin/profile", icon: User },
 ];
 
 export default function AdminLayout({

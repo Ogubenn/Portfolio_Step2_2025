@@ -38,6 +38,11 @@ export default function AdminProjectsPage() {
   const [filter, setFilter] = useState("all");
   const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; project: Project | null }>({ isOpen: false, project: null });
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Bulk operations state
+  const [selectedProjects, setSelectedProjects] = useState<Set<string>>(new Set());
+  const [bulkDeleteDialog, setBulkDeleteDialog] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -94,6 +99,55 @@ export default function AdminProjectsPage() {
     }
   };
 
+  // Bulk operations handlers
+  const toggleProjectSelection = (projectId: string) => {
+    const newSelected = new Set(selectedProjects);
+    if (newSelected.has(projectId)) {
+      newSelected.delete(projectId);
+    } else {
+      newSelected.add(projectId);
+    }
+    setSelectedProjects(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedProjects.size === filteredProjects.length) {
+      setSelectedProjects(new Set());
+    } else {
+      setSelectedProjects(new Set(filteredProjects.map(p => p.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedProjects.size === 0) return;
+
+    setIsBulkDeleting(true);
+    const deleteToast = toast.loading(`${selectedProjects.size} proje siliniyor...`);
+
+    try {
+      const response = await fetch('/api/projects/bulk', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: Array.from(selectedProjects) }),
+      });
+
+      if (response.ok) {
+        setProjects(projects.filter(p => !selectedProjects.has(p.id)));
+        setSelectedProjects(new Set());
+        toast.success(`${selectedProjects.size} proje başarıyla silindi!`, { id: deleteToast });
+        setBulkDeleteDialog(false);
+      } else {
+        const data = await response.json();
+        toast.error(data.error || 'Projeler silinemedi', { id: deleteToast });
+      }
+    } catch (error) {
+      console.error("Failed to bulk delete projects:", error);
+      toast.error('Bir hata oluştu', { id: deleteToast });
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
   const filteredProjects = projects.filter((project) => {
     const matchesSearch =
       project.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -146,8 +200,52 @@ export default function AdminProjectsPage() {
         </Link>
       </div>
 
+      {/* Bulk Actions Bar */}
+      {selectedProjects.size > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-blue-400 font-medium">
+              {selectedProjects.size} proje seçildi
+            </span>
+            <button
+              onClick={() => setSelectedProjects(new Set())}
+              className="text-sm text-gray-400 hover:text-white transition-colors"
+            >
+              Seçimi Temizle
+            </button>
+          </div>
+          <button
+            onClick={() => setBulkDeleteDialog(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-all"
+          >
+            <Trash2 className="w-4 h-4" />
+            Toplu Sil
+          </button>
+        </motion.div>
+      )}
+
       {/* Search & Filter */}
       <div className="flex flex-col sm:flex-row gap-4">
+        {/* Select All Checkbox */}
+        {filteredProjects.length > 0 && (
+          <div className="flex items-center gap-2 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg">
+            <input
+              type="checkbox"
+              id="select-all"
+              checked={selectedProjects.size === filteredProjects.length && filteredProjects.length > 0}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+            />
+            <label htmlFor="select-all" className="text-sm text-gray-400 cursor-pointer select-none">
+              Tümünü Seç
+            </label>
+          </div>
+        )}
+        
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
@@ -196,10 +294,22 @@ export default function AdminProjectsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden hover:border-blue-500/50 transition-all group"
+              className={`bg-gray-800 border rounded-xl overflow-hidden hover:border-blue-500/50 transition-all group ${
+                selectedProjects.has(project.id) ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-700'
+              }`}
             >
               {/* Thumbnail */}
               <div className="relative h-48 bg-gray-900 overflow-hidden">
+                {/* Checkbox Overlay */}
+                <div className="absolute top-3 right-3 z-10">
+                  <input
+                    type="checkbox"
+                    checked={selectedProjects.has(project.id)}
+                    onChange={() => toggleProjectSelection(project.id)}
+                    className="w-5 h-5 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                  />
+                </div>
+                
                 {project.thumbnail ? (
                   <Image
                     src={project.thumbnail}
@@ -291,6 +401,19 @@ export default function AdminProjectsPage() {
         confirmText="Evet, Sil"
         cancelText="İptal"
         isLoading={isDeleting}
+        variant="danger"
+      />
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={bulkDeleteDialog}
+        onClose={() => !isBulkDeleting && setBulkDeleteDialog(false)}
+        onConfirm={handleBulkDelete}
+        title="Toplu Silme"
+        message={`${selectedProjects.size} projeyi kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz ve seçilen tüm projeler ve ilgili verileri silinecektir.`}
+        confirmText={`Evet, ${selectedProjects.size} Projeyi Sil`}
+        cancelText="İptal"
+        isLoading={isBulkDeleting}
         variant="danger"
       />
     </div>
