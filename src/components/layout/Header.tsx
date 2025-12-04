@@ -35,70 +35,11 @@ export default function Header() {
   }
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-light-bg-primary/90 dark:bg-dark-bg-primary/90 backdrop-blur-glass shadow-soft'
-          : 'bg-transparent'
-      }`}
-    >
-      <nav className="container-custom">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="text-xl md:text-2xl font-bold text-light-text-primary dark:text-dark-text-primary hover:text-accent-electric dark:hover:text-accent-electric transition-colors duration-200"
-          >
-            Oğulcan<span className="text-gradient">.</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <ul className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-light-text-secondary dark:text-dark-text-secondary hover:text-accent-electric dark:hover:text-accent-electric font-medium transition-colors duration-200 relative group"
-                >
-                  {item.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent-electric via-accent-purple to-accent-pink transition-all duration-300 group-hover:w-full" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          {/* Right Side: CTA Button - Desktop */}
-          <div className="hidden md:flex items-center gap-4">
-            <Link
-              href="/#contact"
-              className="btn-primary"
-            >
-              Benimle İletişime Geç
-            </Link>
-          </div>
-
-          {/* Mobile: Menu Button */}
-          <div className="flex md:hidden items-center">
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-light-text-primary dark:text-dark-text-primary hover:text-accent-electric dark:hover:text-accent-electric transition-colors"
-              aria-label="Toggle menu"
-              aria-expanded={isMobileMenuOpen}
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile Menu Overlay */}
+    <>
+      {/* Mobile Menu Overlay - MUST BE FIRST */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-dark-bg-primary/98 backdrop-blur-lg md:hidden z-40"
+          className="fixed inset-0 bg-dark-bg-primary/98 backdrop-blur-lg md:hidden z-[60]"
         >
           <nav className="container-custom pt-24 pb-8 h-full overflow-y-auto">
             <ul className="flex flex-col gap-6">
@@ -124,7 +65,7 @@ export default function Header() {
                 <Link
                   href="/#contact"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="btn-primary w-full text-center"
+                  className="btn-primary w-full text-center inline-block"
                 >
                   Benimle İletişime Geç
                 </Link>
@@ -133,6 +74,70 @@ export default function Header() {
           </nav>
         </div>
       )}
-    </header>
+
+      {/* Header - ALWAYS ON TOP */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-[70] transition-all duration-300 ${
+          isScrolled
+            ? 'bg-light-bg-primary/90 dark:bg-dark-bg-primary/90 backdrop-blur-glass shadow-soft'
+            : isMobileMenuOpen
+            ? 'bg-dark-bg-primary/95 backdrop-blur-md'
+            : 'bg-transparent'
+        }`}
+      >
+        <nav className="container-custom">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            {/* Logo */}
+            <Link
+              href="/"
+              className="text-xl md:text-2xl font-bold text-light-text-primary dark:text-dark-text-primary hover:text-accent-electric dark:hover:text-accent-electric transition-colors duration-200 relative z-[80]"
+            >
+              Oğulcan<span className="text-gradient">.</span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <ul className="hidden md:flex items-center gap-8">
+              {navItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-light-text-secondary dark:text-dark-text-secondary hover:text-accent-electric dark:hover:text-accent-electric font-medium transition-colors duration-200 relative group"
+                  >
+                    {item.label}
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-accent-electric via-accent-purple to-accent-pink transition-all duration-300 group-hover:w-full" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            {/* Right Side: CTA Button - Desktop */}
+            <div className="hidden md:flex items-center gap-4">
+              <Link
+                href="/#contact"
+                className="btn-primary"
+              >
+                Benimle İletişime Geç
+              </Link>
+            </div>
+
+            {/* Mobile: Menu Button */}
+            <div className="flex md:hidden items-center relative z-[80]">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 text-light-text-primary dark:text-dark-text-primary hover:text-accent-electric dark:hover:text-accent-electric transition-colors"
+                aria-label="Toggle menu"
+                aria-expanded={isMobileMenuOpen}
+              >
+                {isMobileMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </button>
+            </div>
+          </div>
+        </nav>
+      </header>
+    </>
   )
 }
