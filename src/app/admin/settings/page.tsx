@@ -330,7 +330,7 @@ export default function SettingsPage() {
               name="heroCTA"
               value={settings.heroCTA || ''}
               onChange={handleChange}
-              maxLength={CHAR_LIMITS.CTA}
+
               label="CTA Butonu Metni"
               placeholder="Projelerimi İncele"
             />
@@ -425,7 +425,7 @@ export default function SettingsPage() {
               name="aboutDescription"
               value={settings.aboutDescription}
               onChange={handleChange}
-              maxLength={CHAR_LIMITS.SUBTITLE}
+
               label="Açıklama"
               rows={2}
               required
@@ -753,7 +753,7 @@ export default function SettingsPage() {
               name="siteDescription"
               value={settings.siteDescription || ''}
               onChange={handleChange}
-              maxLength={CHAR_LIMITS.META_DESC}
+
               label="Site Açıklaması"
               rows={3}
               placeholder="Kısa site açıklaması (SEO için)"

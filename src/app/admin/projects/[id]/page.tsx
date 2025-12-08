@@ -526,7 +526,7 @@ export default function EditProjectPage() {
               onChange={handleChange}
               required
               rows={2}
-              maxLength={200}
+
               className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Kısa bir açıklama (max 200 karakter)"
             />

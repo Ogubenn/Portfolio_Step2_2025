@@ -32,22 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Dosya boyutu kontrolü
-    const maxImageSize = 20 * 1024 * 1024; // 20MB for images
-    const maxVideoSize = 100 * 1024 * 1024; // 100MB for videos
-    const maxDocSize = 50 * 1024 * 1024; // 50MB for documents
-    
-    let maxSize = maxImageSize;
-    if (isVideo) maxSize = maxVideoSize;
-    if (isDocument) maxSize = maxDocSize;
-    
-    if (file.size > maxSize) {
-      const sizeLimit = isVideo ? '100MB' : isDocument ? '50MB' : '20MB';
-      return NextResponse.json(
-        { error: `Dosya boyutu ${sizeLimit}'dan küçük olmalıdır` },
-        { status: 400 }
-      );
-    }
+    // Dosya boyutu kontrolü kaldırıldı - Cloudinary limitleri kullanılacak
 
     // Buffer'a çevir
     const bytes = await file.arrayBuffer();

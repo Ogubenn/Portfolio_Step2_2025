@@ -433,14 +433,10 @@ export default function NewProjectPage() {
               value={formData.shortDesc}
               onChange={handleChange}
               required
-              rows={2}
-              maxLength={200}
+              rows={3}
               className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Kısa bir açıklama (max 200 karakter)"
+              placeholder="Kısa bir açıklama"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              {formData.shortDesc.length}/200 karakter
-            </p>
           </div>
 
           <div>

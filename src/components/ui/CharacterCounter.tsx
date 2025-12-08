@@ -32,7 +32,7 @@ export function CharacterCounter({ current, max, className = '' }: CharacterCoun
 }
 
 interface TextInputWithCounterProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  maxLength: number
+  maxLength?: number  // Optional - sadece göstermek için
   label: string
   required?: boolean
   helperText?: string
@@ -56,19 +56,17 @@ export function TextInputWithCounter({
       <input
         {...props}
         value={value}
-        maxLength={maxLength}
         className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <div className="flex items-center justify-between mt-1">
         {helperText && <p className="text-xs text-gray-500">{helperText}</p>}
-        <CharacterCounter current={currentLength} max={maxLength} className="ml-auto" />
       </div>
     </div>
   )
 }
 
 interface TextAreaWithCounterProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  maxLength: number
+  maxLength?: number  // Optional - sadece göstermek için
   label: string
   required?: boolean
   helperText?: string
@@ -93,13 +91,11 @@ export function TextAreaWithCounter({
       <textarea
         {...props}
         value={value}
-        maxLength={maxLength}
         rows={rows}
         className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
       />
       <div className="flex items-center justify-between mt-1">
         {helperText && <p className="text-xs text-gray-500">{helperText}</p>}
-        <CharacterCounter current={currentLength} max={maxLength} className="ml-auto" />
       </div>
     </div>
   )
