@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { Save, Globe, Mail, Phone, MapPin, Github, Linkedin, Upload, FileText, X } from 'lucide-react'
 import { TextInputWithCounter, TextAreaWithCounter } from '@/components/ui/CharacterCounter'
-import { CHAR_LIMITS } from '@/lib/constants'
 import RichTextEditor from '@/components/ui/RichTextEditor'
 
 interface SiteSettings {
@@ -296,7 +295,6 @@ export default function SettingsPage() {
               name="heroTitle"
               value={settings.heroTitle}
               onChange={handleChange}
-              maxLength={CHAR_LIMITS.TITLE}
               label="Ana Başlık"
               required
             />
@@ -416,7 +414,6 @@ export default function SettingsPage() {
               name="aboutTitle"
               value={settings.aboutTitle || ''}
               onChange={handleChange}
-              maxLength={CHAR_LIMITS.TITLE}
               label="Başlık"
               placeholder="Hakkımda"
             />
@@ -745,7 +742,6 @@ export default function SettingsPage() {
               name="siteTitle"
               value={settings.siteTitle || ''}
               onChange={handleChange}
-              maxLength={CHAR_LIMITS.TITLE}
               label="Site Başlığı"
               placeholder="Portfolio - Full-Stack Developer"
             />
