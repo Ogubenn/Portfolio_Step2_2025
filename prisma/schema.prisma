@@ -30,7 +30,7 @@ model Project {
   id          String   @id @default(uuid())
   slug        String   @unique
   title       String   @db.LongText
-  category    String   @db.VarChar(50)  // web, game, mobile, tool
+  category    String   @db.VarChar(191)  // web, game, mobile, tool
   description String   @db.LongText
   shortDesc   String   @db.LongText
   
@@ -105,7 +105,7 @@ model WorkExperience {
   current     Boolean  @default(false)
   description String   @db.LongText
   location    String?  @db.LongText
-  type        String?  @db.VarChar(50)  // "Full-time", "Part-time", "Freelance", "Contract"
+  type        String?  @db.VarChar(191)  // "Full-time", "Part-time", "Freelance", "Contract"
   order       Int      @default(0)
   visible     Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -119,7 +119,7 @@ model Service {
   id          String   @id @default(uuid())
   title       String   @db.LongText
   description String   @db.LongText
-  icon        String   @db.VarChar(50)  // Icon name (lucide-react)
+  icon        String   @db.VarChar(191)  // Icon name (lucide-react)
   features    String   @db.LongText  // JSON array of features
   order       Int      @default(0)
   visible     Boolean  @default(true)

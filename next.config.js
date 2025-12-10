@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  
+  // ✅ CRITICAL: API body size limiti kaldırıldı (unlimited content)
+  api: {
+    bodyParser: {
+      sizeLimit: '50mb', // Default 1mb → 50mb (very large content support)
+    },
+    responseLimit: '50mb',
+  },
+  
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [320, 375, 428, 768, 1024, 1440, 1920],

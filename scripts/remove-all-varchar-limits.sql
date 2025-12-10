@@ -3,9 +3,13 @@
 
 USE ogubenn_portfolyo_db;
 
+-- MySQL max_allowed_packet kontrolü (minimum 64MB olmalı)
+SHOW VARIABLES LIKE 'max_allowed_packet';
+
 -- Project tablosu
 ALTER TABLE `Project` 
   MODIFY COLUMN `title` LONGTEXT NOT NULL,
+  MODIFY COLUMN `category` VARCHAR(191) NOT NULL,
   MODIFY COLUMN `description` LONGTEXT NOT NULL,
   MODIFY COLUMN `shortDesc` LONGTEXT NOT NULL,
   MODIFY COLUMN `thumbnail` LONGTEXT NULL,
@@ -25,12 +29,14 @@ ALTER TABLE `WorkExperience`
   MODIFY COLUMN `company` LONGTEXT NOT NULL,
   MODIFY COLUMN `position` LONGTEXT NOT NULL,
   MODIFY COLUMN `description` LONGTEXT NOT NULL,
-  MODIFY COLUMN `location` LONGTEXT NULL;
+  MODIFY COLUMN `location` LONGTEXT NULL,
+  MODIFY COLUMN `type` VARCHAR(191) NULL;
 
 -- Service tablosu
 ALTER TABLE `Service` 
   MODIFY COLUMN `title` LONGTEXT NOT NULL,
   MODIFY COLUMN `description` LONGTEXT NOT NULL,
+  MODIFY COLUMN `icon` VARCHAR(191) NOT NULL,
   MODIFY COLUMN `features` LONGTEXT NOT NULL;
 
 -- SiteSettings tablosu

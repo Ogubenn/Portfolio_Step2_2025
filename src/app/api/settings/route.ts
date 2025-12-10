@@ -59,6 +59,14 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json()
 
+    // 🔍 DEBUG: Gelen veri boyutlarını logla
+    console.log('📊 Settings UPDATE - Data sizes:')
+    console.log('  heroTitle:', body.heroTitle?.length || 0, 'chars')
+    console.log('  heroSubtitle:', body.heroSubtitle?.length || 0, 'chars')
+    console.log('  heroBio:', body.heroBio?.length || 0, 'chars')
+    console.log('  aboutDescription:', body.aboutDescription?.length || 0, 'chars')
+    console.log('  siteDescription:', body.siteDescription?.length || 0, 'chars')
+
     // Ensure socialLinks is a string
     if (body.socialLinks && typeof body.socialLinks !== 'string') {
       body.socialLinks = JSON.stringify(body.socialLinks)
@@ -72,6 +80,14 @@ export async function PUT(request: NextRequest) {
         ...body
       }
     })
+
+    // 🔍 DEBUG: Kaydedilen veri boyutlarını kontrol et
+    console.log('✅ Settings SAVED - Checking database values:')
+    console.log('  heroTitle:', settings.heroTitle.length, 'chars')
+    console.log('  heroSubtitle:', settings.heroSubtitle.length, 'chars')
+    console.log('  heroBio:', settings.heroBio?.length || 0, 'chars')
+    console.log('  aboutDescription:', settings.aboutDescription.length, 'chars')
+    console.log('  siteDescription:', settings.siteDescription?.length || 0, 'chars')
 
     // Log activity
     await prisma.activityLog.create({

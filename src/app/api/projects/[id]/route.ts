@@ -69,6 +69,17 @@ export async function PUT(
     }
 
     const body = await request.json();
+    
+    // 🔍 DEBUG: Gelen veri boyutlarını logla
+    console.log('📊 Project UPDATE - Data sizes:')
+    console.log('  title:', body.title?.length || 0, 'chars')
+    console.log('  shortDesc:', body.shortDesc?.length || 0, 'chars')
+    console.log('  description:', body.description?.length || 0, 'chars')
+    console.log('  problem:', body.problem?.length || 0, 'chars')
+    console.log('  solution:', body.solution?.length || 0, 'chars')
+    console.log('  process:', body.process?.length || 0, 'chars')
+    console.log('  learnings:', body.learnings?.length || 0, 'chars')
+    
     const {
       slug,
       title,
@@ -162,6 +173,16 @@ export async function PUT(
         images: true,
       },
     });
+
+    // 🔍 DEBUG: Kaydedilen veri boyutlarını kontrol et
+    console.log('✅ Project SAVED - Checking database values:')
+    console.log('  title:', project.title.length, 'chars')
+    console.log('  shortDesc:', project.shortDesc.length, 'chars')
+    console.log('  description:', project.description.length, 'chars')
+    console.log('  problem:', project.problem?.length || 0, 'chars')
+    console.log('  solution:', project.solution?.length || 0, 'chars')
+    console.log('  process:', project.process?.length || 0, 'chars')
+    console.log('  learnings:', project.learnings?.length || 0, 'chars')
 
     // Activity log
     await prisma.activityLog.create({
