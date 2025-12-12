@@ -21,25 +21,27 @@ export const revalidate = 0
 
 export const metadata: Metadata = {
   title: {
-    default: 'Oğulcan Benli - Full-Stack Developer & Creative Coder',
-    template: '%s | Oğulcan Benli',
+    default: 'Oğulcan Durkan - Game Developer & Web Developer',
+    template: '%s | Oğulcan Durkan',
   },
-  description: 'Full-stack yazılım geliştiricisi. React, Next.js, TypeScript, Node.js ve Unity ile modern web uygulamaları ve oyunlar geliştiriyorum. Türkiye\'de web geliştirme hizmetleri.',
+  description: 'Game developer ve Unity uzmanı. Unity 2D-3D oyunlar, web uygulamaları ve interaktif projeler geliştiriyorum. C#, C++, JavaScript ile çalışmalar.',
   keywords: [
+    // Personal
+    'Oğulcan Durkan',
     // Core skills
-    'full-stack developer', 'web developer', 'game developer', 'yazılım geliştirici',
+    'Unity Developer', 'Game Developer', 'Oyun Geliştirici', 'Web Developer',
     // Technologies
-    'react', 'next.js', 'typescript', 'javascript', 'node.js', 'prisma', 'mysql', 'unity', 'c#',
+    'Unity', 'Unity 3D', 'Unity 2D', 'C#', 'C++', 'C', 'JavaScript',
     // Services
-    'web development', 'game development', 'frontend', 'backend', 'full-stack',
+    'game development', 'oyun geliştirme', 'web development', 'Unity oyun',
     // Location
-    'türkiye', 'turkey', 'istanbul',
+    'Türkiye', 'Turkey',
     // General
-    'portfolio', 'freelance', 'yazılımcı', 'developer portfolio'
+    'portfolio', 'developer portfolio', 'Unity portfolio'
   ],
-  authors: [{ name: 'Oğulcan Benli', url: 'https://ogubenn.com.tr' }],
-  creator: 'Oğulcan Benli',
-  publisher: 'Oğulcan Benli',
+  authors: [{ name: 'Oğulcan Durkan', url: 'https://ogubenn.com.tr' }],
+  creator: 'Oğulcan Durkan',
+  publisher: 'Oğulcan Durkan',
   metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'),
   alternates: {
     canonical: '/',
@@ -48,24 +50,24 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'tr_TR',
     url: process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr',
-    siteName: 'Oğulcan Benli - Portfolio',
-    title: 'Oğulcan Benli - Full-Stack Developer & Creative Coder',
-    description: 'Full-stack yazılım geliştiricisi. React, Next.js, TypeScript, Node.js ve Unity ile modern web uygulamaları ve oyunlar geliştiriyorum.',
+    siteName: 'Oğulcan Durkan - Portfolio',
+    title: 'Oğulcan Durkan - Game Developer & Web Developer',
+    description: 'Game developer ve Unity uzmanı. Unity 2D-3D oyunlar, web uygulamaları ve interaktif projeler geliştiriyorum.',
     images: [
       {
-        url: '/og-image.jpg', // TODO: Open Graph görseli ekleyin (1200x630px)
+        url: '/og-image.jpg', // Admin panelden OG image yüklenebilir
         width: 1200,
         height: 630,
-        alt: 'Oğulcan Benli - Full-Stack Developer Portfolio',
+        alt: 'Oğulcan Durkan - Game Developer Portfolio',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Oğulcan Benli - Full-Stack Developer',
-    description: 'React, Next.js, TypeScript, Node.js ve Unity ile modern web uygulamaları ve oyunlar geliştiriyorum.',
-    images: ['/og-image.jpg'], // TODO: Twitter card görseli ekleyin
-    creator: '@ogubenn', // TODO: Twitter username'inizi ekleyin
+    title: 'Oğulcan Durkan - Game Developer',
+    description: 'Unity 2D-3D oyunlar, web uygulamaları ve interaktif projeler geliştiriyorum. C#, C++, JavaScript.',
+    images: ['/og-image.jpg'],
+    creator: '@ogubenn',
   },
   robots: {
     index: true,
