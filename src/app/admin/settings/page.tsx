@@ -77,7 +77,14 @@ export default function SettingsPage() {
     try {
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('type', type)
+      
+      // Cloudinary folder mapping
+      const folderMap = {
+        cv: 'portfolio/files/cv',
+        test: 'portfolio/files/tests',
+        heroImage: 'portfolio/images/hero'
+      }
+      formData.append('folder', folderMap[type])
 
       const response = await fetch('/api/upload', {
         method: 'POST',
