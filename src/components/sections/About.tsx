@@ -152,7 +152,7 @@ export default function About({ settings, skills, experience }: AboutProps) {
             </div>
 
             {/* Download Buttons */}
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 mt-8">
               {data.cvFileUrl && (
                 <a
                   href={`/api/download?url=${encodeURIComponent(data.cvFileUrl)}&filename=CV-Ogulcan-Gunes.pdf`}
