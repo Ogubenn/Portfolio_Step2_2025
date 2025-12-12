@@ -92,7 +92,7 @@ export default function Header() {
               href="/"
               className="text-xl md:text-2xl font-bold text-light-text-primary dark:text-dark-text-primary hover:text-accent-electric dark:hover:text-accent-electric transition-colors duration-200 relative z-[80]"
             >
-              Oğulcan<span className="text-gradient">.</span>
+              Oğulcan
             </Link>
 
             {/* Desktop Navigation */}
