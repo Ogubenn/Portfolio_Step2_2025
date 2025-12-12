@@ -156,7 +156,7 @@ export default function About({ settings, skills, experience }: AboutProps) {
               {data.cvFileUrl && (
                 <a
                   href={data.cvFileUrl}
-                  download
+                  download="CV-Ogulcan-Gunes.pdf"
                   onClick={() => trackCVDownload()}
                   className="btn-primary inline-flex group"
                 >
@@ -167,7 +167,7 @@ export default function About({ settings, skills, experience }: AboutProps) {
               {data.testFileUrl && (
                 <a
                   href={data.testFileUrl}
-                  download
+                  download="Personality-Test-Ogulcan-Gunes.pdf"
                   className="btn-secondary inline-flex group"
                 >
                   <FileText className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" />
