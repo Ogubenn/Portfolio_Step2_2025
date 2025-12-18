@@ -2,7 +2,6 @@ import Hero from '@/components/sections/Hero'
 import About from '@/components/sections/About'
 import Projects from '@/components/sections/Projects'
 import Education from '@/components/sections/Education'
-import Services from '@/components/sections/Services'
 import Contact from '@/components/sections/Contact'
 
 // Force dynamic rendering - NEVER cache this page
@@ -70,21 +69,6 @@ async function getEducation() {
   return res.json()
 }
 
-async function getServices() {
-  const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
-  const res = await fetch(`${baseUrl}/api/public/services`, {
-    cache: 'no-store',
-    next: { revalidate: 0 },
-    headers: {
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-      'Pragma': 'no-cache',
-      'Expires': '0'
-    }
-  })
-  if (!res.ok) return []
-  return res.json()
-}
-
 async function getProjects() {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://ogubenn.com.tr'
   const res = await fetch(`${baseUrl}/api/public/projects`, {
@@ -102,12 +86,11 @@ async function getProjects() {
 
 export default async function HomePage() {
   // Server-side data fetch (paralel)
-  const [settings, skills, experience, education, services, projects] = await Promise.all([
+  const [settings, skills, experience, education, projects] = await Promise.all([
     getSettings(),
     getSkills(),
     getExperience(),
     getEducation(),
-    getServices(),
     getProjects()
   ])
 
@@ -115,9 +98,8 @@ export default async function HomePage() {
     <>
       <Hero settings={settings as any} />
       <About settings={settings as any} skills={skills as any} experience={experience as any} />
-      <Education educations={education as any} />
       <Projects projects={projects as any} />
-      <Services services={services as any} />
+      <Education educations={education as any} />
       <Contact settings={settings as any} />
     </>
   )
