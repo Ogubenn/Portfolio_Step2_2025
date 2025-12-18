@@ -10,6 +10,10 @@ export const navItems: NavItem[] = [
     href: '/#about',
   },
   {
+    label: 'Eğitim',
+    href: '/#education',
+  },
+  {
     label: 'Projeler',
     href: '/#projects',
   },

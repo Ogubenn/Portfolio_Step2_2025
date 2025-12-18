@@ -9,7 +9,7 @@ import {
   LayoutDashboard,
   FolderKanban,
   Briefcase,
-  Wrench,
+  GraduationCap,
   Settings,
   LogOut,
   Menu,
@@ -24,7 +24,7 @@ const navigation = [
   { name: "Projeler", href: "/admin/projects", icon: FolderKanban },
   { name: "Yetenekler", href: "/admin/skills", icon: Award },
   { name: "İş Geçmişi", href: "/admin/experience", icon: Briefcase },
-  { name: "Hizmetler", href: "/admin/services", icon: Wrench },
+  { name: "Eğitim Geçmişi", href: "/admin/education", icon: GraduationCap },
   { name: "Site Ayarları", href: "/admin/settings", icon: Settings },
   { name: "Profil Ayarları", href: "/admin/profile", icon: User },
 ];

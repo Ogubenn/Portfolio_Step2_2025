@@ -129,6 +129,28 @@ model Service {
   @@index([visible])
 }
 
+// Education Model (Replaces Services for portfolio focus)
+model Education {
+  id           String   @id @default(uuid())
+  school       String   @db.LongText     // University/School name
+  degree       String   @db.LongText     // "Lisans", "Yüksek Lisans", "Lise Diploması"
+  field        String   @db.LongText     // "Bilgisayar Mühendisliği", "Yazılım Geliştirme"
+  startDate    DateTime
+  endDate      DateTime?
+  current      Boolean  @default(false)  // Halen devam ediyor mu?
+  gpa          String?  @db.VarChar(50)  // "3.2/4.0" or "85/100"
+  description  String   @db.LongText     // Rich text description
+  location     String?  @db.LongText     // "Istanbul, Turkey"
+  achievements String   @db.LongText     // JSON array: ["Dean's List", "Honor Student"]
+  order        Int      @default(0)
+  visible      Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([visible])
+  @@index([order])
+}
+
 // Site Settings Model (Singleton - only one row)
 model SiteSettings {
   id                Int      @id @default(1)

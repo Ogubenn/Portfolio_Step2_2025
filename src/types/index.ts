@@ -59,6 +59,25 @@ export interface Service {
   features: string[]
 }
 
+// Education Types (Replaces Services for portfolio)
+export interface Education {
+  id: string
+  school: string           // University/School name
+  degree: string           // "Bachelor's Degree", "High School Diploma"
+  field: string            // "Computer Engineering", "Software Development"
+  startDate: Date | string
+  endDate?: Date | string | null
+  current: boolean         // Currently studying?
+  gpa?: string | null      // "3.2/4.0" or "85/100"
+  description: string      // Rich text (HTML)
+  location?: string | null // "Istanbul, Turkey"
+  achievements: string[]   // ["Dean's List", "Honor Student"]
+  order: number
+  visible: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
 // Contact Form Types
 export interface ContactFormData {
   name: string
