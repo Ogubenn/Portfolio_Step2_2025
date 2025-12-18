@@ -83,15 +83,19 @@ export async function PUT(
     })
 
     // Activity log
-    await prisma.activityLog.create({
-      data: {
-        userId: (session.user as any).email,
-        action: 'update',
-        entity: 'education',
-        entityId: education.id,
-        description: `Eğitim güncellendi: ${education.school} - ${education.degree}`
-      }
-    })
+    try {
+      await prisma.activityLog.create({
+        data: {
+          userId: (session.user as any)?.id || null,
+          action: 'update',
+          entity: 'education',
+          entityId: education.id,
+          description: `Eğitim güncellendi: ${education.school} - ${education.degree}`
+        }
+      })
+    } catch (logError) {
+      console.error('Activity log error:', logError)
+    }
 
     return NextResponse.json({
       ...education,
@@ -131,15 +135,19 @@ export async function DELETE(
     })
 
     // Activity log
-    await prisma.activityLog.create({
-      data: {
-        userId: (session.user as any).email,
-        action: 'delete',
-        entity: 'education',
-        entityId: params.id,
-        description: `Eğitim silindi: ${education.school} - ${education.degree}`
-      }
-    })
+    try {
+      await prisma.activityLog.create({
+        data: {
+          userId: (session.user as any)?.id || null,
+          action: 'delete',
+          entity: 'education',
+          entityId: params.id,
+          description: `Eğitim silindi: ${education.school} - ${education.degree}`
+        }
+      })
+    } catch (logError) {
+      console.error('Activity log error:', logError)
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

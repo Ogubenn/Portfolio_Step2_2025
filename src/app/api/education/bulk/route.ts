@@ -36,16 +36,20 @@ export async function DELETE(request: NextRequest) {
     })
 
     // Activity log
-    await prisma.activityLog.create({
-      data: {
-        userId: (session.user as any).email,
-        action: 'delete',
-        entity: 'education',
-        entityId: ids.join(','),
-        description: `${result.count} eğitim toplu silindi`,
-        metadata: JSON.stringify(educations.map(e => `${e.school} - ${e.degree}`))
-      }
-    })
+    try {
+      await prisma.activityLog.create({
+        data: {
+          userId: (session.user as any)?.id || null,
+          action: 'delete',
+          entity: 'education',
+          entityId: ids.join(','),
+          description: `${result.count} eğitim toplu silindi`,
+          metadata: JSON.stringify(educations.map(e => `${e.school} - ${e.degree}`))
+        }
+      })
+    } catch (logError) {
+      console.error('Activity log error:', logError)
+    }
 
     return NextResponse.json({ 
       success: true, 
