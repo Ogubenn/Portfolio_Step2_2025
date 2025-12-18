@@ -49,6 +49,8 @@ export async function PUT(
     }
 
     const body = await request.json()
+    console.log('PUT /api/education/[id] - Request body:', body)
+    
     const {
       school,
       degree,
@@ -103,11 +105,8 @@ export async function PUT(
     })
   } catch (error) {
     console.error('PUT /api/education/[id] error:', error)
-    console.error('Error details:', {
-      message: error instanceof Error ? error.message : 'Unknown',
-      stack: error instanceof Error ? error.stack : undefined,
-      body: await request.clone().json().catch(() => 'Failed to parse body')
-    })
+    console.error('Error message:', error instanceof Error ? error.message : 'Unknown')
+    console.error('Error stack:', error instanceof Error ? error.stack : undefined)
     return NextResponse.json(
       { error: 'Eğitim kaydı güncellenemedi', details: error instanceof Error ? error.message : 'Bilinmeyen hata' },
       { status: 500 }
