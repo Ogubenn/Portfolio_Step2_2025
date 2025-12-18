@@ -1,0 +1,16 @@
+{
+  "name": "Oğulcan Durkan - Game Developer & Web Developer",
+  "short_name": "Oğulcan Portfolio",
+  "description": "Game developer ve Unity uzmanı. Unity 2D-3D oyunlar, web projeleri ve yaratıcı çözümler.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#14B8A6",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

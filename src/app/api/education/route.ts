@@ -89,15 +89,20 @@ export async function POST(request: NextRequest) {
     })
 
     // Activity log
-    await prisma.activityLog.create({
-      data: {
-        userId: (session.user as any).email,
-        action: 'create',
-        entity: 'education',
-        entityId: education.id,
-        description: `Yeni eğitim eklendi: ${school} - ${degree}`
-      }
-    })
+    try {
+      await prisma.activityLog.create({
+        data: {
+          userId: (session.user as any)?.id || null,
+          action: 'create',
+          entity: 'education',
+          entityId: education.id,
+          description: `Yeni eğitim eklendi: ${school} - ${degree}`
+        }
+      })
+    } catch (logError) {
+      console.error('Activity log error:', logError)
+      // Don't fail the request if activity log fails
+    }
 
     return NextResponse.json({
       ...education,
