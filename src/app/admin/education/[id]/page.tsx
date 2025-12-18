@@ -480,7 +480,7 @@ export default function EditEducationPage({ params }: { params: { id: string } }
           title="Eğitim Kaydını Sil"
           message={`${formData.school} - ${formData.degree} kaydını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`}
           confirmText="Sil"
-          loading={deleting}
+          isLoading={deleting}
         />
       </div>
     </div>
