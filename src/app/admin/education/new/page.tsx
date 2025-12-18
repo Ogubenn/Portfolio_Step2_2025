@@ -79,7 +79,11 @@ export default function NewEducationPage() {
         router.refresh()
       } else {
         const data = await response.json()
+        console.error('API Error:', data)
         toast.error(data.error || 'Eğitim kaydı oluşturulamadı')
+        if (data.details) {
+          console.error('Hata detayı:', data.details)
+        }
       }
     } catch (error) {
       console.error('Failed to create education:', error)

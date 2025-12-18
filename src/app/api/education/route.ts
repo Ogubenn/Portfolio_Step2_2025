@@ -6,13 +6,13 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-// GET - List all education entries (Admin only)
+// GET - List all education entries
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Yetkisiz erişim' }, { status: 401 })
     }
 
     const education = await prisma.education.findMany({
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
     
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Yetkisiz erişim' }, { status: 401 })
     }
 
     const body = await request.json()
@@ -106,8 +106,12 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('POST /api/education error:', error)
     return NextResponse.json(
-      { error: 'Failed to create education' },
+      { 
+        error: 'Eğitim kaydı oluşturulamadı',
+        details: error instanceof Error ? error.message : 'Bilinmeyen hata'
+      },
       { status: 500 }
+    )
     )
   }
 }

@@ -30,7 +30,7 @@ export async function GET(
   } catch (error) {
     console.error('GET /api/education/[id] error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch education' },
+      { error: 'Eğitim kaydı getirilemedi', details: error instanceof Error ? error.message : 'Bilinmeyen hata' },
       { status: 500 }
     )
   }
@@ -100,7 +100,7 @@ export async function PUT(
   } catch (error) {
     console.error('PUT /api/education/[id] error:', error)
     return NextResponse.json(
-      { error: 'Failed to update education' },
+      { error: 'Eğitim kaydı güncellenemedi', details: error instanceof Error ? error.message : 'Bilinmeyen hata' },
       { status: 500 }
     )
   }
@@ -145,7 +145,7 @@ export async function DELETE(
   } catch (error) {
     console.error('DELETE /api/education/[id] error:', error)
     return NextResponse.json(
-      { error: 'Failed to delete education' },
+      { error: 'Eğitim kaydı silinemedi', details: error instanceof Error ? error.message : 'Bilinmeyen hata' },
       { status: 500 }
     )
   }
