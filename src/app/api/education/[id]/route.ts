@@ -103,6 +103,11 @@ export async function PUT(
     })
   } catch (error) {
     console.error('PUT /api/education/[id] error:', error)
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown',
+      stack: error instanceof Error ? error.stack : undefined,
+      body: await request.clone().json().catch(() => 'Failed to parse body')
+    })
     return NextResponse.json(
       { error: 'Eğitim kaydı güncellenemedi', details: error instanceof Error ? error.message : 'Bilinmeyen hata' },
       { status: 500 }

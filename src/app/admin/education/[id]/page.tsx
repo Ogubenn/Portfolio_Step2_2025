@@ -140,7 +140,12 @@ export default function EditEducationPage({ params }: { params: { id: string } }
         router.refresh()
       } else {
         const data = await response.json()
+        console.error('API Error:', data)
+        console.error('Response status:', response.status)
         toast.error(data.error || 'Eğitim kaydı güncellenemedi')
+        if (data.details) {
+          console.error('Hata detayı:', data.details)
+        }
       }
     } catch (error) {
       console.error('Failed to update education:', error)
