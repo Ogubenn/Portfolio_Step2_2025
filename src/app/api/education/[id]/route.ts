@@ -69,18 +69,18 @@ export async function PUT(
     const education = await prisma.education.update({
       where: { id: params.id },
       data: {
-        ...(school && { school }),
-        ...(degree && { degree }),
-        ...(field && { field }),
-        ...(startDate && { startDate: new Date(startDate) }),
-        endDate: current ? null : (endDate ? new Date(endDate) : null),
-        current: current || false,
+        school: school || undefined,
+        degree: degree || undefined,
+        field: field || undefined,
+        startDate: startDate ? new Date(startDate) : undefined,
+        endDate: current ? null : (endDate ? new Date(endDate) : undefined),
+        current: Boolean(current),
         gpa: gpa || null,
-        ...(description && { description }),
+        description: description || undefined,
         location: location || null,
         achievements: JSON.stringify(achievements || []),
-        order: order !== undefined ? order : undefined,
-        visible: visible !== undefined ? visible : undefined
+        order: typeof order === 'number' ? order : (order ? parseInt(String(order)) : 0),
+        visible: visible !== undefined ? Boolean(visible) : undefined
       }
     })
 

@@ -95,7 +95,7 @@ export default function EditEducationPage({ params }: { params: { id: string } }
 
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? checked : (name === 'order' ? parseInt(value) || 0 : value),
     })
   }
 
