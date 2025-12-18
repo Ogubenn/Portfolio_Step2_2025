@@ -132,7 +132,7 @@ export default function Education({ educations }: EducationProps) {
                             {edu.current ? (
                               <span className="text-green-600 font-medium">Devam Ediyor</span>
                             ) : (
-                              formatDate(edu.endDate)
+                              formatDate(edu.endDate || null)
                             )}
                           </span>
                         </div>
