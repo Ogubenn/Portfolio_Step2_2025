@@ -238,8 +238,22 @@ export default function About({ settings, skills, experience }: AboutProps) {
                       {items.map((skill) => (
                         <span
                           key={skill.id}
-                          className="px-4 py-2 text-sm font-medium bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary rounded-lg border border-light-border dark:border-dark-border hover:border-accent-electric dark:hover:border-accent-purple hover:scale-105 transition-all duration-200 cursor-default shadow-sm"
+                          className="px-4 py-2 text-sm font-medium bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary rounded-lg border border-light-border dark:border-dark-border hover:border-accent-electric dark:hover:border-accent-purple hover:scale-105 transition-all duration-200 cursor-default shadow-sm flex items-center gap-2"
                         >
+                          {skill.icon && (
+                            skill.icon.startsWith('http') || skill.icon.startsWith('data:') ? (
+                              <img 
+                                src={skill.icon} 
+                                alt={skill.name}
+                                className="w-4 h-4 object-contain"
+                              />
+                            ) : skill.icon.startsWith('<svg') ? (
+                              <span 
+                                dangerouslySetInnerHTML={{ __html: skill.icon }}
+                                className="w-4 h-4 [&>svg]:w-full [&>svg]:h-full"
+                              />
+                            ) : null
+                          )}
                           {skill.name}
                         </span>
                       ))}
