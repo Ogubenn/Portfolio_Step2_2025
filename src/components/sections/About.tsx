@@ -54,6 +54,20 @@ const categoryIcons: { [key: string]: any } = {
   Other: Gamepad2,
 }
 
+// Turkish translations for categories
+const categoryTranslations: { [key: string]: string } = {
+  'Languages': 'Programlama Dilleri',
+  'Frameworks': 'Framework\'ler',
+  'Tools': 'Araçlar',
+  'Other': 'Diğer',
+  'Language': 'Programlama Dilleri',
+  'Framework': 'Framework\'ler',
+  'Tool': 'Araçlar'
+}
+
+// Filter out irrelevant categories for software portfolio
+const relevantCategories = ['Languages', 'Language', 'Frameworks', 'Framework', 'Tools', 'Tool', 'Other']
+
 const defaultSettings: SiteSettings = {
   aboutTitle: null,
   aboutDescription: null,
@@ -87,12 +101,15 @@ export default function About({ settings, skills, experience }: AboutProps) {
     workApproachItems = defaultWorkApproach
   }
 
-  // Group skills by category
+  // Group skills by category and filter relevant ones
   const groupedSkills = skillsData.reduce((acc: GroupedSkills, skill: Skill) => {
-    if (!acc[skill.category]) {
-      acc[skill.category] = []
+    // Only include relevant software development categories
+    if (relevantCategories.includes(skill.category)) {
+      if (!acc[skill.category]) {
+        acc[skill.category] = []
+      }
+      acc[skill.category].push(skill)
     }
-    acc[skill.category].push(skill)
     return acc
   }, {})
 
@@ -186,6 +203,7 @@ export default function About({ settings, skills, experience }: AboutProps) {
             <div className="grid gap-4 mb-6">
               {Object.entries(groupedSkills).map(([category, items], index) => {
                 const Icon = categoryIcons[category] || Code
+                const translatedCategory = categoryTranslations[category] || category
                 return (
                   <motion.div
                     key={category}
@@ -200,7 +218,7 @@ export default function About({ settings, skills, experience }: AboutProps) {
                         <Icon className="w-4 h-4 text-accent-electric" />
                       </div>
                       <h3 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
-                        {category}
+                        {translatedCategory}
                       </h3>
                     </div>
                     <div className="flex flex-wrap gap-2.5">
