@@ -48,13 +48,18 @@ interface AboutProps {
 }
 
 const categoryIcons: { [key: string]: any } = {
-  Languages: Code,
-  Frameworks: Palette,
-  Tools: Database,
-  Other: Gamepad2,
+  'Programlama Dilleri': Code,
+  'Framework\'ler': Palette,
+  'Araçlar': Database,
+  'Diğer': Gamepad2,
+  // Old English names for backwards compatibility
+  'Languages': Code,
+  'Frameworks': Palette,
+  'Tools': Database,
+  'Other': Gamepad2,
 }
 
-// Turkish translations for categories
+// Turkish translations for categories (for old data)
 const categoryTranslations: { [key: string]: string } = {
   'Languages': 'Programlama Dilleri',
   'Frameworks': 'Framework\'ler',
@@ -62,11 +67,19 @@ const categoryTranslations: { [key: string]: string } = {
   'Other': 'Diğer',
   'Language': 'Programlama Dilleri',
   'Framework': 'Framework\'ler',
-  'Tool': 'Araçlar'
+  'Tool': 'Araçlar',
+  // Already Turkish - return as is
+  'Programlama Dilleri': 'Programlama Dilleri',
+  'Framework\'ler': 'Framework\'ler',
+  'Araçlar': 'Araçlar',
+  'Diğer': 'Diğer'
 }
 
 // Filter out irrelevant categories for software portfolio
-const relevantCategories = ['Languages', 'Language', 'Frameworks', 'Framework', 'Tools', 'Tool', 'Other']
+const relevantCategories = [
+  'Programlama Dilleri', 'Framework\'ler', 'Araçlar', 'Diğer',
+  'Languages', 'Language', 'Frameworks', 'Framework', 'Tools', 'Tool', 'Other'
+]
 
 const defaultSettings: SiteSettings = {
   aboutTitle: null,

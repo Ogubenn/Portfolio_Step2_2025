@@ -8,7 +8,7 @@ import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { validateSkillForm } from '@/lib/validation'
 
-const categories = ['Tarım Becerileri', 'Ekipman', 'Bilgi', 'Languages', 'Frameworks', 'Tools', 'Other']
+const categories = ['Programlama Dilleri', 'Framework\'ler', 'Araçlar', 'Diğer']
 
 interface SkillFormData {
   category: string
@@ -24,7 +24,7 @@ export default function EditSkillPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState<SkillFormData>({
-    category: 'Languages',
+    category: 'Programlama Dilleri',
     name: '',
     level: 80,
     icon: '',
@@ -198,7 +198,7 @@ export default function EditSkillPage({ params }: { params: { id: string } }) {
               ))}
             </select>
             <p className="text-xs text-gray-500 mt-1">
-              Languages: Programlama dilleri | Frameworks: Kütüphaneler | Tools: Araçlar
+              Programlama Dilleri: C#, JavaScript, Python | Framework'ler: React, Unity | Araçlar: Git, VS Code
             </p>
           </div>
 

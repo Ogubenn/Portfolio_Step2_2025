@@ -20,7 +20,7 @@ interface Skill {
   updatedAt: string
 }
 
-const categories = ['Tarım Becerileri', 'Ekipman', 'Bilgi', 'Languages', 'Frameworks', 'Tools', 'Other']
+const categories = ['Programlama Dilleri', 'Framework\'ler', 'Araçlar', 'Diğer']
 
 export default function SkillsPage() {
   const [skills, setSkills] = useState<Skill[]>([])
