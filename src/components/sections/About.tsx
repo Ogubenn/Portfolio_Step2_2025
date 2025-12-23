@@ -235,28 +235,40 @@ export default function About({ settings, skills, experience }: AboutProps) {
                       </h3>
                     </div>
                     <div className="flex flex-wrap gap-2.5">
-                      {items.map((skill) => (
-                        <span
-                          key={skill.id}
-                          className="px-4 py-2 text-sm font-medium bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary rounded-lg border border-light-border dark:border-dark-border hover:border-accent-electric dark:hover:border-accent-purple hover:scale-105 transition-all duration-200 cursor-default shadow-sm flex items-center gap-2"
-                        >
-                          {skill.icon && (
-                            skill.icon.startsWith('http') || skill.icon.startsWith('data:') ? (
-                              <img 
-                                src={skill.icon} 
-                                alt={skill.name}
-                                className="w-4 h-4 object-contain"
-                              />
-                            ) : skill.icon.startsWith('<svg') ? (
-                              <span 
-                                dangerouslySetInnerHTML={{ __html: skill.icon }}
-                                className="w-4 h-4 [&>svg]:w-full [&>svg]:h-full"
-                              />
-                            ) : null
-                          )}
-                          {skill.name}
-                        </span>
-                      ))}
+                      {items.map((skill) => {
+                        // Debug log
+                        if (skill.icon) {
+                          console.log('Skill:', skill.name, 'Icon:', skill.icon?.substring(0, 50) + '...')
+                          console.log('Icon type:', {
+                            isHTTP: skill.icon.startsWith('http'),
+                            isData: skill.icon.startsWith('data:'),
+                            isSVG: skill.icon.startsWith('<svg')
+                          })
+                        }
+                        
+                        return (
+                          <span
+                            key={skill.id}
+                            className="px-4 py-2 text-sm font-medium bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary rounded-lg border border-light-border dark:border-dark-border hover:border-accent-electric dark:hover:border-accent-purple hover:scale-105 transition-all duration-200 cursor-default shadow-sm flex items-center gap-2"
+                          >
+                            {skill.icon && (
+                              skill.icon.startsWith('http') || skill.icon.startsWith('data:') ? (
+                                <img 
+                                  src={skill.icon} 
+                                  alt={skill.name}
+                                  className="w-4 h-4 object-contain"
+                                />
+                              ) : skill.icon.startsWith('<svg') ? (
+                                <div 
+                                  dangerouslySetInnerHTML={{ __html: skill.icon }}
+                                  className="w-4 h-4 inline-flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:fill-current"
+                                />
+                              ) : null
+                            )}
+                            {skill.name}
+                          </span>
+                        )
+                      })}
                     </div>
                   </motion.div>
                 )

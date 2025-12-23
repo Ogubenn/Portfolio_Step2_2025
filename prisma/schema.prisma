@@ -85,7 +85,7 @@ model Skill {
   category    String   // "Languages", "Frameworks", "Tools", "Other"
   name        String
   level       Int      @default(80) // 0-100
-  icon        String?  // Icon name or URL
+  icon        String?  @db.LongText // Icon name, URL, or inline SVG code
   order       Int      @default(0)
   visible     Boolean  @default(true)
   createdAt   DateTime @default(now())
