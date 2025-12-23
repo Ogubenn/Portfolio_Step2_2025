@@ -22,7 +22,7 @@ export default function NewSkillPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<SkillFormData>({
-    category: 'Tarım Becerileri',
+    category: 'Programlama Dilleri', // Varsayılan kategori değiştirildi
     name: '',
     level: 80,
     icon: '',
@@ -30,7 +30,7 @@ export default function NewSkillPage() {
   })
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target
     const checked = (e.target as HTMLInputElement).checked
@@ -150,16 +150,16 @@ export default function NewSkillPage() {
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Icon (Opsiyonel)
             </label>
-            <input
-              type="text"
+            <textarea
               name="icon"
               value={formData.icon}
               onChange={handleChange}
-              placeholder="Lucide icon adı veya URL"
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="SVG kodu, image URL veya Lucide icon adı"
+              rows={3}
+              className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Örn: Code, Database, Settings (Lucide React icon adları)
+              SVG: &lt;svg role="img"...&gt; | URL: https://... veya data:image/... | Icon: Code, Database
             </p>
           </div>
 
