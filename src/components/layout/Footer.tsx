@@ -49,63 +49,32 @@ export default function Footer() {
     <footer className="bg-dark-bg-primary text-dark-text-primary border-t border-dark-border">
       <div className="container-custom">
         {/* Main Footer Content */}
-        <div className="py-8 md:py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Brand Column */}
-          <div>
-            <Link
-              href="/"
-              className="text-2xl font-bold text-dark-text-primary hover:text-accent-electric transition-colors inline-block"
-            >
-              Oğulcan Durkan
-            </Link>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Hızlı Linkler</h3>
-            <ul className="space-y-2">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-dark-text-secondary hover:text-accent-electric transition-colors duration-200 flex items-center gap-1 group text-sm"
-                  >
-                    <span className="group-hover:translate-x-1 transition-transform duration-200">
-                      {item.label}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">İletişim</h3>
-            {settings.contactEmail && (
-              <ul className="space-y-3 text-dark-text-secondary text-sm">
-                <li className="flex items-start gap-2">
-                  <Mail className="w-4 h-4 mt-0.5 text-accent-electric flex-shrink-0" />
-                  <a
-                    href={`mailto:${settings.contactEmail}`}
-                    className="hover:text-accent-electric transition-colors"
-                  >
-                    {settings.contactEmail}
-                  </a>
-                </li>
-              </ul>
-            )}
-            {/* Social Links */}
-            <div className="flex gap-3 mt-4">
+        <div className="py-10 md:py-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Left Side - Brand & Social */}
+          <div className="space-y-6">
+            <div>
+              <Link
+                href="/"
+                className="text-2xl font-bold text-dark-text-primary hover:text-accent-electric transition-colors inline-block mb-3"
+              >
+                Oğulcan Durkan
+              </Link>
+              <p className="text-dark-text-secondary text-sm max-w-md">
+                Full-stack developer & game developer. Profesyonel projeler geliştiriyorum.
+              </p>
+            </div>
+            
+            {/* Social Links - Daha büyük ve belirgin */}
+            <div className="flex gap-4">
               {socialLinks.github && (
                 <a
                   href={socialLinks.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full bg-dark-bg-secondary hover:bg-gradient-to-r hover:from-accent-electric hover:via-accent-purple hover:to-accent-pink text-dark-text-primary flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 border border-dark-border"
+                  className="group relative w-11 h-11 rounded-xl bg-dark-bg-secondary hover:bg-dark-bg-tertiary text-dark-text-primary flex items-center justify-center transition-all duration-300 border border-dark-border hover:border-accent-electric"
                   aria-label="GitHub"
                 >
-                  <Github className="w-5 h-5" />
+                  <Github className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </a>
               )}
               {socialLinks.linkedin && (
@@ -113,37 +82,71 @@ export default function Footer() {
                   href={socialLinks.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full bg-dark-bg-secondary hover:bg-gradient-to-r hover:from-accent-electric hover:via-accent-purple hover:to-accent-pink text-dark-text-primary flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5 border border-dark-border"
+                  className="group relative w-11 h-11 rounded-xl bg-dark-bg-secondary hover:bg-dark-bg-tertiary text-dark-text-primary flex items-center justify-center transition-all duration-300 border border-dark-border hover:border-accent-purple"
                   aria-label="LinkedIn"
                 >
-                  <Linkedin className="w-5 h-5" />
+                  <Linkedin className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                </a>
+              )}
+              {settings.contactEmail && (
+                <a
+                  href={`mailto:${settings.contactEmail}`}
+                  className="group relative w-11 h-11 rounded-xl bg-dark-bg-secondary hover:bg-dark-bg-tertiary text-dark-text-primary flex items-center justify-center transition-all duration-300 border border-dark-border hover:border-accent-pink"
+                  aria-label="Email"
+                >
+                  <Mail className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </a>
               )}
             </div>
           </div>
-        </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-dark-border py-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-dark-text-tertiary text-sm text-center md:text-left">
-              © Ogubenn All Rights Reserved. Designed by Oğulcan Durkan
-            </p>
-            <div className="flex gap-6 text-sm">
-              <Link
-                href="/privacy"
-                className="text-dark-text-tertiary hover:text-accent-electric transition-colors"
-              >
-                Gizlilik
-              </Link>
-              <Link
-                href="/terms"
-                className="text-dark-text-tertiary hover:text-accent-electric transition-colors"
-              >
-                Kullanım Şartları
-              </Link>
+          {/* Right Side - Navigation */}
+          <div className="grid grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-base font-semibold mb-4 text-dark-text-primary">Menü</h3>
+              <ul className="space-y-2.5">
+                {navItems.slice(0, 4).map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="text-dark-text-secondary hover:text-accent-electric transition-colors duration-200 text-sm inline-block"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-base font-semibold mb-4 text-dark-text-primary">Yasal</h3>
+              <ul className="space-y-2.5">
+                <li>
+                  <Link
+                    href="/privacy"
+                    className="text-dark-text-secondary hover:text-accent-electric transition-colors duration-200 text-sm inline-block"
+                  >
+                    Gizlilik
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/terms"
+                    className="text-dark-text-secondary hover:text-accent-electric transition-colors duration-200 text-sm inline-block"
+                  >
+                    Kullanım Şartları
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
+        </div>
+
+        {/* Bottom Bar - Minimalist */}
+        <div className="border-t border-dark-border py-6">
+          <p className="text-dark-text-tertiary text-sm text-center">
+            © Ogubenn All Rights Reserved. Designed by Oğulcan Durkan
+          </p>
         </div>
       </div>
     </footer>
