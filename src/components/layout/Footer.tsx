@@ -54,13 +54,10 @@ export default function Footer() {
           <div>
             <Link
               href="/"
-              className="text-2xl font-bold text-dark-text-primary hover:text-accent-electric transition-colors inline-block mb-4"
+              className="text-2xl font-bold text-dark-text-primary hover:text-accent-electric transition-colors inline-block"
             >
-              Oğulcan<span className="text-gradient">.</span>
+              Oğulcan Durkan
             </Link>
-            <p className="text-dark-text-secondary text-sm">
-              Web ve oyun geliştirme konusunda tutkulu bir yazılımcı.
-            </p>
           </div>
 
           {/* Quick Links */}
