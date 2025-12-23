@@ -60,7 +60,7 @@ export default function Footer() {
                 Oğulcan Durkan
               </Link>
               <p className="text-dark-text-secondary text-sm max-w-md">
-                Full-stack developer & game developer. Profesyonel projeler geliştiriyorum.
+                Web ve oyun geliştiricisi.
               </p>
             </div>
             
