@@ -130,7 +130,7 @@ export default function Footer() {
         <div className="border-t border-dark-border py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-dark-text-tertiary text-sm text-center md:text-left">
-              © {currentYear} Oğulcan. Sevgiyle kodlandı ❤️
+              © Ogubenn All Rights Reserved. Designed by Oğulcan Durkan
             </p>
             <div className="flex gap-6 text-sm">
               <Link
