@@ -37,15 +37,12 @@ export default function SkillsPage() {
 
   useEffect(() => {
     fetchSkills()
-  }, [selectedCategory])
+  }, []) // Sadece ilk yüklemede çalışır
 
   const fetchSkills = async () => {
     try {
-      const url = selectedCategory !== 'all' 
-        ? `/api/skills?category=${selectedCategory}`
-        : '/api/skills'
-      
-      const response = await fetch(url)
+      // Her zaman tüm skills'i çek - filtreleme frontend'de yapılacak
+      const response = await fetch('/api/skills')
       if (response.ok) {
         const data = await response.json()
         setSkills(data)
@@ -160,15 +157,18 @@ export default function SkillsPage() {
     }
   }
 
-  const filteredSkills = skills.filter(skill =>
-    skill.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredSkills = skills.filter(skill => {
+    const matchesSearch = skill.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesCategory = selectedCategory === 'all' || skill.category === selectedCategory
+    return matchesSearch && matchesCategory
+  })
 
   const groupedSkills = categories.reduce((acc, category) => {
     acc[category] = filteredSkills.filter(s => s.category === category)
     return acc
   }, {} as Record<string, Skill[]>)
 
+  // ÖNEMLI: Toplam sayıları hesaplarken ORİJİNAL skills listesini kullan, filtrelenmişi değil!
   const totalSkills = skills.length
   const visibleSkills = skills.filter(s => s.visible).length
 
