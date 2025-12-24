@@ -5,6 +5,17 @@ import { uploadToCloudinary } from '@/lib/cloudinary';
 
 export async function POST(request: NextRequest) {
   try {
+    // Cloudinary config kontrolü
+    if (!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 
+        !process.env.CLOUDINARY_API_KEY || 
+        !process.env.CLOUDINARY_API_SECRET) {
+      console.error('Cloudinary credentials missing!');
+      return NextResponse.json(
+        { error: 'Cloudinary yapılandırması eksik. .env dosyasını kontrol edin.' },
+        { status: 500 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const folder = (formData.get('folder') as string) || 'portfolio'; // Default folder
@@ -15,6 +26,13 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    console.log('Upload request:', {
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+      folder: folder
+    });
 
     // Dosya türü kontrolü
     const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
