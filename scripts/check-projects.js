@@ -10,6 +10,7 @@ async function checkProjects() {
         id: true,
         title: true,
         slug: true,
+        shortDesc: true,
         published: true,
         featured: true,
         createdAt: true
@@ -22,6 +23,7 @@ async function checkProjects() {
     allProjects.forEach((project, index) => {
       console.log(`${index + 1}. ${project.title}`)
       console.log(`   Slug: ${project.slug}`)
+      console.log(`   ShortDesc: "${project.shortDesc || 'BOŞ!'}"`)
       console.log(`   Published: ${project.published ? '✅ EVET' : '❌ HAYIR'}`)
       console.log(`   Featured: ${project.featured ? '⭐ EVET' : '   Hayır'}`)
       console.log(`   Oluşturulma: ${project.createdAt.toLocaleString('tr-TR')}`)
