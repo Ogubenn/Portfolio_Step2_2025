@@ -64,6 +64,12 @@ export async function POST(request: NextRequest) {
     // Cloudinary'ye yükle
     const result = await uploadToCloudinary(buffer, folder, resourceType);
 
+    console.log('[UPLOAD SUCCESS]', {
+      url: result.secure_url,
+      size: result.bytes,
+      format: result.format
+    });
+
     return NextResponse.json({
       success: true,
       url: result.secure_url,
