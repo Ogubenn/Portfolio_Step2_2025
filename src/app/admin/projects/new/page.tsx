@@ -192,11 +192,14 @@ export default function NewProjectPage() {
       });
 
       const data = await response.json();
+      
+      console.log('Upload response:', { status: response.status, data });
 
       if (response.ok && data.success) {
         setFormData(prev => ({ ...prev, videoUrl: data.url }));
         toast.success('Video başarıyla yüklendi!', { id: uploadToast });
       } else {
+        console.error('Upload failed:', data);
         toast.error(data.error || 'Yükleme başarısız', { id: uploadToast });
       }
     } catch (error) {
