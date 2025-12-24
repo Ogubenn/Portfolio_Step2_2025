@@ -55,16 +55,6 @@ export async function GET(request: Request) {
       tags: safeJsonParse(project.tags, []),
     }));
 
-    // Debug log
-    console.log('API /api/public/projects response:', {
-      count: parsedProjects.length,
-      firstProject: parsedProjects[0] ? {
-        title: parsedProjects[0].title,
-        shortDesc: parsedProjects[0].shortDesc,
-        hasShortDesc: !!parsedProjects[0].shortDesc
-      } : 'No projects'
-    });
-
     const response = NextResponse.json(parsedProjects);
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
     return response;

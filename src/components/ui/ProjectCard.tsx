@@ -44,13 +44,6 @@ const ensureArray = (value: string[] | string): string[] => {
 export default function ProjectCard({ project }: ProjectCardProps) {
   const [showAllTech, setShowAllTech] = useState(false)
   
-  // Debug log
-  console.log('ProjectCard render:', {
-    title: project.title,
-    shortDesc: project.shortDesc,
-    shortDescLength: project.shortDesc?.length
-  })
-  
   // Normalize technologies to array
   const technologies = ensureArray(project.technologies)
 
