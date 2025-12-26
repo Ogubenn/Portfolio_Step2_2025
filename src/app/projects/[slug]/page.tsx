@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { ArrowLeft, ExternalLink, Github, Calendar, Users, Clock, Tag, Home } from 'lucide-react'
 import Link from 'next/link'
 import ImageCarousel from '@/components/ui/ImageCarousel'
+import YouTubePlayer from '@/components/ui/YouTubePlayer'
 import { trackProjectView, trackProjectClick } from '@/lib/analytics'
 
 interface Project {
@@ -264,20 +265,15 @@ export default function ProjectDetailPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
+                className="mb-12"
               >
                 <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-6">
-                  Proje Videosu
+                  🎬 Proje Videosu
                 </h2>
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-900">
-                  <video
-                    src={project.videoUrl}
-                    controls
-                    className="w-full h-full"
-                    poster={project.thumbnail || undefined}
-                  >
-                    Tarayıcınız video oynatmayı desteklemiyor.
-                  </video>
-                </div>
+                <YouTubePlayer 
+                  url={project.videoUrl} 
+                  title={project.title}
+                />
               </motion.div>
             )}
           </div>

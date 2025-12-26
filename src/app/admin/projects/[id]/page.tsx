@@ -7,6 +7,7 @@ import { ArrowLeft, Save, X, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { validateProjectForm, generateSlug } from '@/lib/validation'
+import { extractYouTubeId, isValidYouTubeUrl, getYouTubeThumbnail, getYouTubeEmbedUrl } from '@/lib/youtube'
 
 interface ProjectFormData {
   slug: string
@@ -225,49 +226,30 @@ export default function EditProjectPage() {
   }
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    // Dosya boyutu kontrolü
-    if (file.size > 100 * 1024 * 1024) {
-      toast.error('Dosya boyutu 100MB\'dan küçük olmalıdır')
-      return
+    const url = e.target.value.trim();
+    
+    if (!url) {
+      setFormData(prev => ({ ...prev, videoUrl: '' }));
+      return;
     }
 
-    // Dosya türü kontrolü
-    const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime']
-    if (!allowedTypes.includes(file.type)) {
-      toast.error('Sadece video dosyaları yüklenebilir (mp4, webm, ogg, mov)')
-      return
+    // YouTube URL validation
+    if (!isValidYouTubeUrl(url)) {
+      toast.error('Geçersiz YouTube URL. Örnek: https://www.youtube.com/watch?v=VIDEO_ID');
+      return;
     }
 
-    setUploading(true)
-    const uploadToast = toast.loading('Video yükleniyor...')
-    try {
-      const uploadFormData = new FormData()
-      uploadFormData.append('file', file)
-      uploadFormData.append('folder', 'portfolio/projects/videos')
-
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: uploadFormData,
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        setFormData(prev => ({ ...prev, videoUrl: data.url }))
-        toast.success('Video başarıyla yüklendi!', { id: uploadToast })
-      } else {
-        toast.error(data.error || 'Yükleme başarısız', { id: uploadToast })
-      }
-    } catch (error) {
-      console.error('Upload error:', error)
-      toast.error('Yükleme sırasında bir hata oluştu', { id: uploadToast })
-    } finally {
-      setUploading(false)
+    const videoId = extractYouTubeId(url);
+    if (!videoId) {
+      toast.error('YouTube video ID çıkarılamadı');
+      return;
     }
-  }
+
+    // Convert to embed URL
+    const embedUrl = getYouTubeEmbedUrl(videoId);
+    setFormData(prev => ({ ...prev, videoUrl: embedUrl }));
+    toast.success('YouTube video URL kaydedildi!');
+  };
 
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -666,37 +648,37 @@ export default function EditProjectPage() {
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Video
+              Proje Videosu (YouTube)
             </label>
             
-            {/* Video Yükleme Butonu */}
-            <div className="mb-3">
-              <label className="relative inline-flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                {uploading ? 'Yükleniyor...' : 'Video Yükle'}
-                <input
-                  type="file"
-                  accept="video/*"
-                  onChange={handleVideoUpload}
-                  disabled={uploading}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-              </label>
-              <p className="text-xs text-gray-400 mt-2">
-                Max 541MB • MP4, WebM, OGG, MOV
-              </p>
-            </div>
-
-            {/* URL Input (alternatif) */}
+            {/* YouTube URL Input */}
             <input
               type="text"
               name="videoUrl"
               value={formData.videoUrl}
-              onChange={handleChange}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="veya URL girin: https://example.com/video.mp4"
+              onChange={handleVideoUpload}
+              className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 mb-2"
+              placeholder="YouTube URL: https://www.youtube.com/watch?v=..."
+            />
+            <p className="text-xs text-gray-400 mb-3">
+              📺 YouTube'dan video linki yapıştırın (Unlisted videolar desteklenir)
+            </p>
+
+            {/* YouTube Video Önizleme */}
+            {formData.videoUrl && extractYouTubeId(formData.videoUrl) && (
+              <div className="mt-3 space-y-2">
+                <p className="text-xs text-green-400">✅ YouTube video algılandı</p>
+                <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                  <iframe
+                    src={formData.videoUrl}
+                    className="absolute top-0 left-0 w-full h-full rounded-lg border-2 border-gray-600"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            )}
+          </div>
             />
 
             {/* Video Önizleme */}
