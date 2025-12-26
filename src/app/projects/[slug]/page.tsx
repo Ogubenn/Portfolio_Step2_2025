@@ -355,30 +355,6 @@ export default function ProjectDetailPage() {
             </motion.div>
           )}
 
-          {/* Video Player */}
-          {project.videoUrl && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="mb-12"
-            >
-              <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-6">
-                🎬 Proje Videosu
-              </h2>
-              <div className="relative w-full aspect-video rounded-xl overflow-hidden border-2 border-light-border dark:border-dark-border shadow-xl">
-                <video
-                  controls
-                  className="w-full h-full object-cover"
-                  src={project.videoUrl}
-                >
-                  Tarayıcınız video etiketini desteklemiyor.
-                </video>
-              </div>
-            </motion.div>
-          )}
-
           {/* Technologies */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

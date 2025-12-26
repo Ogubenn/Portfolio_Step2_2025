@@ -11,6 +11,7 @@ interface YouTubePlayerProps {
 
 export default function YouTubePlayer({ url, title = 'Video', className = '' }: YouTubePlayerProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [thumbnailError, setThumbnailError] = useState(false);
   const videoId = extractYouTubeId(url);
 
   if (!videoId) {
@@ -18,7 +19,10 @@ export default function YouTubePlayer({ url, title = 'Video', className = '' }: 
   }
 
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  // maxresdefault (1920x1080) - fallback to hqdefault (480x360) if not available
+  const thumbnailUrl = thumbnailError 
+    ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+    : `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
   return (
     <div className={`relative w-full ${className}`}>
@@ -35,6 +39,7 @@ export default function YouTubePlayer({ url, title = 'Video', className = '' }: 
               alt={title}
               className="absolute inset-0 w-full h-full object-cover"
               loading="lazy"
+              onError={() => setThumbnailError(true)}
             />
             {/* Play Button Overlay */}
             <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
