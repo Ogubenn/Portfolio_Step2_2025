@@ -679,22 +679,6 @@ export default function EditProjectPage() {
               </div>
             )}
           </div>
-            />
-
-            {/* Video Önizleme */}
-            {formData.videoUrl && (
-              <div className="mt-3">
-                <video
-                  src={formData.videoUrl}
-                  controls
-                  className="w-full h-48 object-cover rounded-lg border border-gray-600"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                  }}
-                />
-              </div>
-            )}
-          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
