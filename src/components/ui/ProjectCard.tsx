@@ -41,11 +41,23 @@ const ensureArray = (value: string[] | string): string[] => {
   }
 }
 
+// Strip HTML tags from text
+const stripHtmlTags = (html: string): string => {
+  if (!html) return '';
+  // Remove HTML tags
+  const text = html.replace(/<[^>]*>/g, ' ');
+  // Clean up multiple spaces and trim
+  return text.replace(/\s+/g, ' ').trim();
+}
+
 export default function ProjectCard({ project }: ProjectCardProps) {
   const [showAllTech, setShowAllTech] = useState(false)
   
   // Normalize technologies to array
   const technologies = ensureArray(project.technologies)
+  
+  // Strip HTML tags from description for clean display
+  const cleanDescription = stripHtmlTags(project.shortDesc)
 
   return (
     <article className="card-hover h-full flex flex-col group">
@@ -111,10 +123,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         {/* Title */}
         <h3 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2 group-hover:text-gradient transition-colors">
           {project.title}
-        </h3>
-
-        {/* Description */}
-        <div 
+        <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-4 line-clamp-3 flex-grow">
+          {cleanDescription}
+        </pdiv 
           className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-4 line-clamp-3 flex-grow"
           dangerouslySetInnerHTML={{ __html: project.shortDesc }}
         />
