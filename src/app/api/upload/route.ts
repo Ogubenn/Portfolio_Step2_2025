@@ -6,14 +6,12 @@ import { uploadToCloudinary } from '@/lib/cloudinary';
 export async function POST(request: NextRequest) {
   try {
     // Cloudinary config kontrolü
-    if (!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 
-        !process.env.CLOUDINARY_API_KEY || 
-        !process.env.CLOUDINARY_API_SECRET) {
-      console.error('Cloudinary credentials missing!');
-      return NextResponse.json(
-        { error: 'Cloudinary yapılandırması eksik. .env dosyasını kontrol edin.' },
-        { status: 500 }
-      );
+    const hasCloudinary = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME && 
+                          process.env.CLOUDINARY_API_KEY && 
+                          process.env.CLOUDINARY_API_SECRET;
+    
+    if (!hasCloudinary) {
+      console.warn('Cloudinary credentials missing, using local storage fallback');
     }
 
     const formData = await request.formData();
@@ -56,31 +54,81 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
-    // Cloudinary resource type belirle
-    let resourceType: 'image' | 'video' | 'raw' = 'image';
-    if (isVideo) resourceType = 'video';
-    if (isDocument) resourceType = 'raw';
-    
-    // Cloudinary'ye yükle
-    const result = await uploadToCloudinary(buffer, folder, resourceType);
+    // Try Cloudinary first, fallback to local storage
+    if (hasCloudinary) {
+      try {
+        // Cloudinary resource type belirle
+        let resourceType: 'image' | 'video' | 'raw' = 'image';
+        if (isVideo) resourceType = 'video';
+        if (isDocument) resourceType = 'raw';
+        
+        // Cloudinary'ye yükle
+        const result = await uploadToCloudinary(buffer, folder, resourceType);
 
-    console.log('[UPLOAD SUCCESS]', {
-      url: result.secure_url,
-      size: result.bytes,
-      format: result.format
+        console.log('[CLOUDINARY UPLOAD SUCCESS]', {
+          url: result.secure_url,
+          size: result.bytes,
+          format: result.format
+        });
+
+        return NextResponse.json({
+          success: true,
+          url: result.secure_url,
+          publicId: result.public_id,
+          fileName: file.name,
+          type: isImage ? 'image' : isVideo ? 'video' : 'document',
+          size: result.bytes,
+          mimeType: file.type,
+          width: result.width,
+          height: result.height,
+          format: result.format,
+        });
+      } catch (cloudinaryError) {
+        console.error('Cloudinary upload failed, using local storage:', cloudinaryError);
+      }
+    }
+    
+    // Local storage fallback
+    const fs = require('fs');
+    const path = require('path');
+    
+    // Unique filename
+    const timestamp = Date.now();
+    const randomStr = Math.random().toString(36).substring(2, 8);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${timestamp}-${randomStr}.${fileExt}`;
+    
+    // Determine folder based on type
+    let uploadFolder = 'images';
+    if (isVideo) uploadFolder = 'videos';
+    if (isDocument) uploadFolder = 'documents';
+    
+    const uploadDir = path.join(process.cwd(), 'public', 'projects', uploadFolder);
+    const filePath = path.join(uploadDir, fileName);
+    
+    // Create directory if it doesn't exist
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    
+    // Write file
+    fs.writeFileSync(filePath, buffer);
+    
+    const publicUrl = `/projects/${uploadFolder}/${fileName}`;
+    
+    console.log('[LOCAL UPLOAD SUCCESS]', {
+      url: publicUrl,
+      size: buffer.length,
+      path: filePath
     });
 
     return NextResponse.json({
       success: true,
-      url: result.secure_url,
-      publicId: result.public_id,
+      url: publicUrl,
       fileName: file.name,
       type: isImage ? 'image' : isVideo ? 'video' : 'document',
-      size: result.bytes,
+      size: buffer.length,
       mimeType: file.type,
-      width: result.width,
-      height: result.height,
-      format: result.format,
     });
 
   } catch (error) {
