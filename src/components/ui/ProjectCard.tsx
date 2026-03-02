@@ -123,12 +123,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         {/* Title */}
         <h3 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2 group-hover:text-gradient transition-colors">
           {project.title}
+        </h3>
+
+        {/* Description */}
         <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-4 line-clamp-3 flex-grow">
           {cleanDescription}
-        </pdiv 
-          className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-4 line-clamp-3 flex-grow"
-          dangerouslySetInnerHTML={{ __html: project.shortDesc }}
-        />
+        </p>
 
         {/* Tech Tags */}
         <div className="flex flex-wrap gap-2 mb-4">
