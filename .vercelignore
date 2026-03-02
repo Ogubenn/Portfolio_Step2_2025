@@ -1,0 +1,42 @@
+# Development files
+.env.local
+.env.development
+.env.test
+
+# Testing
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Scripts
+scripts/
+
+# Documentation
+*.md
+!README.md
+
+# IDE
+.vscode/
+.idea/
+
+# Large assets (keep only necessary public files)
+public/projects/videos/*.mp4
+public/projects/videos/*.webm
+public/files/tests/
+
+# Node modules (already ignored by default but explicit)
+node_modules/
+
+# Prisma
+prisma/migrations/
+
+# Build artifacts
+.next/
+out/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

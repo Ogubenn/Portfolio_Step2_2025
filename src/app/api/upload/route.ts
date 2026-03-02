@@ -54,82 +54,54 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
-    // Try Cloudinary first, fallback to local storage
-    if (hasCloudinary) {
-      try {
-        // Cloudinary resource type belirle
-        let resourceType: 'image' | 'video' | 'raw' = 'image';
-        if (isVideo) resourceType = 'video';
-        if (isDocument) resourceType = 'raw';
-        
-        // Cloudinary'ye yükle
-        const result = await uploadToCloudinary(buffer, folder, resourceType);
-
-        console.log('[CLOUDINARY UPLOAD SUCCESS]', {
-          url: result.secure_url,
-          size: result.bytes,
-          format: result.format
-        });
-
-        return NextResponse.json({
-          success: true,
-          url: result.secure_url,
-          publicId: result.public_id,
-          fileName: file.name,
-          type: isImage ? 'image' : isVideo ? 'video' : 'document',
-          size: result.bytes,
-          mimeType: file.type,
-          width: result.width,
-          height: result.height,
-          format: result.format,
-        });
-      } catch (cloudinaryError) {
-        console.error('Cloudinary upload failed, using local storage:', cloudinaryError);
-      }
+    // Cloudinary required for production (Vercel serverless doesn't support local filesystem)
+    if (!hasCloudinary) {
+      return NextResponse.json(
+        { 
+          error: 'Cloudinary yapılandırması gereklidir. Lütfen .env dosyasına Cloudinary bilgilerini ekleyin.',
+          details: 'NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET gerekli'
+        },
+        { status: 500 }
+      );
     }
     
-    // Local storage fallback
-    const fs = require('fs');
-    const path = require('path');
-    
-    // Unique filename
-    const timestamp = Date.now();
-    const randomStr = Math.random().toString(36).substring(2, 8);
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${timestamp}-${randomStr}.${fileExt}`;
-    
-    // Determine folder based on type
-    let uploadFolder = 'images';
-    if (isVideo) uploadFolder = 'videos';
-    if (isDocument) uploadFolder = 'documents';
-    
-    const uploadDir = path.join(process.cwd(), 'public', 'projects', uploadFolder);
-    const filePath = path.join(uploadDir, fileName);
-    
-    // Create directory if it doesn't exist
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    
-    // Write file
-    fs.writeFileSync(filePath, buffer);
-    
-    const publicUrl = `/projects/${uploadFolder}/${fileName}`;
-    
-    console.log('[LOCAL UPLOAD SUCCESS]', {
-      url: publicUrl,
-      size: buffer.length,
-      path: filePath
-    });
+    try {
+      // Cloudinary resource type belirle
+      let resourceType: 'image' | 'video' | 'raw' = 'image';
+      if (isVideo) resourceType = 'video';
+      if (isDocument) resourceType = 'raw';
+      
+      // Cloudinary'ye yükle
+      const result = await uploadToCloudinary(buffer, folder, resourceType);
 
-    return NextResponse.json({
-      success: true,
-      url: publicUrl,
-      fileName: file.name,
-      type: isImage ? 'image' : isVideo ? 'video' : 'document',
-      size: buffer.length,
-      mimeType: file.type,
-    });
+      console.log('[CLOUDINARY UPLOAD SUCCESS]', {
+        url: result.secure_url,
+        size: result.bytes,
+        format: result.format
+      });
+
+      return NextResponse.json({
+        success: true,
+        url: result.secure_url,
+        publicId: result.public_id,
+        fileName: file.name,
+        type: isImage ? 'image' : isVideo ? 'video' : 'document',
+        size: result.bytes,
+        mimeType: file.type,
+        width: result.width,
+        height: result.height,
+        format: result.format,
+      });
+    } catch (cloudinaryError) {
+      console.error('Cloudinary upload failed:', cloudinaryError);
+      return NextResponse.json(
+        { 
+          error: 'Cloudinary yükleme hatası: ' + (cloudinaryError instanceof Error ? cloudinaryError.message : 'Bilinmeyen hata'),
+          details: cloudinaryError instanceof Error ? cloudinaryError.stack : String(cloudinaryError)
+        },
+        { status: 500 }
+      );
+    }
 
   } catch (error) {
     console.error('Upload error:', error);
