@@ -58,6 +58,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            unoptimized
+            priority={project.featured}
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-accent-electric/20 via-accent-purple/20 to-accent-pink/20 flex items-center justify-center">
@@ -112,9 +114,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </h3>
 
         {/* Description */}
-        <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-4 line-clamp-3 flex-grow">
-          {project.shortDesc}
-        </p>
+        <div 
+          className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-4 line-clamp-3 flex-grow"
+          dangerouslySetInnerHTML={{ __html: project.shortDesc }}
+        />
 
         {/* Tech Tags */}
         <div className="flex flex-wrap gap-2 mb-4">

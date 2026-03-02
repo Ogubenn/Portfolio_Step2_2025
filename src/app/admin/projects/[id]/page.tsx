@@ -255,12 +255,6 @@ export default function EditProjectPage() {
     const files = e.target.files
     if (!files || files.length === 0) return
 
-    // Maksimum 3 resim kontrolü
-    if (galleryImages.length + files.length > 3) {
-      alert(`❌ Maksimum 3 proje fotoğrafı yükleyebilirsiniz. Şu an ${galleryImages.length} fotoğrafınız var. ${3 - galleryImages.length} fotoğraf daha ekleyebilirsiniz.`)
-      return
-    }
-
     setUploading(true)
     try {
       const uploadPromises = Array.from(files).map(async (file) => {

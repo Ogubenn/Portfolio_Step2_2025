@@ -19,8 +19,8 @@ export default function YouTubePlayer({ url, title = 'Video', className = '' }: 
   }
 
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-  // sddefault.jpg (640x480) - her YouTube videosunda garanti var
-  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/sddefault.jpg`;
+  // mqdefault.jpg (320x180) - her YouTube videosunda garanti var, hızlı yüklenir
+  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
 
   return (
     <div className={`relative w-full ${className}`}>
@@ -48,15 +48,17 @@ export default function YouTubePlayer({ url, title = 'Video', className = '' }: 
             <img
               src={thumbnailUrl}
               alt={title}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${thumbnailLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${thumbnailLoaded ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
               onLoad={() => setThumbnailLoaded(true)}
               onError={(e) => {
                 console.error('YouTube thumbnail yükleme hatası:', videoId);
-                setThumbnailLoaded(true); // Hata olsa da skeleton'u kaldır
+                // Fallback: hqdefault dene
+                e.currentTarget.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                setThumbnailLoaded(true);
               }}
             />
             {/* Play Button Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors z-20">
               <div className="w-20 h-20 flex items-center justify-center rounded-full bg-red-600 group-hover:bg-red-700 group-hover:scale-110 transition-all shadow-lg">
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
