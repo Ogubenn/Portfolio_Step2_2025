@@ -1,12 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
 
-// Debug log
-console.log('Cloudinary config check:', {
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'MISSING',
-  api_key: process.env.CLOUDINARY_API_KEY ? '***' + process.env.CLOUDINARY_API_KEY.slice(-4) : 'MISSING',
-  api_secret: process.env.CLOUDINARY_API_SECRET ? '***' + process.env.CLOUDINARY_API_SECRET.slice(-4) : 'MISSING',
-});
-
 // Cloudinary Configuration
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -35,17 +28,6 @@ export async function uploadToCloudinary(
   resource_type: string;
   bytes: number;
 }> {
-  console.log('uploadToCloudinary called:', { 
-    folder, 
-    resourceType, 
-    bufferSize: fileBuffer.length,
-    configCheck: {
-      cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'MISSING',
-      api_key: process.env.CLOUDINARY_API_KEY ? 'SET' : 'MISSING',
-      api_secret: process.env.CLOUDINARY_API_SECRET ? 'SET' : 'MISSING'
-    }
-  });
-
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
@@ -60,17 +42,8 @@ export async function uploadToCloudinary(
       },
       (error, result) => {
         if (error) {
-          console.error('Cloudinary upload_stream error:', {
-            message: error.message,
-            http_code: error.http_code,
-            error: error
-          });
           reject(error);
         } else if (result) {
-          console.log('Cloudinary upload successful:', {
-            url: result.secure_url,
-            bytes: result.bytes
-          });
           resolve({
             secure_url: result.secure_url,
             public_id: result.public_id,
@@ -81,7 +54,6 @@ export async function uploadToCloudinary(
             bytes: result.bytes,
           });
         } else {
-          console.error('Cloudinary upload: No result returned');
           reject(new Error('No result from Cloudinary'));
         }
       }

@@ -2,6 +2,7 @@
 .env.local
 .env.development
 .env.test
+.env
 
 # Testing
 **/*.test.ts
@@ -20,23 +21,31 @@ scripts/
 .vscode/
 .idea/
 
-# Large assets (keep only necessary public files)
+# Build cache (will be rebuilt)
+.next/cache
+.next/trace
+
+# Node modules (already ignored by default)
+node_modules/
+
+# Prisma (keep only schema)
+prisma/migrations/
+
+# Large public assets
 public/projects/videos/*.mp4
 public/projects/videos/*.webm
 public/files/tests/
-
-# Node modules (already ignored by default but explicit)
-node_modules/
-
-# Prisma
-prisma/migrations/
-
-# Build artifacts
-.next/
-out/
 
 # Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
