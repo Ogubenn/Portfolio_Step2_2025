@@ -1,12 +1,12 @@
-# Portfolio Website# 🚀 Profesyonel Portfolyo Web Sitesi
+# 🚀 Profesyonel Portfolyo Web Sitesi
 
+Modern, mobile-first, tamamen responsive ve SEO-friendly portfolyo web sitesi. Next.js 14 App Router, TypeScript ve Tailwind CSS ile geliştirilmiştir.
 
+![Portfolio Preview](./public/preview.png)
 
-Modern portfolio web sitesi - Next.js 14, TypeScript, Tailwind CSSModern, mobile-first, tamamen responsive ve SEO-friendly portfolyo web sitesi. Next.js 14 App Router, TypeScript ve Tailwind CSS ile geliştirilmiştir.
+> **Last Updated:** 4 Mart 2026 - Vercel Auto-Deploy Test
 
-
-
-## Kurulum![Portfolio Preview](./public/preview.png)
+## Kurulum
 
 
 
