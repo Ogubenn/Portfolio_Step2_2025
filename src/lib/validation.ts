@@ -110,7 +110,7 @@ export function validateEmail(value: string): ValidationError | null {
 }
 
 /**
- * Validate array has at least one item
+ * Validate array has at least one item (Deploy Test1)
  */
 export function validateArrayNotEmpty(
   value: any[],
