@@ -17,6 +17,7 @@ export interface Project {
   demoUrl?: string
   githubUrl?: string
   featured: boolean
+  likes?: number // Beğeni sayısı
   problem?: string
   solution?: string
   process?: ProcessStep[]

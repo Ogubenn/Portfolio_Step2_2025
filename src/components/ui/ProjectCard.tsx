@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ExternalLink, Github } from 'lucide-react'
+import { ArrowRight, ExternalLink, Github, Heart } from 'lucide-react'
 
 interface ProjectCardProps {
   project: {
@@ -19,6 +19,7 @@ interface ProjectCardProps {
     year: number
     demoUrl?: string | null
     githubUrl?: string | null
+    likes?: number  // Like sayısı
   }
 }
 
@@ -52,12 +53,55 @@ const stripHtmlTags = (html: string): string => {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   const [showAllTech, setShowAllTech] = useState(false)
+  const [liked, setLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(project.likes || 0)
+  const [isLiking, setIsLiking] = useState(false)
   
   // Normalize technologies to array
   const technologies = ensureArray(project.technologies)
   
   // Strip HTML tags from description for clean display
   const cleanDescription = stripHtmlTags(project.shortDesc)
+
+  // Check if project is already liked on mount
+  useEffect(() => {
+    const likedProjects = JSON.parse(localStorage.getItem('liked_projects') || '[]')
+    setLiked(likedProjects.includes(project.id))
+  }, [project.id])
+
+  // Handle like button click
+  const handleLike = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (isLiking || liked) return
+
+    setIsLiking(true)
+
+    try {
+      const response = await fetch(`/api/projects/${project.id}/like`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setLikeCount(data.likes)
+        setLiked(true)
+
+        // Save to localStorage
+        const likedProjects = JSON.parse(localStorage.getItem('liked_projects') || '[]')
+        likedProjects.push(project.id)
+        localStorage.setItem('liked_projects', JSON.stringify(likedProjects))
+      }
+    } catch (error) {
+      console.error('Like error:', error)
+    } finally {
+      setIsLiking(false)
+    }
+  }
 
   return (
     <article className="card-hover h-full flex flex-col group">
@@ -164,14 +208,36 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           )}
         </div>
 
-        {/* View Details Link */}
-        <Link
-          href={`/projects/${project.slug}`}
-          className="inline-flex items-center gap-2 text-gradient font-medium hover:gap-3 transition-all duration-200 mt-auto"
-        >
-          Detayları Gör
-          <ArrowRight className="w-4 h-4" />
-        </Link>
+        {/* Like Button */}
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={handleLike}
+            disabled={liked || isLiking}
+            className={`
+              inline-flex items-center gap-2 px-3 py-2 rounded-lg border transition-all duration-200
+              ${liked 
+                ? 'bg-gradient-to-r from-accent-pink/20 to-accent-purple/20 border-accent-pink/50 text-accent-pink cursor-default' 
+                : 'bg-light-bg-tertiary dark:bg-dark-bg-tertiary border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:border-accent-pink hover:text-accent-pink hover:bg-accent-pink/10'
+              }
+              ${isLiking ? 'opacity-50 cursor-wait' : ''}
+            `}
+            aria-label={liked ? 'Beğenildi' : 'Beğen'}
+          >
+            <Heart 
+              className={`w-4 h-4 transition-all duration-200 ${liked ? 'fill-current' : ''}`}
+            />
+            <span className="text-sm font-medium">{likeCount}</span>
+          </button>
+
+          {/* View Details Link */}
+          <Link
+            href={`/projects/${project.slug}`}
+            className="inline-flex items-center gap-2 text-gradient font-medium hover:gap-3 transition-all duration-200"
+          >
+            Detayları Gör
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     </article>
   )

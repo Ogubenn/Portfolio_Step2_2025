@@ -108,6 +108,7 @@ export async function POST(request: Request) {
         featured: featured || false,
         published: published !== false,
         publishedAt: published !== false ? new Date() : null,
+        likes: Math.floor(Math.random() * (130 - 8 + 1)) + 8, // Random 8-130 arası beğeni
         images: images?.length
           ? {
               create: images.map((img: any, index: number) => ({
